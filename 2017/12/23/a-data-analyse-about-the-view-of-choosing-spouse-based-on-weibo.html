@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>基于新浪微博的男女性择偶观数据分析 | 飞鸿踏雪的部落格 | 人生到处知何似，应似飞鸿踏雪泥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="Python,微博,词云">
+  <meta name="description" content="&amp;emsp;&amp;emsp;或许是因为我喜欢的姑娘从来都不喜欢我，而感情上的挫折一度让我陷入无尽的自卑。朋友在朋友圈里发布一条关于皮影戏的动态，我开玩笑说这个皮影戏结局应该是个悲剧，因为我注意到在剧中，无论一个人如何卖力地表演甚至双腿跪倒在地，有的人从故事开场到结束一直对此无动于衷。朋友回复我说，这不就是你现在的状态吗？我沉默半天终于熄灭手机屏幕。我听到过各种各样让我放弃她的话，即使这种念头在我脑海里">
+<meta name="keywords" content="Python,微博,词云">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于新浪微博的男女性择偶观数据分析">
+<meta property="og:url" content="http://qinyuanpei.github.io/2017/12/23/a-data-analyse-about-the-view-of-choosing-spouse-based-on-weibo.html">
+<meta property="og:site_name" content="飞鸿踏雪的部落格">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;或许是因为我喜欢的姑娘从来都不喜欢我，而感情上的挫折一度让我陷入无尽的自卑。朋友在朋友圈里发布一条关于皮影戏的动态，我开玩笑说这个皮影戏结局应该是个悲剧，因为我注意到在剧中，无论一个人如何卖力地表演甚至双腿跪倒在地，有的人从故事开场到结束一直对此无动于衷。朋友回复我说，这不就是你现在的状态吗？我沉默半天终于熄灭手机屏幕。我听到过各种各样让我放弃她的话，即使这种念头在我脑海里">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20171223234945060">
+<meta property="og:image" content="http://img.blog.csdn.net/20171224011921074">
+<meta property="og:updated_time" content="2017-12-24T03:31:40.301Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于新浪微博的男女性择偶观数据分析">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;或许是因为我喜欢的姑娘从来都不喜欢我，而感情上的挫折一度让我陷入无尽的自卑。朋友在朋友圈里发布一条关于皮影戏的动态，我开玩笑说这个皮影戏结局应该是个悲剧，因为我注意到在剧中，无论一个人如何卖力地表演甚至双腿跪倒在地，有的人从故事开场到结束一直对此无动于衷。朋友回复我说，这不就是你现在的状态吗？我沉默半天终于熄灭手机屏幕。我听到过各种各样让我放弃她的话，即使这种念头在我脑海里">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20171223234945060">
+  
+    <link rel="alternative" href="/atom.xml" title="飞鸿踏雪的部落格" type="application/atom+xml">
+  
+  <meta name="summary" content="null">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/styles/style.css">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <nav id="menu" class="hide" >
+   <div class="inner flex-row-vertical">
+  <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+      <i class="icon icon-lg icon-close"></i>
+  </a>
+  <div class="brand-wrap">
+    <div class="brand">
+      <a href="/" class="avatar"><img src="/assets/images/avatar.jpg"></a>
+      <hgroup class="introduce">
+        <h5 class="nickname">Payne</h5>
+        <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+      </hgroup>
+    </div>
+  </div>
+  <div class="scroll-wrap flex-col">
+    <ul class="nav">
+      
+          <li class="waves-block waves-effect">
+            <a href="/"  >
+              <i class="icon icon-lg icon-home"></i>
+              首页
+            </a>
+          </li>
+      
+          <li class="waves-block waves-effect">
+            <a href="/archives"  >
+              <i class="icon icon-lg icon-archives"></i>
+              归档
+            </a>
+          </li>
+      
+          <li class="waves-block waves-effect">
+            <a href="/tags"  >
+              <i class="icon icon-lg icon-tags"></i>
+              标签
+            </a>
+          </li>
+      
+          <li class="waves-block waves-effect">
+            <a href="/about"  >
+              <i class="icon icon-lg icon-user"></i>
+              关于
+            </a>
+          </li>
+      
+    </ul>
+    <footer class="footer">
+	<p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">
+	<img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="/assets/images/cc-by-nc-nd.svg" /></a></p>
+	<p>飞鸿踏雪的部落格 &copy;2014~2017.</p>
+	<p>Power by <a target="_blank" href="https://hexo.io/">Hexo</a> & Theme <a target="_blank" href="https://github.com/yscoder/hexo-theme-indigo">Indigo</a></p>
+	<a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+  </div>
+</div>
+
+  </nav>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">基于新浪微博的男女性择偶观数据分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input " autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header">
+  <div class="container">
+    <h1 class="author">基于新浪微博的男女性择偶观数据分析</h1>
+    <h5 class="subtitle">
+        
+            <time datetime="2017-12-23T20:28:40.000Z" itemprop="datePublished" class="page-time">
+  2017-12-23
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据分析/">数据分析</a></li></ul>
+
+        
+    </h5>
+  </div>
+</header>
+
+    <div class="container body-wrap">
+      <article id="post-a-data-analyse-about-the-view-of-choosing-spouse-based-on-weibo" 
+  class="article article-type-post" itemprop="blogPost">
+    <div class="post-meta flex-row">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微博/">微博</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/词云/">词云</a></li></ul>
+
+    </div>
+    <div class="post-body">
+        <aside class="post-widget" id="post-widget">
+
+            
+            <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="zhihu share-sns" href="javascript:;" data-title="知乎" data-service="zhihu">
+          知
+        </a>
+      </li>
+      <li>
+        <a class="jianshu share-sns" href="javascript:;" data-title="简书" data-service="jianshu">
+          简
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+            
+
+            
+            <nav class="post-toc-wrap" id="post-toc">
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#身高175的悲伤"><span class="post-toc-number">1.</span> <span class="post-toc-text">身高175的悲伤</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#花点时间爬爬微博"><span class="post-toc-number">2.</span> <span class="post-toc-text">花点时间爬爬微博</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#微博爬虫"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">微博爬虫</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#数据处理"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">数据处理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#数据展示"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">数据展示</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#这是个看脸的世界"><span class="post-toc-number">3.</span> <span class="post-toc-text">这是个看脸的世界</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#本文小结"><span class="post-toc-number">4.</span> <span class="post-toc-text">本文小结</span></a></li></ol>
+            </nav>
+            
+            
+        </aside>
+
+        <div class="post-main">
+
+            <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&emsp;&emsp;或许是因为我喜欢的姑娘从来都不喜欢我，而感情上的挫折一度让我陷入无尽的自卑。朋友在朋友圈里发布一条关于皮影戏的动态，我开玩笑说这个皮影戏结局应该是个悲剧，因为我注意到在剧中，无论一个人如何卖力地表演甚至双腿跪倒在地，有的人从故事开场到结束一直对此无动于衷。朋友回复我说，这不就是你现在的状态吗？我沉默半天终于熄灭手机屏幕。我听到过各种各样让我放弃她的话，即使这种念头在我脑海里萌生已久，是幻想让我硬生生地拖了这么久。当你努力想要融入对方的生活，而等待你的是一道冰冷的墙。这种感觉像什么呢？大概就是一个又一个“好友”安安静静地躺在联系人的置顶名单里，不敢发消息让对方知道，更不愿残忍地把对方删除。我安慰自己说，对我而言，我失去的是一个不喜欢你的人；而对对方而言，失去的是一个喜欢她的人。你当然可以说我没有那么喜欢她，如果一定要喜欢到卑微如尘土的地步，我宁愿一个人单身到天荒地老。</p>
+<p>&emsp;&emsp;当我意识到人与人间，即使亲近如父母尚且无法完全理解彼此的时候，我忽然发现一个有趣的现象，我们喜欢一个人的时候，首先注意到的会是外表，我们将其称之为眼缘，所以人与人间的感情纽带最初会是吸引，而后是了解彼此的优缺点，最终是相互理解和扶持。可我们知道，外表是可以伪装出来的，所以我们习惯通过外表和言语来评价一个人，这就像是数学归纳法，我们总认为推倒第一块多诺米骨牌，就意味着所有多诺米骨牌都会倒下。可现实世界矛盾的地方就在于，我们认为理所当然正确的事情，或许正是我们无法证明其正确性的，这在数学上称为哥德尔不完备定理。所以，一件残酷的事情是，当你无法吸引一个人的时候，通往内心世界的路就被堵死了。朋友圈里精彩纷呈的社交互动，并不代表有人愿意真正了解你的生活，何况是你吸引不到的人呢？我很想知道，我们在选择伴侣的时候到底看中什么，所以我一直在关注<a href="https://weibo.com/u/5566882921" target="_blank" rel="noopener">@西安月老牵线</a>上发布的征婚交友类微博，本文的故事从这里正式展开。</p>
+<h1 id="身高175的悲伤"><a href="#身高175的悲伤" class="headerlink" title="身高175的悲伤"></a>身高175的悲伤</h1><p>&emsp;&emsp;或许你以为我会无聊到试图从微博上找到女朋友，可事实上作为一个程序员的我，即使整天投入精力在编程上，依然无法避免对象空引用的异常出现。如果说找到女朋友是个小概率事件，那么在我看来，找到一个真正懂我、喜欢我的女朋友，基本上是不可能事件。你不要觉得我对没有调整好心态、对生活过分悲观，如果你了解贝叶斯公式就会真正地理解我说的话。这个微博开始引起我的注意，是我发现身高在155到165左右的女生，对男生的要求基本上无疑例外地是175+到180+，我想知道到底有多少女生是有这样的想法，这是我想要抓取新浪微博的数据进行分析的初衷。更重要的是，身高不到175的我在面对这种要求的时候是悲伤的，因为我想起了《巴黎圣母院》中的卡西莫多，一个外表丑陋而拥有高尚人格的“丑八怪”。现代人整天都特别忙，以至于没有人会有耐心，忍受着你丑陋的外表的同时，同你讲一只小兔子亲了它喜欢的长颈鹿一下这种故事。</p>
+<p>&emsp;&emsp;我听到这样一句话，“好看的皮囊千篇一律，有趣的灵魂万里挑一”，可谁会觉得像卡西莫夫这样的人，会拥有或者配拥有高尚的人格呢？我们这副皮囊不管好看与否，它们都是父母给予我们的最好的礼物。难道一个所谓情商高的人，会在收到别人的时候因为礼物不好看而生气吗？ 我想起《画心》里懊悔受狐妖小唯皮相蛊惑而自毁双目的霍心，美丑都是父母赐予我们的，不该被我们拿来一番大肆炫耀，可我还是想知道，我们评价一个人的标准到底是什么？因为我渐渐明白，有些人不喜欢我们，并不是我们不好，而仅仅是某一点和对方不匹配。喜欢一个人的时候，像拔下身上的一根根刺，因为你越是得不到回应，就越像变成对方期待的样子，这个过程会让你觉得自己一无是处。直到今天看到一句话，一句足以热泪盈眶的话，如果不曾喜欢你，我本来非常可爱的。有时候，人做一件事情，或许就是在和自己过不去，比如说这件事情。</p>
+<h1 id="花点时间爬爬微博"><a href="#花点时间爬爬微博" class="headerlink" title="花点时间爬爬微博"></a>花点时间爬爬微博</h1><p>&emsp;&emsp;好了，现在我们来考虑从新浪微博上抓取<a href="https://weibo.com/u/5566882921" target="_blank" rel="noopener">@西安月老牵线</a>上发布的微博，因为这是我们进行数据分析的前提。事实上，在写这篇文章前我曾花了大量时间来调试爬虫，然后用了一天的时间对数据进行清洗，最终利用晚上下班的时间生成词云。由此我们可以理出整体的思路：</p>
+<p><img src="http://img.blog.csdn.net/20171223234945060" alt="流程图"></p>
+<p>&emsp;&emsp;通过流程图我们可以注意到，在这里我选择了Python来实现整个功能。转眼间我已经25岁了，这是种什么样的概念呢？两年前我23岁的时候，听别人讨论结婚这个问题，我觉得它离我还很遥远。如今看着周围人都结婚了，我竟有种“高处不胜寒”的感觉。所以呢，人生苦短，当你不能阻止时间一天天消逝的时候，你只能趁着现在去做你想做的事情，为了节省时间去做技术以外的尝试，我选择拥有全世界最丰富的库的Python。</p>
+<p>&emsp;&emsp;这段时间学习数据分析，我渐渐意识到我们所熟悉的这个世界，如果以一种理性的角度，完全通过数据来解构的话，我们在这个数字时代里留下的每一条讯息，都冷冰冰地暴露着我们的喜怒哀乐，每一张照片里细微的表情变化，每一段文字里隐匿着的真实意图，都能被人脸识别和自然语言处理等等，这类人工智能为代表的技术所解读，我们努力想在朋友圈里隐藏些什么，当朋友圈的访问范围从半年逐渐缩小到三天，我们究竟能隐藏下什么呢？</p>
+<h2 id="微博爬虫"><a href="#微博爬虫" class="headerlink" title="微博爬虫"></a>微博爬虫</h2><p>&emsp;&emsp;首先，我们需要从微博上抓取数据下来，我没有去做抓包分析这样的重复性工作，因为我注意到这个问题，在网络上有很多朋友在讨论，我主要参考了以下内容：</p>
+<ul>
+<li><a href="https://www.zhihu.com/question/29666539/answer/63325949" target="_blank" rel="noopener">Python 爬虫如何机器登录新浪微博并抓取内容？</a></li>
+<li><a href="https://github.com/xchaoinfo/fuck-login" target="_blank" rel="noopener">https://github.com/xchaoinfo/fuck-login</a></li>
+<li><a href="http://python.jobbole.com/84349/" target="_blank" rel="noopener">用Python写一个简单的微博爬虫</a></li>
+</ul>
+<p>通过以上内容，我了解到在抓取新浪微博数据的问题上，我们基本会有以下思路：</p>
+<ul>
+<li>保存cookie信息，利用requests库发起请求并带上cookie</li>
+<li>利用requests库模拟登录新浪微博并在请求过程中保持cookie</li>
+<li>利用selenium库模拟登录新浪微博然后取得页面内容</li>
+<li>利用PhantomJS库模拟登录新浪微博然后取得页面内容</li>
+</ul>
+<p>可以看出差异主要集中在cookie的获取以及是否支持headless模式，并且我们得到一个共识，抓取新浪微博<a href="http://weibo.cn/" target="_blank" rel="noopener">移动版</a>要比<a href="https://weibo.com" target="_blank" rel="noopener">PC版</a>要容易，因为移动版优先为小尺寸屏幕设备提供服务，因而页面结构相对整洁便于我们提取数据。起初博主认为第一种方式太简单粗暴，坚持要采用第二种方式去实现，最终证明还是太年轻了啊，新浪微博的登录给人的感觉就是蛋疼，这里就简单介绍下思路哈。</p>
+<p>&emsp;&emsp;首先我们会向服务器发出一次GET请求，它返回的结果是一段JavaScript代码，然后我们需要用正则匹配出其中的JSON字符，这样我们就获得了第二次请求需要用到的参数；接下来，第二次请求是一个POST请求，我们需要将用户名采用Base64加密，密码则采用RSA加密，需要用到第一次请求返回的参数。实际上，新浪微博官方给我们提供API获取微博数据，可这个API可以获取的微博数据非常有限，更让人难以接受的是新浪微博的应用授权方式，如果我们采用调用API的方式，在这里会有第三次POST请求，有朋友分析了完整的模拟登录过程，可我对此表示毫无兴趣啊。最早我采用了模拟这种方式，抓取第一页的时候还是登录的状态，可等到抓取第二页的时候变成了注销的状态，整个过程使用的是同一个session对象，所以我最后果断放弃了这种方式。</p>
+<p>&emsp;&emsp;好了，现在我们只需要在Chrome里F12找到Network选项卡，抓一次包取得cookie，然后在请求的时候带上cookie即可。我们不用过分担心cookie过期的问题，在博主测试的时候，一个cookie可以持续工作3至5天，而且在后面我们会讲到，这个爬虫抓取的数据量其实并不大，在一两个小时内就可以完成抓取，没有必要将爬虫考虑得太严谨。在下图中我们标记出了博主计算机上存储的cookie，我们通过cookie就可以免登录抓取信息啦。</p>
+<p><img src="http://img.blog.csdn.net/20171224011921074" alt="提取Cookie"></p>
+<p>&emsp;&emsp;解决登录的问题以后，回到这个问题本身，我们需要抓取<a href="https://weibo.com/u/5566882921" target="_blank" rel="noopener">@西安月老牵线</a>发布的所有微博，移动版对微博做了分页处理，所以我们只需要知道总共有多少页，然后循环去提取每一页里的信息即可，因为我们注意到每一页的地址都符合<a href="https://weibo.cn/u/3232168977?page=2" target="_blank" rel="noopener">https://weibo.cn/u/3232168977?page=2</a>这样的形式。首先页数，我们可以通过name为mp的隐藏控件来获得，其value属性表示总页数。其次，每条微博存放在class为c，id以M_开头的div标签里，在这里我们只需要文本信息，顺藤摸瓜我们发现信息被存放在class为ctt的span标签里，这里博主遇到一个奇怪的问题，BeautifulSoup默认的解析器html.parser，不知道因为原因无法解析出标签，而lxml当时因为pip的问题无法安装，所以不能使用XPath来解析DOM解构，在这里我认为XPath更适合这个场景。</p>
+<p>&emsp;&emsp;在抓取微博的过程中，博主发现官方的反爬虫策略非常给力，连续工作超过5分钟IP就会被封锁，进而无法访问微博的服务器， 大概经过20至30分钟后会自动解封。或许主流的方案是花钱买动态代理，可我这个就是临时起意的一个想法，所以我采取了最简单粗暴的方法，让线程睡一会儿，在这样条件下，我花了大概1个半小时到2个小时左右的时间，从微博上抓取了5600条数据，并将其存储在了SQLite数据库中。什么？你问我为什么不考虑多线程，因为我这个人懒啊，这个问题最难的地方在数据分析，数据抓取方面我不太关注效率，因为我有足够的时间去等这些数据，所以关于性能方面的问题，有时间我们再做进一步讨论吧！</p>
+<h2 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h2><p>&emsp;&emsp;数据处理这块，我本来打算尝试下Monogo</p>
+<h2 id="数据展示"><a href="#数据展示" class="headerlink" title="数据展示"></a>数据展示</h2><h1 id="这是个看脸的世界"><a href="#这是个看脸的世界" class="headerlink" title="这是个看脸的世界"></a>这是个看脸的世界</h1><h1 id="本文小结"><a href="#本文小结" class="headerlink" title="本文小结"></a>本文小结</h1>
+
+            
+            <div class="post-reward">
+                <a id="rewardBtn" href="javascript:;" class="post-reward-btn waves-effect waves-circle waves-light">赏</a>
+            </div>
+            
+            
+            <blockquote>
+                <p><b>版权声明：</b>
+                <a href="http://qinyuanpei.github.io/2017/12/23/a-data-analyse-about-the-view-of-choosing-spouse-based-on-weibo.html" rel="external">基于新浪微博的男女性择偶观数据分析</a>
+                ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+                首次发表于&nbsp;<a href="/" target="_blank" rel="external">飞鸿踏雪的部落格</a>&nbsp;
+                ，本文地址为：
+                <a href="http://qinyuanpei.github.io/2017/12/23/a-data-analyse-about-the-view-of-choosing-spouse-based-on-weibo.html" target="_blank" rel="external">http://qinyuanpei.github.io/2017/12/23/a-data-analyse-about-the-view-of-choosing-spouse-based-on-weibo.html</a>
+                ，转载请注明<b>作者</b>和<b>出处</b>。
+                </p>
+            </blockquote>
+            </div>
+            
+<nav class="post-nav">
+  
+
+  
+    <div class="waves-block waves-effect next fr">
+      <a href="/2017/11/19/wish-a-better-tomorrow.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">冬天来了，春天还会远吗？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+            
+   
+<section class="comments" id="comments">
+    <div id="gitment_thread"></div>
+    <link rel="stylesheet" href="//unpkg.com/gitment/style/default.css">
+    <script src="//unpkg.com/gitment/dist/gitment.browser.js"></script>
+    <script>
+        var gitment = new Gitment({
+            owner: 'qinyuanpei',
+            repo: 'qinyuanpei.github.io',
+            oauth: {
+                client_id: 'bfad13d75d668e9ea9b6',
+                client_secret: 'febcfa5a17d192d12717e591c043e80bb4971a2',
+            },
+        })
+        gitment.render('comments')
+    </script>
+</section>
+
+
+
+
+
+
+        </div>
+    </div>
+</article>
+
+<div id="reward" class="reward-lay">
+    <a class="reward-off" id="rewardOff" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        来而不往非礼也
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <ul class="reward-items">
+        
+        <li>
+            <img src="/assets/images/wechat.png" title="微信打赏二维码" alt="微信打赏二维码">
+            <p>微信</p>
+        </li>
+        
+
+        
+        <li>
+            <img src="/assets/images/alipay.jpg" title="支付宝打赏二维码" alt="支付宝打赏二维码">
+            <p>支付宝</p>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+  </main>
+<div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "基于新浪微博的男女性择偶观数据分析",
+    pic: "/assets/images/avatar.jpg",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "http://qinyuanpei.github.io/2017/12/23/a-data-analyse-about-the-view-of-choosing-spouse-based-on-weibo.html"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="zhihu share-sns" href="javascript:;" data-title="知乎" data-service="zhihu">
+          知
+        </a>
+      </li>
+      <li>
+        <a class="jianshu share-sns" href="javascript:;" data-title="简书" data-service="jianshu">
+          简
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script src="/assets/scripts/main.js"></script>
+
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<script type="text/template" id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</script>
+
+<script src="/assets/scripts/search.js"></script>
+
+
+
+
+</body>
+</html>
