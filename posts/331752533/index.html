@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>教你一步步实现一个虚拟摇杆 | Payne&#39;s Blog | 人生到处知何似，应似飞鸿踏雪泥</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="游戏开发,uGUI,虚拟摇杆">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定尝试自己来实现一个虚拟摇杆，所以在今天的文章中我们的目标是使用uGUI来制作一个可以在移动平台稳定运行的虚拟摇杆(请不要问我为什么不使用NGUI来实现，你说我做个虚拟摇杆有必要在项目里导入那么多的资源嘛23333)。关于使用第三方插件来实现虚拟摇">
+<meta name="keywords" content="游戏开发,uGUI,虚拟摇杆">
+<meta property="og:type" content="article">
+<meta property="og:title" content="教你一步步实现一个虚拟摇杆">
+<meta property="og:url" content="http://qinyuanpei.github.io/posts/331752533/index.html">
+<meta property="og:site_name" content="Payne&#39;s Blog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定尝试自己来实现一个虚拟摇杆，所以在今天的文章中我们的目标是使用uGUI来制作一个可以在移动平台稳定运行的虚拟摇杆(请不要问我为什么不使用NGUI来实现，你说我做个虚拟摇杆有必要在项目里导入那么多的资源嘛23333)。关于使用第三方插件来实现虚拟摇">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20151030145705436">
+<meta property="og:image" content="http://img.blog.csdn.net/20151030150441747">
+<meta property="og:updated_time" content="2018-02-22T08:36:26.576Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="教你一步步实现一个虚拟摇杆">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定尝试自己来实现一个虚拟摇杆，所以在今天的文章中我们的目标是使用uGUI来制作一个可以在移动平台稳定运行的虚拟摇杆(请不要问我为什么不使用NGUI来实现，你说我做个虚拟摇杆有必要在项目里导入那么多的资源嘛23333)。关于使用第三方插件来实现虚拟摇">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20151030145705436">
+    
+        <link rel="alternate" type="application/atom+xml" title="Payne&#39;s Blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books"  >
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies"  >
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">教你一步步实现一个虚拟摇杆</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">教你一步步实现一个虚拟摇杆</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-10-30T09:44:18.000Z" itemprop="datePublished" class="page-time">
+  2015-10-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+<article id="post-step-by-step-to-create-virtual-joystick"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">教你一步步实现一个虚拟摇杆</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-10-30 09:44:18" datetime="2015-10-30T09:44:18.000Z"  itemprop="datePublished">2015-10-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>。最近因为项目需要决定尝试自己来实现一个虚拟摇杆，所以在今天的文章中我们的目标是使用uGUI来制作一个可以在移动平台稳定运行的虚拟摇杆(请不要问我为什么不使用NGUI来实现，你说我做个虚拟摇杆有必要在项目里导入那么多的资源嘛23333)。关于使用第三方插件来实现虚拟摇杆，请大家参照我以前写的文章<a href="http://blog.csdn.net/qinyuanpei/article/details/26204177" target="_blank" rel="noopener">Unity3D游戏开发之使用EasyTouch虚拟摇杆控制人物移动</a>，在这里就不再赘述了。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;虚拟摇杆这种输入方式相信大家在手机游戏平台上已经相当的熟悉了，首先我们来简单了解下虚拟摇杆的设计原理。虚拟摇杆有一张固定的2D贴图(背景层)和一张可拖动的2D贴图(控制层)构成，默认情况下控制层在背景层的中心，我们称这个位置为初始位置，当移动控制层后移动层的位置会发生变化，此时控制层的当前位置和初始位置两点间可以计算出一个2D向量，通过这个向量我们就可以判断虚拟摇杆的移动方向。在经典的八方向摇杆导航中摇杆中可移动方向被分成了上、左上、右上、下、左下、右下、左、右共8个方向。我们知道根据三角函数可以非常容易地计算出这个2D向量的角度并由此判定摇杆是在向着这8个方向中的哪一个方向移动。在今天的文章中，我们不需要考虑这8个方向，因为我们可以向任何一个方向进行移动。</p>
+<p>&emsp;&emsp;好了，首先在场景中创建两个Image组件和一个空的游戏体，然后将这两个Image组件拖拽到这个空的游戏体下使它们称为其子节点。这里需要注意的是这两个Image的层级关系。现在我们来编写脚本，这个脚本将被添加到控制层物体上：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment"> * uGUI虚拟摇杆</span></div><div class="line"><span class="comment"> * 作者：秦元培</span></div><div class="line"><span class="comment"> * 博客：http://qinyuanpei.com</span></div><div class="line"><span class="comment"> * 时间：2015年10月24日</span></div><div class="line"><span class="comment"> */</span></div><div class="line"></div><div class="line"><span class="keyword">using</span> UnityEngine;</div><div class="line"><span class="keyword">using</span> System.Collections;</div><div class="line"><span class="keyword">using</span> UnityEngine.UI;</div><div class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JoyStick</span> :</span> MonoBehaviour,IPointerDownHandler, IPointerUpHandler, IDragHandler</div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 摇杆最大半径</span></div><div class="line">    <span class="comment">/// 以像素为单位</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">float</span> JoyStickRadius = <span class="number">50</span>;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 摇杆重置所诉</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">float</span> JoyStickResetSpeed = <span class="number">5.0f</span>;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 当前物体的Transform组件</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">    <span class="keyword">private</span> RectTransform selfTransform;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 是否触摸了虚拟摇杆</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">bool</span> isTouched = <span class="literal">false</span>;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 虚拟摇杆的默认位置</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">    <span class="keyword">private</span> Vector2 originPosition;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 虚拟摇杆的移动方向</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">    <span class="keyword">private</span> Vector2 touchedAxis;</div><div class="line">    <span class="keyword">public</span> Vector2 TouchedAxis</div><div class="line">    &#123;</div><div class="line">        get</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(touchedAxis.magnitude &lt; JoyStickRadius)</div><div class="line">                <span class="keyword">return</span> touchedAxis.normalized / JoyStickRadius;</div><div class="line">            <span class="keyword">return</span> touchedAxis.normalized;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	<span class="comment">/// &lt;summary&gt;</span></div><div class="line">	<span class="comment">/// 定义触摸开始事件委托 </span></div><div class="line">	<span class="comment">/// &lt;/summary&gt;</span></div><div class="line">	<span class="function"><span class="keyword">public</span> delegate <span class="keyword">void</span> <span class="title">JoyStickTouchBegin</span><span class="params">(Vector2 vec)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 定义触摸过程事件委托 </span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">    <span class="comment">/// &lt;param name="vec"&gt;虚拟摇杆的移动方向&lt;/param&gt;</span></div><div class="line">	<span class="function"><span class="keyword">public</span> delegate <span class="keyword">void</span> <span class="title">JoyStickTouchMove</span><span class="params">(Vector2 vec)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 定义触摸结束事件委托</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">	<span class="function"><span class="keyword">public</span> delegate <span class="keyword">void</span> <span class="title">JoyStickTouchEnd</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 注册触摸开始事件</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">	<span class="keyword">public</span> event JoyStickTouchBegin OnJoyStickTouchBegin;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 注册触摸过程事件</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">	<span class="keyword">public</span> event JoyStickTouchMove OnJoyStickTouchMove;</div><div class="line"></div><div class="line">    <span class="comment">/// &lt;summary&gt;</span></div><div class="line">    <span class="comment">/// 注册触摸结束事件</span></div><div class="line">    <span class="comment">/// &lt;/summary&gt;</span></div><div class="line">	<span class="keyword">public</span> event JoyStickTouchEnd OnJoyStickTouchEnd;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span> <span class="params">()</span> </span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">        <span class="comment">//初始化虚拟摇杆的默认方向</span></div><div class="line">        selfTransform = <span class="keyword">this</span>.GetComponent&lt;RectTransform&gt;();</div><div class="line">        originPosition = selfTransform.anchoredPosition;</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnPointerDown</span><span class="params">(PointerEventData eventData)</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">        isTouched = <span class="literal">true</span>;</div><div class="line">		touchedAxis = GetJoyStickAxis(eventData);</div><div class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchBegin != null)</div><div class="line">			<span class="keyword">this</span>.OnJoyStickTouchBegin(TouchedAxis);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnPointerUp</span><span class="params">(PointerEventData eventData)</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">        isTouched = <span class="literal">false</span>;</div><div class="line">		selfTransform.anchoredPosition = originPosition;</div><div class="line">		touchedAxis = Vector2.zero;</div><div class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchEnd != null)</div><div class="line">			<span class="keyword">this</span>.OnJoyStickTouchEnd();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnDrag</span><span class="params">(PointerEventData eventData)</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">		touchedAxis = GetJoyStickAxis(eventData);</div><div class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchMove != null)</div><div class="line">			<span class="keyword">this</span>.OnJoyStickTouchMove(TouchedAxis);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">()</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">        <span class="comment">//当虚拟摇杆移动到最大半径时摇杆无法拖动</span></div><div class="line">        <span class="comment">//为了确保被控制物体可以继续移动</span></div><div class="line">        <span class="comment">//在这里手动触发OnJoyStickTouchMove事件</span></div><div class="line">        <span class="keyword">if</span>(isTouched &amp;&amp; touchedAxis.magnitude&gt;=JoyStickRadius)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchMove != null)</div><div class="line">                <span class="keyword">this</span>.OnJoyStickTouchMove(TouchedAxis);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">//松开虚拟摇杆后让虚拟摇杆回到默认位置</span></div><div class="line">        <span class="keyword">if</span>(selfTransform.anchoredPosition.magnitude &gt; originPosition.magnitude)</div><div class="line">            selfTransform.anchoredPosition -= TouchedAxis * Time.deltaTime * JoyStickResetSpeed;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	<span class="comment">/// &lt;summary&gt;</span></div><div class="line">	<span class="comment">/// 返回虚拟摇杆的偏移量</span></div><div class="line">	<span class="comment">/// &lt;/summary&gt;</span></div><div class="line">	<span class="comment">/// &lt;returns&gt;The joy stick axis.&lt;/returns&gt;</span></div><div class="line">	<span class="comment">/// &lt;param name="eventData"&gt;Event data.&lt;/param&gt;</span></div><div class="line">	<span class="function"><span class="keyword">private</span> Vector2 <span class="title">GetJoyStickAxis</span><span class="params">(PointerEventData eventData)</span></span></div><div class="line"><span class="function">	</span>&#123;</div><div class="line">		<span class="comment">//获取手指位置的世界坐标</span></div><div class="line">		Vector3 worldPosition;</div><div class="line">		<span class="keyword">if</span> (RectTransformUtility.ScreenPointToWorldPointInRectangle (selfTransform,</div><div class="line">		         eventData.position, eventData.pressEventCamera, out worldPosition))</div><div class="line">			selfTransform.position = worldPosition;</div><div class="line">		<span class="comment">//获取摇杆的偏移量</span></div><div class="line">		Vector2 touchAxis = selfTransform.anchoredPosition-originPosition;</div><div class="line">		<span class="comment">//摇杆偏移量限制</span></div><div class="line">		<span class="keyword">if</span>(touchAxis.magnitude &gt;= JoyStickRadius) </div><div class="line">		&#123;</div><div class="line">			touchAxis = touchAxis.normalized * JoyStickRadius;</div><div class="line">			selfTransform.anchoredPosition = touchAxis;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> touchAxis;</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;在这段脚本中，我们实现了OnPointerDown、OnPointerUp和OnDrag三个uGUI事件接口，然后注册了相关的事件委托，这里借鉴了EasyTouch的设计，可以使得虚拟摇杆的逻辑和角色控制逻辑相互分离。这里的核心方法是GetJoyStickAxis()方法，通过这个方法我们可以获得一个Vector2类型的值，它表示的是未标准化过的虚拟摇杆的偏移量。这里的RectTransformUtility.ScreenPointToWorldPointInRectangle()方法表示将一个屏幕坐标转化为对应RectTransform的世界坐标，RectTransform的anchoredPosition属性表示的是当前元素在场景中的屏幕坐标。我们知道屏幕坐标是以像素为单位的，因此这里使用屏幕坐标可以计算出虚拟摇杆在水平方向和垂直方向上移动了多少个像素，我们以此来作为虚拟摇杆的偏移量衡量指标。TouchedAxis是经过标准化以后的偏移量，我们将把这个值传递到事件委托中以提供给外部来调用。好了，要说的就这些了，没有说到的大家可以看看代码里的注释或者是在博客中给我留言，就是这样啦。</p>
+<p>&emsp;&emsp;接下来，我们在场景中添加一个角色模型来测试我们编写的虚拟摇杆，因为在JoyStick中我们已经定义了事件委托，所以在这里就是简单的调用啦。好了，我们一起来看看代码吧！</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment"> * Joystick3D.cs</span></div><div class="line"><span class="comment"> * 3D模式下的虚拟摇杆测试</span></div><div class="line"><span class="comment"> * 作者：秦元培</span></div><div class="line"><span class="comment"> * 博客：http://qinyuanpei.com</span></div><div class="line"><span class="comment"> * 时间：2015年10月30日</span></div><div class="line"><span class="comment"> */</span></div><div class="line"></div><div class="line"><span class="keyword">using</span> UnityEngine;</div><div class="line"><span class="keyword">using</span> System.Collections;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JoyStick3D</span> :</span> MonoBehaviour </div><div class="line">&#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> JoyStick js;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span> <span class="params">()</span> </span></div><div class="line"><span class="function">	</span>&#123;</div><div class="line">		js = GameObject.FindObjectOfType&lt;JoyStick&gt; ();</div><div class="line">		js.OnJoyStickTouchBegin += OnJoyStickBegin;</div><div class="line">		js.OnJoyStickTouchMove += OnJoyStickMove;</div><div class="line">		js.OnJoyStickTouchEnd += OnJoyStickEnd;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">OnJoyStickBegin</span><span class="params">(Vector2 vec)</span></span></div><div class="line"><span class="function">	</span>&#123;</div><div class="line">        Debug.Log(<span class="string">"开始触摸虚拟摇杆"</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">OnJoyStickMove</span> <span class="params">(Vector2 vec)</span></span></div><div class="line"><span class="function">	</span>&#123;</div><div class="line">        Debug.Log(<span class="string">"正在移动虚拟摇杆"</span>);</div><div class="line"></div><div class="line">        <span class="comment">//设置角色朝向</span></div><div class="line">		Quaternion q = Quaternion.LookRotation (<span class="keyword">new</span> Vector3 (vec.x, <span class="number">0</span>, vec.y));</div><div class="line">		transform.rotation = q;</div><div class="line"></div><div class="line">        <span class="comment">//移动角色并播放奔跑动画</span></div><div class="line">		transform.Translate(Vector3.forward * <span class="number">75f</span> * Time.deltaTime);</div><div class="line">		animation.CrossFade(<span class="string">"Run"</span>);</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">OnJoyStickEnd</span> <span class="params">()</span></span></div><div class="line"><span class="function">	</span>&#123;</div><div class="line">        Debug.Log(<span class="string">"触摸移动摇杆结束"</span>);</div><div class="line"></div><div class="line">        <span class="comment">//播放默认待机动画</span></div><div class="line">		animation.CrossFade(<span class="string">"idle"</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span><span class="params">()</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">        GUI.Label(<span class="keyword">new</span> Rect(<span class="number">30</span>,<span class="number">30</span>,<span class="number">200</span>,<span class="number">30</span>),<span class="string">"3D模式下的虚拟摇杆测试"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;最终程序的运行效果如下图所示，我们编写的这个虚拟摇杆可以在手机上完美的运行，欢饮大家来一起测试和吐槽！</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://img.blog.csdn.net/20151030145705436" alt="2D模式演示" title="">
+                </div>
+                <div class="image-caption">2D模式演示</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://img.blog.csdn.net/20151030150441747" alt="3D模式演示" title="">
+                </div>
+                <div class="image-caption">3D模式演示</div>
+            </figure>
+<p>&emsp;&emsp;好了，今天的内容就是这样啦！欢迎大家继续关注我的博客，希望大家喜欢！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="http://qinyuanpei.github.io/posts/331752533/" rel="external">教你一步步实现一个虚拟摇杆</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">Payne's Blog</a>&nbsp;
+        ，本文地址为：<a href="http://qinyuanpei.github.io/posts/331752533/" target="_blank" rel="external">http://qinyuanpei.github.io/posts/331752533/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="http://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uGUI/">uGUI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟摇杆/">虚拟摇杆</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — Payne's Blog&pic=http://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — Payne's Blog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://qinyuanpei.github.io/posts/331752533/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《教你一步步实现一个虚拟摇杆》 — Payne's Blog&url=http://qinyuanpei.github.io/posts/331752533/&via=http://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://qinyuanpei.github.io/posts/331752533/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3120185261/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">EasyAR尝鲜系列教程之Hello EasyAR</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3019914405/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Unity3D游戏开发之Unity3D场景编辑器扩展开发</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel='stylesheet' href="https://yiyeti.cc/usr/themes/veryse/css/gitalk.css"> 
+    <script src="https://yiyeti.cc/usr/themes/veryse/css/gitalk.min.js"></script> 
+    <script type="text/javascript"> 
+    var gitalk = new Gitalk({ 
+        clientID: '{{theme.gitalk.clientID}}', 
+        clientSecret: '{{theme.gitalk.clientSecret}}', 
+        id: window.location.pathname, 
+        repo: '{{theme.gitalk.repo}}', 
+        owner: '{{theme.gitalk.owner}}', 
+        admin: '{{theme.gitalk.owner}}', 
+        distractionFreeMode: '{{theme.gitalk.distractionFreeMode}}', 
+    }) 
+    gitalk.render('gitalk-container') 
+    </script> 
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        来而不往非礼也
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                博客内容遵循
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    <img src="/assets/images/cc-by-nc-sa.svg"/>
+                </a>
+                4.0国际协议
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2018</span>
+            <span>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — Payne's Blog&pic=http://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — Payne's Blog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://qinyuanpei.github.io/posts/331752533/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《教你一步步实现一个虚拟摇杆》 — Payne's Blog&url=http://qinyuanpei.github.io/posts/331752533/&via=http://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://qinyuanpei.github.io/posts/331752533/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=http://qinyuanpei.github.io/posts/331752533/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
