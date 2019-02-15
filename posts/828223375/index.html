@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        为Hexo开发一个网易云音乐的文章插件 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;当你打开这篇文章的时候，你听到一首熟悉的旋律，那是因为在你的心里始终装着一张泛黄的CD，你从来不愿意打开它，即使外表早已积满了灰尘，你依然视它如新的一般，我们喜欢把它叫做时光或者说是青春。">
+<meta name="keywords" content="Hexo,插件,网易,云音乐">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为Hexo开发一个网易云音乐的文章插件">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/828223375/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;当你打开这篇文章的时候，你听到一首熟悉的旋律，那是因为在你的心里始终装着一张泛黄的CD，你从来不愿意打开它，即使外表早已积满了灰尘，你依然视它如新的一般，我们喜欢把它叫做时光或者说是青春。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fyzcv1i1qsj20is0cb74c.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="为Hexo开发一个网易云音乐的文章插件">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;当你打开这篇文章的时候，你听到一首熟悉的旋律，那是因为在你的心里始终装着一张泛黄的CD，你从来不愿意打开它，即使外表早已积满了灰尘，你依然视它如新的一般，我们喜欢把它叫做时光或者说是青春。">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fyzcv1i1qsj20is0cb74c.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">为Hexo开发一个网易云音乐的文章插件</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">为Hexo开发一个网易云音乐的文章插件</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-03-24T10:32:39.000Z" itemprop="datePublished" class="page-time">
+  2015-03-24
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/独立博客/">独立博客</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-为Hexo开发一个网易云音乐的文章插件" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">为Hexo开发一个网易云音乐的文章插件</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-03-24 10:32:39" datetime="2015-03-24T10:32:39.000Z" itemprop="datePublished">2015-03-24</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/独立博客/">独立博客</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        18 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5F53;&#x4F60;&#x6253;&#x5F00;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x542C;&#x5230;&#x4E00;&#x9996;&#x719F;&#x6089;&#x7684;&#x65CB;&#x5F8B;&#xFF0C;&#x90A3;&#x662F;&#x56E0;&#x4E3A;&#x5728;&#x4F60;&#x7684;&#x5FC3;&#x91CC;&#x59CB;&#x7EC8;&#x88C5;&#x7740;&#x4E00;&#x5F20;&#x6CDB;&#x9EC4;&#x7684;CD&#xFF0C;&#x4F60;&#x4ECE;&#x6765;&#x4E0D;&#x613F;&#x610F;&#x6253;&#x5F00;&#x5B83;&#xFF0C;&#x5373;&#x4F7F;&#x5916;&#x8868;&#x65E9;&#x5DF2;&#x79EF;&#x6EE1;&#x4E86;&#x7070;&#x5C18;&#xFF0C;&#x4F60;&#x4F9D;&#x7136;&#x89C6;&#x5B83;&#x5982;&#x65B0;&#x7684;&#x4E00;&#x822C;&#xFF0C;&#x6211;&#x4EEC;&#x559C;&#x6B22;&#x628A;&#x5B83;&#x53EB;&#x505A;&#x65F6;&#x5149;&#x6216;&#x8005;&#x8BF4;&#x662F;&#x9752;&#x6625;&#x3002;</p>
+<a id="more"></a>
+<p>&#x2003;&#x2003;&#x6B63;&#x5982;&#x4F60;&#x6240;&#x770B;&#x5230;&#x7684;&#xFF0C;&#x6211;&#x5728;&#x535A;&#x5BA2;&#x6587;&#x7AE0;&#x4E2D;&#x63D2;&#x5165;&#x4E86;&#x7F51;&#x6613;&#x4E91;&#x97F3;&#x4E50;&#x7684;&#x64AD;&#x653E;&#x5668;&#x3002;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x57FA;&#x4E8E;Flash&#x6280;&#x672F;&#x5B9E;&#x73B0;&#x7684;&#x7EC4;&#x4EF6;&#x3002;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x7279;&#x522B;&#x559C;&#x6B22;&#x7F51;&#x6613;&#x4E91;&#x97F3;&#x4E50;&#x8FD9;&#x4E2A;&#x97F3;&#x4E50;&#x4EA7;&#x54C1;&#xFF0C;&#x6240;&#x4EE5;&#x535A;&#x4E3B;&#x60F3;&#x5C06;&#x8FD9;&#x4E2A;&#x64AD;&#x653E;&#x5668;&#x5E26;&#x5165;&#x5230;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x3002;&#x5728;&#x535A;&#x5BA2;&#x4E2D;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x64AD;&#x653E;&#x5668;&#xFF0C;&#x53EA;&#x8981;&#x5728;&#x6587;&#x7AE0;&#x4E2D;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x4EE3;&#x7801;&#xFF1A;<br></p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">embed</span> <span class="attr">src</span>=<span class="string">&quot;http://music.163.com/style/swf/widget.swf?sid=29713754&amp;type=2&amp;auto=1&amp;width=278&amp;height=32&quot;</span> </span></span><br><span class="line"><span class="tag"><span class="attr">width</span>=<span class="string">&quot;298&quot;</span> <span class="attr">height</span>=<span class="string">&quot;52&quot;</span>  <span class="attr">allowNetworking</span>=<span class="string">&quot;all&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">embed</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x53EF;&#x662F;&#x8FD9;&#x6837;&#x7684;&#x7ED3;&#x6784;&#x5BF9;&#x4E8E;&#x4E00;&#x4E2A;&#x5199;&#x535A;&#x5BA2;&#x7684;&#x4EBA;&#x6765;&#x8BF4;&#x8FD8;&#x662F;&#x663E;&#x5F97;&#x81C3;&#x80BF;&#x4E86;&#xFF0C;&#x80FD;&#x4E0D;&#x80FD;&#x8BA9;&#x8FD9;&#x4E2A;&#x7ED3;&#x6784;&#x66F4;&#x7B80;&#x5355;&#x5199;&#x5462;&#xFF1F;&#x7B80;&#x5355;&#x5230;&#x8FD9;&#x6837;&#xFF1A;<br></p><figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[music:<span class="number">29713754</span>]</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x56E0;&#x4E3A;&#x5728;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x4E2D;&#x771F;&#x6B63;&#x548C;&#x97F3;&#x4E50;&#x6709;&#x5173;&#x7684;&#x53EA;&#x6709;sid&#x8FD9;&#x4E2A;&#x53C2;&#x6570;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x5173;&#x6CE8;&#x8FD9;&#x4E2A;&#x53C2;&#x6570;&#x5C31;&#x597D;&#x4E86;&#x3002;&#x90A3;&#x4E48;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x5176;&#x5B9E;&#x5C31;&#x662F;&#x5728;&#x505A;&#x8FD9;&#x6837;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x6587;&#x7AE0;&#x4E2D;&#x63D2;&#x5165;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;[key:value]&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x7136;&#x540E;&#x901A;&#x8FC7;&#x7A0B;&#x5E8F;&#x5C06;&#x5B83;&#x66FF;&#x6362;&#x6210;&#x76F8;&#x5E94;&#x7684;HTML&#x7ED3;&#x6784;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x5B9E;&#x73B0;&#x4E86;&#x5728;Hexo&#x7684;&#x6587;&#x7AE0;&#x4E2D;&#x4F7F;&#x7528;[key:value]&#x7ED3;&#x6784;&#x6765;&#x7F16;&#x5199;&#x7B80;&#x5355;&#x63D2;&#x4EF6;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x5982;&#x679C;&#x7ECF;&#x5386;&#x8FC7;&#x4F7F;&#x7528;wordpress&#x5EFA;&#x7AD9;&#x7684;&#x670B;&#x53CB;&#x4E00;&#x5B9A;&#x77E5;&#x9053;&#xFF0C;&#x5728;wordpress&#x4E2D;&#x5B58;&#x5728;&#x8BB8;&#x591A;&#x8FD9;&#x6837;&#x7684;&#x7C7B;&#x4F3C;&#x63D2;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;&#x5E2E;&#x52A9;&#x5199;&#x4F5C;&#x8005;&#x7B80;&#x5316;&#x67D0;&#x4E9B;&#x8F93;&#x5165;&#x5185;&#x5BB9;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x90A3;&#x4E48;&#x4ECA;&#x5929;&#x6211;&#x4EEC;&#x5C31;&#x6765;&#x8BD5;&#x7740;&#x4E3A;hexo&#x7F16;&#x5199;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x5C0F;&#x63D2;&#x4EF6;&#x5427;&#xFF01;&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x5C06;&#x63D2;&#x4EF6;&#x5199;&#x5230;&#x7F51;&#x9875;&#x91CC;&#x7684;&#x65F6;&#x5019;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x5728;NodeJS&#x4E2D;&#x6D4B;&#x8BD5;&#xFF0C;&#x6D4B;&#x8BD5;&#x7A0B;&#x5E8F;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x5B9A;&#x4E49;&#x6D4B;&#x8BD5;&#x5185;&#x5BB9;</span></span><br><span class="line"><span class="keyword">var</span> str=<span class="string">&quot;&#x8FD9;&#x662F;&#x4E00;&#x6761;&#x6D4B;&#x8BD5;&#x5185;&#x5BB9;&#x4EE5;&#x6D4B;&#x8BD5;&#x8FD9;&#x4E2A;&#x7A0B;&#x5E8F;&#x662F;&#x5426;&#x80FD;&#x591F;&#x6B63;&#x786E;&#x8FD0;&#x884C;,&#x73B0;&#x5728;&#x8BA9;&#x6211;&#x4EEC;&#x6765;&#x542C;&#x4E00;&#x9996;&#x300A;&#x5306;&#x5306;&#x90A3;&#x5E74;&#x300B;[music:29713754]&quot;</span>;</span><br><span class="line"><span class="comment">//&#x83B7;&#x5F97;&#x5339;&#x914D;&#x5185;&#x5BB9;</span></span><br><span class="line"><span class="keyword">var</span> dicts=str.match(<span class="regexp">/\[(.*?):(.*?)\]/g</span>);</span><br><span class="line"><span class="keyword">if</span>(dicts.length==<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"><span class="comment">//&#x5BF9;&#x6BCF;&#x4E00;&#x4E2A;&#x5339;&#x914D;&#x9879;&#x8FDB;&#x884C;&#x5904;&#x7406;</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;dicts.length;i++)</span><br><span class="line">{</span><br><span class="line">      <span class="comment">//&#x5BF9;&#x5339;&#x914D;&#x9879;&#x8FDB;&#x884C;&#x5206;&#x5272;,&#x62C6;&#x5206;&#x7ED3;&#x679C;&#x4E3A;&apos;[music&apos;&#x548C;&apos;29713754]&apos;</span></span><br><span class="line">      <span class="comment">//&#x6211;TM&#x5C31;&#x90C1;&#x95F7;&#x4E86;&#xFF0C;&#x5728;&#x8FD9;&#x91CC;&#x5199;&#x6210;&apos;/:/&apos;&#x62A5;&#x9519;</span></span><br><span class="line">      <span class="comment">//&#x53EF;&#x662F;&#x5199;&#x6210;/:/&#x5C31;&#x987A;&#x5229;&#x901A;&#x8FC7;</span></span><br><span class="line">      <span class="keyword">var</span> dict=dicts[i].split(<span class="regexp">/:/</span>);</span><br><span class="line">      <span class="comment">//&#x83B7;&#x5F97;&#x952E;&#x540D;</span></span><br><span class="line">      <span class="keyword">var</span> key=dict[<span class="number">0</span>].substring(<span class="number">1</span>,dict[<span class="number">0</span>].length);</span><br><span class="line">      <span class="comment">//&#x83B7;&#x5F97;ID</span></span><br><span class="line">      <span class="keyword">var</span> id=dict[<span class="number">1</span>].substring(<span class="number">0</span>,dict[<span class="number">1</span>].indexOf(<span class="string">&apos;]&apos;</span>));</span><br><span class="line">      <span class="comment">//&#x5224;&#x65AD;&#x952E;&#x540D;&#x7684;&#x7C7B;&#x578B;</span></span><br><span class="line">      <span class="keyword">if</span>(key==<span class="string">&apos;music&apos;</span>)</span><br><span class="line">      {</span><br><span class="line">         str=str.replace(dicts[i],<span class="string">&apos;&lt;embed src=&quot;http://music.163.com/style/swf/widget.swf?sid=&apos;</span>+ id +</span><br><span class="line">         <span class="string">&apos;&amp;type=2&amp;auto=1&amp;width=278&amp;height=32&quot; width=&quot;298&quot; height=&quot;52&quot;  allowNetworking=&quot;all&quot;&gt;&lt;/embed&gt;&apos;</span>);</span><br><span class="line">      }</span><br><span class="line"> }</span><br><span class="line"> <span class="comment">//&#x8F93;&#x51FA;&#x7ED3;&#x679C;</span></span><br><span class="line"> <span class="built_in">console</span>.log(str);</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x4E3B;&#x8981;&#x5C31;&#x662F;&#x901A;&#x8FC7;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x6765;&#x5339;&#x914D;&#x6587;&#x7AE0;&#x6B63;&#x6587;&#x4E2D;&#x6240;&#x6709;&#x7684;[key:value]&#x7ED3;&#x6784;&#xFF0C;&#x7136;&#x540E;&#x6839;&#x636E;key&#x6765;&#x786E;&#x5B9A;&#x5F53;&#x524D;&#x7ED3;&#x6784;&#x8868;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#xFF0C;&#x6839;&#x636E;id&#x6765;&#x786E;&#x5B9A;&#x5F53;&#x524D;&#x7C7B;&#x578B;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x5C3D;&#x7BA1;&#x8FD9;&#x91CC;&#x53EA;&#x63D0;&#x5230;&#x4E86;&#x4E00;&#x4E2A;music&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x4E0D;&#x8FC7;&#x6211;&#x76F8;&#x4FE1;&#x53EA;&#x8981;&#x5927;&#x5BB6;&#x5F00;&#x52A8;&#x8111;&#x7B4B;&#x3001;&#x53D1;&#x6325;&#x60F3;&#x50CF;&#x76F8;&#x4FE1;&#x4F1A;&#x6709;&#x66F4;&#x597D;&#x7684;&#x60F3;&#x6CD5;&#x4EA7;&#x751F;&#x5427;&#xFF01;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x535A;&#x4E3B;&#x5728;&#x672C;&#x5730;&#x4F7F;&#x7528;NodeJS&#x6D4B;&#x8BD5;&#x4E86;&#x6CA1;&#x6709;&#x4E0D;&#x8FC7;&#x4EC0;&#x4E48;&#x95EE;&#x9898;&#xFF0C;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x5728;&#x622A;&#x56FE;&#x4E2D;&#x6E05;&#x695A;&#x5730;&#x770B;&#x5230;[music:29713754]&#x5DF2;&#x7ECF;&#x88AB;&#x66FF;&#x6362;&#x79F0;&#x4E86;&#x7F51;&#x6613;&#x4E91;&#x97F3;&#x4E50;&#x7684;Flash&#x7EC4;&#x4EF6;&#xFF0C;&#x8FD9;&#x6837;&#x5728;&#x7F51;&#x9875;&#x4E2D;&#x5C31;&#x4F1A;&#x663E;&#x793A;&#x51FA;&#x7F51;&#x6613;&#x4E91;&#x97F3;&#x4E50;&#x7684;&#x64AD;&#x653E;&#x5668;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x80FD;&#x542C;&#x5230;&#x8FD9;&#x719F;&#x6089;&#x800C;&#x6E29;&#x6696;&#x7684;&#x65CB;&#x5F8B;&#x4E86;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fyzcv1i1qsj20is0cb74c.jpg" alt="NodeJS&#x7A0B;&#x5E8F;&#x6F14;&#x793A;&#x6548;&#x679C;" title>
+                </div>
+                <div class="image-caption">NodeJS&#x7A0B;&#x5E8F;&#x6F14;&#x793A;&#x6548;&#x679C;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x4E0D;&#x8FC7;&#x771F;&#x7684;&#x60F3;&#x8981;&#x5410;&#x69FD;&#x4E0B;JavaScript&#x3002;&#x672C;&#x6765;JavaScript&#x5C31;&#x662F;&#x5F31;&#x7C7B;&#x578B;&#x4E86;&#x5427;&#xFF0C;NodeJS&#x518D;&#x7ED9;&#x5F04;&#x4E00;&#x4E2A;&#x9664;&#x4E86;&#x62A5;&#x9519;&#x4EC0;&#x4E48;&#x90FD;&#x4E0D;&#x4F1A;&#x7684;&#x547D;&#x4EE4;&#x884C;&#xFF0C;&#x56E0;&#x6B64;&#x5728;&#x672C;&#x5730;&#x8C03;&#x8BD5;JavaScript&#x4EE3;&#x7801;&#x5B9E;&#x5728;&#x662F;&#x592A;&#x56F0;&#x96BE;&#x4E86;&#x3002;&#x6628;&#x5929;&#x4E3A;&#x4E86;&#x5199;&#x51FA;&#x4E00;&#x4E2A;&#x6B63;&#x786E;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x594B;&#x6218;&#x5230;&#x4E09;&#x70B9;&#x949F;&#xFF0C;&#x540E;&#x6765;&#x7EC8;&#x4E8E;&#x7ED9;&#x5199;&#x51FA;&#x6765;&#x4E86;&#xFF0C;&#x5B9E;&#x5728;&#x538B;&#x6291;&#x4E0D;&#x4F4F;&#x5185;&#x5FC3;&#x7684;&#x559C;&#x60A6;&#x5306;&#x5306;&#x5FD9;&#x5FD9;&#x5730;&#x5C31;&#x5F80;&#x6A21;&#x677F;&#x91CC;&#x9762;&#x653E;&#xFF0C;&#x7ED3;&#x679C;&#x521A;&#x653E;&#x8FDB;&#x53BB;&#x518D;&#x91CD;&#x65B0;&#x751F;&#x6210;&#x9875;&#x9762;&#x5730;&#x65F6;&#x5019;&#x535A;&#x5BA2;&#x5C31;&#x534E;&#x4E3D;&#x5730;&#x6302;&#x4E86;&#xFF0C;&#x5C1D;&#x8BD5;&#x4E86;&#x82E5;&#x5E72;&#x6B21;&#x65E0;&#x679C;&#x540E;&#xFF0C;&#x679C;&#x65AD;&#x653E;&#x5F03;&#x7136;&#x540E;&#x7528;&#x5907;&#x4EFD;&#x5730;&#x4E3B;&#x9898;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x4E86;&#x8986;&#x76D6;&#x66FF;&#x6362;&#x3002;&#x603B;&#x4E4B;&#xFF0C;&#x7ECF;&#x8FC7;&#x8FD9;&#x6B21;&#x4E8B;&#x60C5;&#xFF0C;&#x6211;&#x662F;&#x518D;&#x4E0D;&#x60F3;&#x63A5;&#x89E6;Javacript&#x4E86;&#xFF0C;&#x4F60;&#x4E0D;&#x8BA9;&#x6211;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x6211;&#x53EF;&#x4EE5;&#x5BB9;&#x5FCD;&#xFF0C;&#x56E0;&#x4E3A;JavaScript&#x672C;&#x6765;&#x5C31;&#x4E0D;&#x662F;&#x4E00;&#x95E8;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7684;&#x8BED;&#x8A00;&#x3002;&#x53EF;&#x662F;&#x4F60;&#x603B;&#x5F97;&#x8BA9;&#x6211;&#x77E5;&#x9053;&#x6211;&#x5199;&#x7684;&#x8FD9;&#x4E2A;&#x53D8;&#x91CF;&#x662F;&#x4E2A;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#x5427;&#xFF1F;&#x56E0;&#x4E3A;&#x8FD9;&#x4E2A;&#x63D2;&#x4EF6;&#x7684;&#x7F16;&#x5199;&#x6D89;&#x53CA;&#x5230;JavaScript&#x3001;NodeJS&#x3001;Hexo&#x6240;&#x4EE5;&#x6574;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E2D;&#x7F16;&#x7A0B;&#x7684;&#x6548;&#x7387;&#x7279;&#x522B;&#x4F4E;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x6CA1;&#x6709;&#x6587;&#x6863;&#x3001;&#x6CA1;&#x6709;&#x8BED;&#x6CD5;&#x63D0;&#x793A;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x6765;&#x5199;&#x8FD9;&#x6837;&#x4E00;&#x6BB5;&#x4EE3;&#x7801;&#xFF0C;&#x5728;&#x6211;&#x770B;&#x6765;&#x5B8C;&#x5168;&#x5C31;&#x662F;&#x6478;&#x7740;&#x77F3;&#x5934;&#x8FC7;&#x6CB3;&#x554A;&#xFF01;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x505C;&#x6B62;&#x5410;&#x69FD;&#xFF01;&#x6211;&#x4EEC;&#x63A5;&#x4E0B;&#x6765;&#x770B;&#x770B;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x600E;&#x6837;&#x548C;Hexo&#x6574;&#x4E2A;&#x5230;&#x4E00;&#x8D77;&#x3002;&#x6309;&#x7167;&#x535A;&#x4E3B;&#x7684;&#x7406;&#x89E3;&#x65E2;&#x7136;&#x6211;&#x4EEC;&#x8981;&#x5BF9;&#x6587;&#x7AE0;&#x7684;&#x5185;&#x5BB9;&#x4E2D;&#x7684;[key:value]&#x7ED3;&#x6784;&#x8FDB;&#x884C;&#x66FF;&#x6362;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x5E94;&#x8BE5;&#x77E5;&#x9053;&#x6587;&#x7AE0;&#x7684;&#x5185;&#x5BB9;&#x5728;&#x54EA;&#x91CC;&#x3002;&#x7ECF;&#x8FC7;&#x8FD9;&#x4E48;&#x957F;&#x65F6;&#x95F4;&#x5BF9;Hexo&#x7684;&#x5B66;(zhe)&#x4E60;(teng),&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x6587;&#x7AE0;&#x7684;&#x5185;&#x5BB9;&#x662F;&#x5B9A;&#x4E49;&#x5728;layout_partial&#x4E0B;&#x7684;article.ejs&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x4E2D;&#x6709;&#x4E00;&#x4E2A;&#x53EB;&#x505A;item&#x7684;&#x53D8;&#x91CF;,&#x8FD9;&#x4E2A;item&#x7684;&#x771F;&#x5B9E;&#x8EAB;&#x4EFD;&#x5176;&#x5B9E;&#x662F;Hexo&#x4E2D;&#x5B9A;&#x4E49;&#x7684;&#x4E00;&#x4E2A;&#x5168;&#x5C40;&#x53D8;&#x91CF;post&#x3002;&#x987E;&#x540D;&#x601D;&#x4E49;&#xFF0C;&#x8FD9;&#x4E2A;post&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x53D1;&#x8868;&#x7684;&#x6587;&#x7AE0;&#x5566;&#xFF0C;&#x5B83;&#x6709;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x7684;&#x5C5E;&#x6027;&#x53EB;&#x505A;content&#xFF0C;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x8981;&#x7528;&#x5230;&#x7684;&#x4E1C;&#x897F;&#x4E86;&#x3002;&#x6211;&#x4EEC;&#x6765;article.ejs&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x4E2D;&#x5B9A;&#x4E49;&#x7684;&#x4E00;&#x6BB5;&#x4EE3;&#x7801;&#xFF1A;<br></p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;entry&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span> (<span class="attr">item.excerpt</span> &amp;&amp; <span class="attr">index</span>){ %&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%-</span> <span class="attr">item.excerpt</span> %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> } <span class="attr">else</span> { %&gt;</span></span><br><span class="line">  &#x3000;&#x3000;&#x3000;<span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span> (!<span class="attr">index</span>){ %&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span> (!<span class="attr">index</span> &amp;&amp; <span class="attr">item.toc</span>){ %&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">%-</span> <span class="attr">partial</span>(&apos;<span class="attr">extra</span>/<span class="attr">toc</span>&apos;) %&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">%</span> } %&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">%-</span> <span class="attr">item.content</span> %&gt;</span></span><br><span class="line">    &#x3000;&#x3000;<span class="tag">&lt;<span class="name">%</span> } <span class="attr">else</span> { %&gt;</span></span><br><span class="line">    &#x3000;&#x3000;&#x3000;&#x3000;<span class="tag">&lt;<span class="name">%-</span> <span class="attr">item.content.substring</span>(<span class="attr">0</span>,<span class="attr">item.content.indexOf</span>(&apos;\<span class="attr">n</span>&apos;)) %&gt;</span></span><br><span class="line">    &#x3000;&#x3000;<span class="tag">&lt;<span class="name">%</span> } %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> } %&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x662F;&#x5173;&#x4E8E;&#x6587;&#x7AE0;&#x7684;&#x5185;&#x5BB9;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x8981;&#x5BF9;&#x6587;&#x7AE0;&#x5185;&#x5BB9;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#x7684;&#x8BDD;&#xFF0C;&#x5C31;&#x8981;&#x5148;&#x8BFB;&#x61C2;&#x8FD9;&#x5757;&#x513F;&#x7684;&#x4EE3;&#x7801;&#x3002;&#x8FD9;&#x5757;&#x513F;&#x4EE3;&#x7801;&#x9996;&#x5148;&#x5224;&#x65AD;&#x6587;&#x7AE0;&#x662F;&#x4E0D;&#x662F;&#x5904;&#x4E8E;&#x9996;&#x9875;&#x4F4D;&#x7F6E;(index)&#xFF0C;&#x63A5;&#x7740;&#x5224;&#x65AD;&#x6587;&#x7AE0;&#x4E2D;&#x6709;&#x6CA1;&#x6709;ReadMore&#x6807;&#x8BB0;(excerpt)&#x3002;&#x5982;&#x679C;&#x6587;&#x7AE0;&#x5728;&#x9996;&#x9875;&#x4F4D;&#x7F6E;(index)&#x4E14;&#x5B58;&#x5728;ReadMore&#x6807;&#x8BB0;(excerpt)&#xFF0C;&#x90A3;&#x4E48;&#x6587;&#x7AE0;&#x663E;&#x793A;&#x7684;&#x662F;ReadMore&#x6807;&#x8BB0;&#x524D;&#x7684;&#x5185;&#x5BB9;(item.excerpt);&#x5982;&#x679C;&#x6587;&#x7AE0;&#x6CA1;&#x6709;ReadMore&#x6807;&#x8BB0;(excerpt)&#x4E14;&#x6587;&#x7AE0;&#x5728;&#x9996;&#x9875;&#x4F4D;&#x7F6E;(index)&#xFF0C;&#x90A3;&#x4E48;&#x6587;&#x7AE0;&#x663E;&#x793A;&#x7684;&#x6574;&#x7BC7;&#x6587;&#x7AE0;(item.content);&#x5982;&#x679C;&#x6587;&#x7AE0;&#x5728;&#x9996;&#x9875;(index)&#x53EF;&#x662F;&#x6CA1;&#x6709;ReadMore&#x6807;&#x8BB0;(excerpt)&#xFF0C;&#x90A3;&#x4E48;&#x9009;&#x53D6;&#x6587;&#x7AE0;&#x7684;&#x7B2C;&#x4E00;&#x6BB5;&#x4F5C;&#x4E3A;&#x6587;&#x7AE0;&#x7684;&#x6458;&#x8981;&#x6765;&#x663E;&#x793A;&#x3002;&#x8FD9;&#x5C31;&#x662F;&#x535A;&#x4E3B;&#x7684;&#x535A;&#x5BA2;&#x76EE;&#x524D;&#x91C7;&#x7528;&#x7684;&#x65B9;&#x6848;&#x4E86;&#xFF0C;&#x5982;&#x679C;&#x5927;&#x5BB6;&#x5BF9;&#x8FD9;&#x90E8;&#x5206;&#x611F;&#x5174;&#x8DA3;&#x7684;&#x8BDD;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x770B;&#x81EA;&#x5DF1;&#x7684;&#x535A;&#x5BA2;&#x4F7F;&#x7528;&#x7684;&#x4E3B;&#x9898;&#x662F;&#x5982;&#x4F55;&#x5B9A;&#x4E49;&#x8FD9;&#x90E8;&#x5206;&#x5185;&#x5BB9;&#x7684;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x6B64;&#x57FA;&#x7840;&#x4E0A;&#x505A;&#x4E9B;&#x8C03;&#x6574;&#x4EE5;&#x6EE1;&#x8DB3;&#x4E2A;&#x6027;&#x5316;&#x7684;&#x9700;&#x6C42;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x90A3;&#x4E48;&#x5728;&#x4E86;&#x89E3;&#x4E86;&#x8FD9;&#x90E8;&#x5206;&#x5185;&#x5BB9;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x5E94;&#x8BE5;&#x9A6C;&#x4E0A;&#x5C31;&#x80FD;&#x60F3;&#x5230;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6389;&#x6B63;&#x7684;&#x4EE3;&#x7801;&#x5E94;&#x8BE5;&#x662F;&#x5728;&#x7B2C;9&#x884C;&#x8FD9;&#x4E2A;&#x4F4D;&#x7F6E;&#xFF0C;&#x5373;&#x5F53;&#x6587;&#x7AE0;&#x4E0D;&#x5728;&#x9996;&#x9875;&#x7684;&#x65F6;&#x5019;&#x8981;&#x663E;&#x793A;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x6309;&#x7167;&#x6211;&#x4EEC;&#x5728;&#x6D4B;&#x8BD5;&#x7A0B;&#x5E8F;&#x4E2D;&#x7684;&#x5199;&#x6CD5;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5199;&#x51FA;&#x5982;&#x4E0B;&#x4EE3;&#x7801;&#xFF1A;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;% var dicts=item.content.match(/\[(.*?):(.*?)\]/g); %&gt;</span><br><span class="line">&lt;% if(dicts.length==0){ %&gt;</span><br><span class="line">   &lt;%- item.content %&gt;</span><br><span class="line">&lt;% } else { %&gt;</span><br><span class="line">   &lt;% for(i=0;i&lt;dicts.length;i++) %&gt;</span><br><span class="line">   &lt;% { %&gt;</span><br><span class="line">        &lt;% var dict=dicts[i].split(/:/); %&gt;</span><br><span class="line">        &lt;% var key=dict[0].substring(1,dict[0].length);  %&gt;</span><br><span class="line">        &lt;% var id=dict[1].substring(0,dict[1].length-1); %&gt;</span><br><span class="line">        &lt;% if(key==&apos;music&apos;) %&gt;</span><br><span class="line">        &lt;% { %&gt;</span><br><span class="line">             item.content=item.content.replace(dicts[i],&apos;&lt;embed src=&quot;http://music.163.com/style/swf/widget.swf?sid=&apos;+ id +</span><br><span class="line">             &apos;&amp;type=2&amp;auto=1&amp;width=278&amp;height=32&quot; width=&quot;298&quot; height=&quot;52&quot; allowNetworking=&quot;all&quot;&gt;&lt;/embed&gt;&apos;)</span><br><span class="line">        &lt;% } %&gt;</span><br><span class="line">   &lt;% } %&gt;</span><br><span class="line">   &lt;%- item.content %&gt;</span><br><span class="line">&lt;% } %&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x76F8;&#x4FE1;&#x7ECF;&#x8FC7;&#x535A;&#x4E3B;&#x7684;&#x4E00;&#x756A;&#x4ECB;&#x7ECD;&#xFF0C;&#x5927;&#x5BB6;&#x5DF2;&#x7ECF;&#x5BF9;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x76F8;&#x5F53;&#x719F;&#x6089;&#x4E86;&#x5427;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x662F;&#x5148;&#x505A;&#x5224;&#x65AD;&#xFF0C;&#x5224;&#x65AD;&#x6587;&#x7AE0;&#x5185;&#x5BB9;&#x4E2D;&#x662F;&#x5426;&#x6709;[key:vaule]&#x8FD9;&#x6837;&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x5C31;&#x76F4;&#x63A5;&#x8F93;&#x51FA;item.content;&#x5982;&#x679C;&#x6709;&#x5C31;&#x9700;&#x8981;&#x5BF9;&#x5176;&#x8FDB;&#x884C;&#x66FF;&#x6362;&#x540E;&#x518D;&#x8F93;&#x51FA;item.content&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x7528;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x66FF;&#x6362;&#x6389;&#x7B2C;9&#x884C;&#x4EE3;&#x7801;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x6B21;&#x8F93;&#x51FA;&#x7F51;&#x9875;&#x3002;&#x53EF;&#x662F;&#x7ED3;&#x679C;&#x8BA9;&#x6211;&#x4EEC;&#x767D;&#x5FD9;&#x6D3B;&#x4E86;&#x4E00;&#x573A;&#xFF0C;&#x56E0;&#x4E3A;Hexo&#x5728;&#x8F93;&#x51FA;&#x7F51;&#x9875;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x62A5;&#x9519;&#xFF0C;&#x53EF;&#x80FD;&#x662F;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x5199;&#x7684;JavaScript&#x811A;&#x672C;Hexo&#x65E0;&#x6CD5;&#x89E3;&#x6790;&#x5427;&#xFF01;&#x597D;&#x4E86;&#xFF0C;&#x4ECE;&#x6628;&#x5929;&#x4E0B;&#x5348;&#x5F00;&#x59CB;&#x5DEE;&#x4E0D;&#x591A;&#x90FD;&#x5728;&#x60F3;&#x7740;&#x600E;&#x6837;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x5230;&#x73B0;&#x5728;&#x8FD8;&#x662F;&#x6CA1;&#x6709;&#x4E00;&#x70B9;&#x5934;&#x7EEA;&#xFF0C;&#x6587;&#x7AE0;&#x91CC;&#x8BB2;&#x8FF0;&#x7684;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x4F5C;&#x4E3A;&#x4E00;&#x79CD;&#x5C1D;&#x8BD5;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x5174;&#x8DA3;&#x3001;&#x6709;&#x7CBE;&#x529B;&#x3001;&#x6709;&#x80FD;&#x529B;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x7684;&#x4EBA;&#xFF0C;&#x53EF;&#x4EE5;&#x53BB;&#x8FDB;&#x4E00;&#x6B65;&#x6DF1;&#x5165;&#x5730;&#x63A2;&#x7D22;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x3002;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x4E86;&#xFF0C;&#x7761;&#x89C9;&#xFF01;</p>
+<p><strong>2015&#x5E74;11&#x6708;10&#x65E5;&#x66F4;&#x65B0;:</strong><br>&#x2003;&#x2003;&#x6628;&#x5929;&#x62BD;&#x7A7A;&#x7814;&#x7A76;&#x4E86;&#x4E0B;Hexo&#x7684;<a href="https://hexo.io/docs/plugins.html" target="_blank" rel="noopener">&#x63D2;&#x4EF6;</a>&#x673A;&#x5236;&#xFF0C;&#x53D1;&#x73B0;&#x5728;Hexo&#x4E2D;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x79CD;<a href="https://hexo.io/docs/tag-plugins.html" target="_blank" rel="noopener">&#x6807;&#x7B7E;</a>&#x63D2;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x5FEB;&#x901F;&#x5B8C;&#x6210;&#x8FD9;&#x79CD;&#x9700;&#x6C42;&#xFF0C;&#x6240;&#x4EE5;&#x5C31;&#x8BB0;&#x5F55;&#x5728;&#x8FD9;&#x91CC;&#x3002;&#x9996;&#x5148;&#xFF0C;&#x5B83;&#x7684;&#x539F;&#x7406;&#x662F;&#x6839;&#x636E;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x6807;&#x8BB0;&#x6765;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x8F93;&#x5165;&#x9ED8;&#x8BA4;&#x7684;&#x8FD9;&#x6837;&#x7684;&#x6807;&#x8BB0;&#x7684;&#x65F6;&#x5019;&#x5B83;&#x4F1A;&#x88AB;&#x6E32;&#x67D3;&#x4E3A;&#x666E;&#x901A;&#x7684;&#x5F15;&#x7528;&#x6807;&#x8BB0;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x5728;&#x8FD9;&#x4E2A;&#x6807;&#x8BB0;&#x5185;&#x4F20;&#x5165;&#x53C2;&#x6570;&#x540E;&#x5C31;&#x53EF;&#x4EE5;&#x5229;&#x7528;&#x7A0B;&#x5E8F;&#x8FDB;&#x884C;&#x5904;&#x7406;&#x3002;&#x4F8B;&#x5982;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x8FD9;&#x6837;&#x7684;&#x7B80;&#x5355;&#x7684;JS&#x6587;&#x4EF6;&#xFF1A;<br></p><figure class="highlight maxima"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* hexo-tag-cloudmusic</span></span><br><span class="line"><span class="comment">* https://github.com/qinyuanpei/hexo-tag-cloudmusic.git</span></span><br><span class="line"><span class="comment">* Copyright (c) 2015, qinyuanpei</span></span><br><span class="line"><span class="comment">* Licensed under the MIT license.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">hexo.extend.tag.register(&apos;cloudmusic&apos;, function(<span class="built_in">args</span>){</span><br><span class="line">  <span class="built_in">var</span> sid = <span class="built_in">args</span>[<span class="number">0</span>];</span><br><span class="line">  <span class="built_in">var</span> config = hexo.config.cloudmusic || {};</span><br><span class="line">  <span class="built_in">var</span> widgetType = hexo.config.widgetType || &apos;flash&apos;;</span><br><span class="line">  <span class="built_in">var</span> widgetSize = config.widgetSize || &apos;small&apos;;</span><br><span class="line">  <span class="built_in">var</span> autoPlay = config.autoPlay || <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">var</span> <span class="built_in">width</span> = config.<span class="built_in">width</span> || <span class="number">278</span>;</span><br><span class="line">  <span class="built_in">var</span> <span class="built_in">height</span> = config.<span class="built_in">height</span> || <span class="number">32</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(widgetType == &apos;iframe&apos;){</span><br><span class="line">  	<span class="keyword">if</span>(widgetSize==&apos;small&apos;){</span><br><span class="line">  		<span class="built_in">return</span> &apos;&lt;iframe frameborder=<span class="string">&quot;no&quot;</span> <span class="built_in">border</span>=<span class="string">&quot;0&quot;</span> marginwidth=<span class="string">&quot;0&quot;</span> marginheight=<span class="string">&quot;0&quot;</span> <span class="built_in">width</span>=<span class="number">298</span> <span class="built_in">height</span>=<span class="number">52</span> src=<span class="string">&quot;http://music.163.com/outchain/player?type=2&amp;id=&apos; + sid + &apos;&amp;auto=&apos; + autoPlay +&apos;&amp;height=32&quot;</span>&gt;&lt;/iframe&gt;&apos;;</span><br><span class="line">  	}<span class="keyword">else</span> <span class="keyword">if</span>(widgetSize==&apos;big&apos;){</span><br><span class="line">  		<span class="built_in">return</span> &apos;&lt;iframe frameborder=<span class="string">&quot;no&quot;</span> <span class="built_in">border</span>=<span class="string">&quot;0&quot;</span> marginwidth=<span class="string">&quot;0&quot;</span> marginheight=<span class="string">&quot;0&quot;</span> <span class="built_in">width</span>=<span class="number">351</span> <span class="built_in">height</span>=<span class="number">86</span> src=<span class="string">&quot;http://music.163.com/outchain/player?type=2&amp;id=&apos; + sid + &apos;&amp;auto=&apos; + autoPlay + &apos;&amp;height=66&quot;</span>&gt;&lt;/iframe&gt;&apos;;</span><br><span class="line">  	}<span class="keyword">else</span> <span class="keyword">if</span>(widgetSize==&apos;custom&apos;){</span><br><span class="line">  		<span class="built_in">return</span> &apos;&lt;iframe frameborder=<span class="string">&quot;no&quot;</span> <span class="built_in">border</span>=<span class="string">&quot;0&quot;</span> marginwidth=<span class="string">&quot;0&quot;</span> marginheight=<span class="string">&quot;0&quot;</span> <span class="built_in">width</span>=&apos; + <span class="built_in">width</span> +&apos; <span class="built_in">height</span>=&apos; + <span class="built_in">height</span> +&apos; src=<span class="string">&quot;http://music.163.com/outchain/player?type=2&amp;id=&apos; + sid + &apos;&amp;auto=&apos; + autoPlay + &apos;&amp;height=66&quot;</span>&gt;&lt;/iframe&gt;&apos;;</span><br><span class="line">  	}</span><br><span class="line">  }<span class="keyword">else</span>{</span><br><span class="line">  	<span class="keyword">if</span>(widgetSize==&apos;small&apos;){</span><br><span class="line">  		<span class="built_in">return</span> &apos;&lt;embed src=<span class="string">&quot;http://music.163.com/style/swf/widget.swf?sid=&apos; + sid + &apos;&amp;type=2&amp;auto=&apos; + autoPlay + &apos;&amp;width=278&amp;height=32&quot;</span> <span class="built_in">width</span>=<span class="string">&quot;298&quot;</span> <span class="built_in">height</span>=<span class="string">&quot;52&quot;</span>  allowNetworking=<span class="string">&quot;all&quot;</span>&gt;&lt;/embed&gt;&apos;;</span><br><span class="line">  	}<span class="keyword">else</span>{</span><br><span class="line">  		<span class="built_in">return</span> &apos;&lt;embed src=<span class="string">&quot;http://music.163.com/style/swf/widget.swf?sid=&apos; + sid + &apos;&amp;type=2&amp;auto=&apos; + autoPlay + &apos;&amp;width=320&amp;height=66&quot;</span> <span class="built_in">width</span>=<span class="string">&quot;340&quot;</span> <span class="built_in">height</span>=<span class="string">&quot;86&quot;</span>  allowNetworking=<span class="string">&quot;all&quot;</span>&gt;&lt;/embed&gt;&apos;;</span><br><span class="line">  	}</span><br><span class="line">  }</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x8FD9;&#x4E2A;JS&#x6587;&#x4EF6;&#x672C;&#x8D28;&#x4E0A;&#x5C31;&#x662F;&#x6839;&#x636E;&#x4F20;&#x5165;&#x7684;sid&#x6765;&#x62FC;&#x63A5;&#x751F;&#x6210;&#x7F51;&#x6613;&#x4E91;&#x97F3;&#x4E50;&#x7684;widget&#x4EE3;&#x7801;&#xFF0C;&#x8FD9;&#x6837;&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5728;&#x535A;&#x5BA2;&#x4E2D;&#x5F15;&#x7528;&#x7F51;&#x6613;&#x4E91;&#x97F3;&#x4E50;&#x7684;&#x65F6;&#x5019;&#x53EA;&#x9700;&#x8981;&#x91C7;&#x7528;&#x4E0B;&#x9762;&#x7684;&#x6807;&#x8BB0;&#xFF1A;</p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x4E2A;&#x9879;&#x76EE;&#x6211;&#x76EE;&#x524D;&#x53D1;&#x5E03;&#x5728;&#x6211;&#x7684;<a href="https://github.com/qinyuanpei/hexo-tag-cloudmusic" target="_blank" rel="noopener">Github</a>&#x4E0A;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;Start&#x548C;Fork!</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/1150071886/">使用Coding.NET和Hexo实现网页游戏的发布</a></li><li><a href="https://qinyuanpei.github.io/posts/2950334112/">在Hexo中为文章自动添加版权信息声明模块</a></li><li><a href="https://qinyuanpei.github.io/posts/1113828794/">基于Travis CI实现 Hexo 在 Github 和 Coding 的同步部署</a></li><li><a href="https://alessa0.cn/posts/c69fd6fb/index.html">Hexo细节优化</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/828223375/" rel="external">为Hexo开发一个网易云音乐的文章插件</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/828223375/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/828223375/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/云音乐/">云音乐</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/插件/">插件</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网易/">网易</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/828223375/&title=《为Hexo开发一个网易云音乐的文章插件》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/828223375/&title=《为Hexo开发一个网易云音乐的文章插件》 — PayneQinのBlog&source=&emsp;&emsp;当你打开这篇文章的时候，你听到一首熟悉的旋律，那是因为在你的心里始终装着一张泛黄的CD，你从来不愿意打开它，即使外表早已积满了灰尘..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/828223375/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《为Hexo开发一个网易云音乐的文章插件》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/828223375/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/828223375/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3356910090/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">从&quot;复活&quot;和&quot;暂停/恢复&quot;谈游戏数据配置管理</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1150071886/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">使用Coding.NET和Hexo实现网页游戏的发布</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/828223375/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/828223375/&title=《为Hexo开发一个网易云音乐的文章插件》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/828223375/&title=《为Hexo开发一个网易云音乐的文章插件》 — PayneQinのBlog&source=&emsp;&emsp;当你打开这篇文章的时候，你听到一首熟悉的旋律，那是因为在你的心里始终装着一张泛黄的CD，你从来不愿意打开它，即使外表早已积满了灰尘..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/828223375/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《为Hexo开发一个网易云音乐的文章插件》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/828223375/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/828223375/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/828223375/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        使用Love2D引擎开发贪吃蛇游戏 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;今天来介绍博主最近捣腾的一个小游戏“贪吃蛇”。“贪吃蛇”这个游戏相信大家都不会感到陌生吧。今天博主将通过Love2D这款游戏引擎来为大家实现一个简单的贪吃蛇游戏,在本篇文章当中我们将会涉及到“贪吃蛇”的基本算法、Lua语言编程等基本的内容，希望能够对大家开发类似的游戏提供借鉴和思考，文章中如有不足之处，还希望大家能够谅解，因为博主的游戏开发基本就是这样慢慢摸索着学习，所以难">
+<meta name="keywords" content="游戏开发,Love2D,贪吃蛇">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Love2D引擎开发贪吃蛇游戏">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/426338252/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;今天来介绍博主最近捣腾的一个小游戏“贪吃蛇”。“贪吃蛇”这个游戏相信大家都不会感到陌生吧。今天博主将通过Love2D这款游戏引擎来为大家实现一个简单的贪吃蛇游戏,在本篇文章当中我们将会涉及到“贪吃蛇”的基本算法、Lua语言编程等基本的内容，希望能够对大家开发类似的游戏提供借鉴和思考，文章中如有不足之处，还希望大家能够谅解，因为博主的游戏开发基本就是这样慢慢摸索着学习，所以难">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05nhb62pj205m05lq33.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05k1yzipj205m05lq33.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05dugbchj205m05lq33.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz01zh5qn2j205m05lq33.jpg">
+<meta property="og:image" content="https://camo.githubusercontent.com/c67d24e7970bb47f8c6ed45bd520ab09dfb4c917/687474703a2f2f7069632e636f6e6e2e63632f62732e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/479dd593c4a4f722e07ed4ccc5ddd574fe5dbd10/687474703a2f2f7069632e636f6e6e2e63632f5a722e706e67">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Love2D引擎开发贪吃蛇游戏">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;今天来介绍博主最近捣腾的一个小游戏“贪吃蛇”。“贪吃蛇”这个游戏相信大家都不会感到陌生吧。今天博主将通过Love2D这款游戏引擎来为大家实现一个简单的贪吃蛇游戏,在本篇文章当中我们将会涉及到“贪吃蛇”的基本算法、Lua语言编程等基本的内容，希望能够对大家开发类似的游戏提供借鉴和思考，文章中如有不足之处，还希望大家能够谅解，因为博主的游戏开发基本就是这样慢慢摸索着学习，所以难">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05nhb62pj205m05lq33.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用Love2D引擎开发贪吃蛇游戏</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用Love2D引擎开发贪吃蛇游戏</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-03-10T10:51:19.000Z" itemprop="datePublished" class="page-time">
+  2015-03-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏开发/">游戏开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#游戏算法"><span class="post-toc-number">1.</span> <span class="post-toc-text">游戏算法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#游戏状态"><span class="post-toc-number">2.</span> <span class="post-toc-text">游戏状态</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#完整代码"><span class="post-toc-number">3.</span> <span class="post-toc-text">完整代码</span></a></li></ol><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number"></span> <span class="post-toc-text">你可能感兴趣</span></a>
+        </li></nav>
+    </aside>
+    
+<article id="post-使用Love2D引擎开发贪吃蛇游戏" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用Love2D引擎开发贪吃蛇游戏</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-03-10 10:51:19" datetime="2015-03-10T10:51:19.000Z" itemprop="datePublished">2015-03-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏开发/">游戏开发</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        15 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x4ECA;&#x5929;&#x6765;&#x4ECB;&#x7ECD;&#x535A;&#x4E3B;&#x6700;&#x8FD1;&#x6363;&#x817E;&#x7684;&#x4E00;&#x4E2A;&#x5C0F;&#x6E38;&#x620F;&#x201C;&#x8D2A;&#x5403;&#x86C7;&#x201D;&#x3002;&#x201C;&#x8D2A;&#x5403;&#x86C7;&#x201D;&#x8FD9;&#x4E2A;&#x6E38;&#x620F;&#x76F8;&#x4FE1;&#x5927;&#x5BB6;&#x90FD;&#x4E0D;&#x4F1A;&#x611F;&#x5230;&#x964C;&#x751F;&#x5427;&#x3002;&#x4ECA;&#x5929;&#x535A;&#x4E3B;&#x5C06;&#x901A;&#x8FC7;<a href="http://love2d.org/" target="_blank" rel="noopener">Love2D</a>&#x8FD9;&#x6B3E;&#x6E38;&#x620F;&#x5F15;&#x64CE;&#x6765;&#x4E3A;&#x5927;&#x5BB6;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;,&#x5728;&#x672C;&#x7BC7;&#x6587;&#x7AE0;&#x5F53;&#x4E2D;&#x6211;&#x4EEC;&#x5C06;&#x4F1A;&#x6D89;&#x53CA;&#x5230;&#x201C;&#x8D2A;&#x5403;&#x86C7;&#x201D;&#x7684;&#x57FA;&#x672C;&#x7B97;&#x6CD5;&#x3001;Lua&#x8BED;&#x8A00;&#x7F16;&#x7A0B;&#x7B49;&#x57FA;&#x672C;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x5E0C;&#x671B;&#x80FD;&#x591F;&#x5BF9;&#x5927;&#x5BB6;&#x5F00;&#x53D1;&#x7C7B;&#x4F3C;&#x7684;&#x6E38;&#x620F;&#x63D0;&#x4F9B;&#x501F;&#x9274;&#x548C;&#x601D;&#x8003;&#xFF0C;&#x6587;&#x7AE0;&#x4E2D;&#x5982;&#x6709;&#x4E0D;&#x8DB3;&#x4E4B;&#x5904;&#xFF0C;&#x8FD8;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x80FD;&#x591F;&#x8C05;&#x89E3;&#xFF0C;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x7684;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x57FA;&#x672C;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x6162;&#x6162;&#x6478;&#x7D22;&#x7740;&#x5B66;&#x4E60;&#xFF0C;&#x6240;&#x4EE5;&#x96BE;&#x514D;&#x4F1A;&#x6709;&#x4E0D;&#x8DB3;&#x7684;&#x5730;&#x65B9;&#x3002;</p>
+<a id="more"></a>
+<h2 id="&#x6E38;&#x620F;&#x7B97;&#x6CD5;"><a href="#&#x6E38;&#x620F;&#x7B97;&#x6CD5;" class="headerlink" title="&#x6E38;&#x620F;&#x7B97;&#x6CD5;"></a>&#x6E38;&#x620F;&#x7B97;&#x6CD5;</h2><p>&#x2003;&#x2003;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x6765;&#x770B;&#x770B;&#x8D2A;&#x5403;&#x86C7;&#x662F;&#x600E;&#x4E48;&#x79FB;&#x52A8;&#x7684;&#xFF1F;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz05nhb62pj205m05lq33.jpg" alt="&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;1" title>
+                </div>
+                <div class="image-caption">&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;1</div>
+            </figure><br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz05k1yzipj205m05lq33.jpg" alt="&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;2" title>
+                </div>
+                <div class="image-caption">&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;2</div>
+            </figure><br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz05dugbchj205m05lq33.jpg" alt="&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;3" title>
+                </div>
+                <div class="image-caption">&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;3</div>
+            </figure><br><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz01zh5qn2j205m05lq33.jpg" alt="&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;4" title>
+                </div>
+                <div class="image-caption">&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&#x7B97;&#x6CD5;&#x6F14;&#x793A;4</div>
+            </figure><br>&#x2003;&#x2003;&#x901A;&#x8FC7;&#x8FD9;&#x56DB;&#x5F20;&#x56FE;&#x7684;&#x6F14;&#x793A;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x89C4;&#x5F8B;&#xFF1A;<p></p>
+<blockquote>
+<p>&#x86C7;&#x7684;&#x79FB;&#x52A8;&#x5176;&#x5B9E;&#x662F;&#x5C06;&#x86C7;&#x8EAB;&#x4F53;&#x7684;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x79FB;&#x52A8;&#x5230;&#x7B2C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x4F4D;&#x7F6E;</p>
+</blockquote>
+<p>&#x2003;&#x2003;&#x90A3;&#x4E48;&#x5B8C;&#x6210;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x5DE5;&#x4F5C;&#x9700;&#x8981;&#x4E24;&#x4E2A;&#x6B65;&#x9AA4;&#xFF1A;</p>
+<blockquote>
+<p>1&#x3001;&#x5C06;&#x5728;&#x86C7;&#x5934;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x5143;&#x7D20;<br>2&#x3001;&#x79FB;&#x9664;&#x86C7;&#x5C3E;&#x4F4D;&#x7F6E;&#x7684;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5143;&#x7D20;</p>
+</blockquote>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x4E86;&#x89E3;&#x4E86;&#x86C7;&#x7684;&#x79FB;&#x52A8;&#x540E;&#x6211;&#x4EEC;&#x518D;&#x6765;&#x8003;&#x8651;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x600E;&#x6837;&#x5224;&#x65AD;&#x86C7;&#x5403;&#x5230;&#x4E86;&#x98DF;&#x7269;&#xFF1F;&#x601D;&#x8DEF;&#x548C;&#x86C7;&#x7684;&#x79FB;&#x52A8;&#x7C7B;&#x4F3C;&#xFF0C;&#x4E3B;&#x8981;&#x8003;&#x8651;&#x5728;&#x86C7;&#x5934;&#x63D2;&#x5165;&#x7684;&#x8FD9;&#x4E2A;&#x5143;&#x7D20;&#x548C;&#x98DF;&#x7269;&#x7684;&#x5173;&#x7CFB;&#xFF0C;&#x5982;&#x679C;&#x8FD9;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x5750;&#x6807;&#x548C;&#x98DF;&#x7269;&#x7684;&#x5750;&#x6807;&#x662F;&#x76F8;&#x540C;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x53EF;&#x4EE5;&#x8BA4;&#x4E3A;&#x86C7;&#x5403;&#x5230;&#x4E86;&#x98DF;&#x7269;&#xFF0C;&#x6B64;&#x65F6;&#x86C7;&#x7684;&#x8EAB;&#x4F53;&#x5E94;&#x8BE5;&#x662F;&#x53D8;&#x957F;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x53EA;&#x8981;&#x5728;&#x86C7;&#x5934;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;&#x53CD;&#x4E4B;&#xFF0C;&#x5982;&#x679C;&#x86C7;&#x6CA1;&#x6709;&#x5403;&#x5230;&#x98DF;&#x7269;&#xFF0C;&#x90A3;&#x4E48;&#x86C7;&#x5E94;&#x8BE5;&#x662F;&#x79FB;&#x52A8;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x5C31;&#x53EF;&#x4EE5;&#x6309;&#x7167;&#x79FB;&#x52A8;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x5904;&#x7406;&#x4E86;&#x3002;&#x90A3;&#x4E48;&#x5728;&#x86C7;&#x5934;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x7684;&#x8FD9;&#x4E2A;&#x5143;&#x7D20;&#x8BE5;&#x5982;&#x4F55;&#x786E;&#x5B9A;&#x5462;&#xFF1F;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x4E0B;&#x9762;&#x8FD9;&#x6BB5;&#x7A0B;&#x5E8F;&#xFF1A;<br></p><figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--&#x8BA1;&#x7B97;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getNextPoint</span><span class="params">()</span></span></span><br><span class="line">  <span class="comment">--&#x8BA1;&#x7B97;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;</span></span><br><span class="line">  snake={}</span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">0</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x</span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y<span class="number">-20</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">1</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x</span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y+<span class="number">20</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">2</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x<span class="number">-20</span></span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">3</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x+<span class="number">20</span></span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> snake</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x91CC;&#x5B9A;&#x4E49;&#x4E86;getNextPoint()&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x76EE;&#x7684;&#x662F;&#x8BA1;&#x7B97;&#x5728;&#x86C7;&#x5934;&#x4F4D;&#x7F6E;&#x6DFB;&#x52A0;&#x7684;&#x4E0B;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x6CE8;&#x610F;&#x5230;&#x6839;&#x636E;&#x86C7;&#x7684;&#x79FB;&#x52A8;&#x65B9;&#x5411;(dir)&#x7684;&#x4E0D;&#x540C;&#xFF0C;&#x5176;&#x4E2D;0&#x8868;&#x793A;&#x4E0A;&#x3001;1&#x8868;&#x793A;&#x4E0B;&#x3001;2&#x8868;&#x793A;&#x5DE6;&#x3001;3&#x8868;&#x793A;&#x53F3;&#xFF0C;&#x8BA1;&#x7B97;&#x51FA;&#x4E0B;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x4F4D;&#x7F6E;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x8FD9;&#x4E2A;&#x6E38;&#x620F;&#x4E2D;&#x7F51;&#x683C;&#x5927;&#x5C0F;&#x662F;20&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x6839;&#x636E;&#x5750;&#x6807;&#x6765;&#x8BA1;&#x7B97;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x4F4D;&#x7F6E;&#x3002;snakes&#x662F;&#x4E00;&#x4E2A;table&#xFF0C;&#x4FDD;&#x5B58;&#x7684;&#x662F;&#x5F53;&#x524D;&#x7684;&#x86C7;&#x7684;&#x5168;&#x90E8;&#x5143;&#x7D20;&#x7684;&#x5750;&#x6807;&#x3002;&#x901A;&#x8FC7;&#x7EF4;&#x62A4;&#x8FD9;&#x4E2A;table&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x5229;&#x7528;&#x7ED8;&#x56FE;&#x7684;&#x51FD;&#x6570;&#x7ED8;&#x5236;&#x51FA;&#x86C7;&#x7684;&#x8EAB;&#x4F53;&#xFF0C;&#x8FD9;&#x6837;&#x86C7;&#x5C31;&#x53EF;&#x4EE5;&#x79FB;&#x52A8;&#x8D77;&#x6765;&#x4E86;&#x3002;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x770B;&#x86C7;&#x662F;&#x600E;&#x6837;&#x79FB;&#x52A8;&#x7684;&#xFF1A;<br></p><figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--&#x6838;&#x5FC3;&#x7B97;&#x6CD5;&#x2014;&#x2014;&#x86C7;&#x7684;&#x79FB;&#x52A8;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SnakeUpdate</span><span class="params">()</span></span></span><br><span class="line">  <span class="comment">--&#x83B7;&#x53D6;&#x5143;&#x7D20;&#x4E2A;&#x6570;</span></span><br><span class="line">  <span class="keyword">local</span> n=<span class="built_in">table</span>.<span class="built_in">maxn</span>(snakes)</span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">table</span>.<span class="built_in">maxn</span>(snakes)&gt;<span class="number">0</span>) <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">if</span>(getNextPoint().x==foodX <span class="keyword">and</span> getNextPoint().y==foodY) <span class="keyword">then</span></span><br><span class="line">      <span class="comment">--&#x5C06;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;&#x7684;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x8868;&#x4E2D;</span></span><br><span class="line">      <span class="built_in">table</span>.<span class="built_in">insert</span>(snakes, <span class="number">1</span>, getNextPoint())</span><br><span class="line">      <span class="comment">--&#x5C06;&#x98DF;&#x7269;&#x72B6;&#x6001;&#x8BBE;&#x7F6E;&#x4E3A;BeEated</span></span><br><span class="line">      foodState=<span class="string">&quot;BeEated&quot;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="comment">--&#x5C06;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;&#x7684;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x8868;&#x4E2D;</span></span><br><span class="line">      <span class="built_in">table</span>.<span class="built_in">insert</span>(snakes, <span class="number">1</span>, getNextPoint())</span><br><span class="line">      <span class="comment">--&#x79FB;&#x9664;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5143;&#x7D20;</span></span><br><span class="line">      <span class="built_in">table</span>.<span class="built_in">remove</span>(snakes,n+<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">end</span> </span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x5728;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;foodState&#x53D8;&#x91CF;&#x4EE5;&#x4FDD;&#x5B58;&#x98DF;&#x7269;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x5F53;&#x98DF;&#x7269;&#x7684;&#x72B6;&#x6001;&#x4E3A;BeEated&#x7684;&#x65F6;&#x5019;&#x8868;&#x793A;&#x98DF;&#x7269;&#x88AB;&#x86C7;&#x5403;&#x6389;&#x4E86;&#xFF0C;&#x6B64;&#x65F6;&#x5E94;&#x8BE5;&#x91CD;&#x65B0;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x98DF;&#x7269;&#x7684;&#x5750;&#x6807;&#xFF0C;&#x6B64;&#x65F6;&#x4E8B;&#x7269;&#x7684;&#x72B6;&#x6001;&#x5C06;&#x53D8;&#x6210;WaitToEat&#x3002;&#x98DF;&#x7269;&#x7684;&#x5750;&#x6807;&#x4FDD;&#x5B58;&#x5728;foodX&#x548C;foodY&#x8FD9;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#x4E2D;&#xFF0C;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x5230;&#x5B8C;&#x6574;&#x7684;&#x4EE3;&#x7801;&#x4E2D;&#x53BB;&#x67E5;&#x770B;&#x3002;</p>
+<h2 id="&#x6E38;&#x620F;&#x72B6;&#x6001;"><a href="#&#x6E38;&#x620F;&#x72B6;&#x6001;" class="headerlink" title="&#x6E38;&#x620F;&#x72B6;&#x6001;"></a>&#x6E38;&#x620F;&#x72B6;&#x6001;</h2><p>&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x86C7;&#x78B0;&#x5230;&#x56DB;&#x5468;&#x5899;&#x58C1;&#x7684;&#x65F6;&#x5019;&#x5C31;&#x4F1A;&#x6B7B;&#x4EA1;&#xFF0C;&#x6B64;&#x65F6;&#x6E38;&#x620F;&#x7ED3;&#x675F;&#x3002;&#x8FD9;&#x4E2A;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#xFF0C;&#x53EA;&#x8981;&#x5224;&#x65AD;&#x86C7;&#x5934;&#x7684;&#x5750;&#x6807;&#x548C;&#x5C4F;&#x5E55;&#x7684;&#x5173;&#x7CFB;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;&#x56E0;&#x4E3A;&#x5728;&#x8FD9;&#x4E2A;&#x6E38;&#x620F;&#x4E2D;&#x5C4F;&#x5E55;&#x7684;&#x5C3A;&#x5BF8;&#x4E3A;640X640&#xFF0C;&#x6240;&#x4EE5;&#x5224;&#x65AD;&#x6E38;&#x620F;&#x662F;&#x5426;&#x7ED3;&#x675F;&#x7684;&#x4EE3;&#x7801;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x5199;&#xFF1A;<br></p><figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--&#x5224;&#x65AD;&#x6E38;&#x620F;&#x72B6;&#x6001;</span></span><br><span class="line">  <span class="keyword">if</span>(snakes[<span class="number">1</span>].x&lt;=<span class="number">0</span> <span class="keyword">or</span> snakes[<span class="number">1</span>].x&gt;=<span class="number">640</span> <span class="keyword">or</span> snakes[<span class="number">1</span>].y&lt;=<span class="number">0</span> <span class="keyword">or</span> snakes[<span class="number">1</span>].y&gt;=<span class="number">640</span>) <span class="keyword">then</span></span><br><span class="line">    gameState=<span class="number">0</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    gameState=<span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x91CC;gameState&#x4E3A;0&#x8868;&#x793A;&#x6E38;&#x620F;&#x7ED3;&#x675F;&#xFF0C;gameState&#x4E3A;1&#x8868;&#x793A;&#x6E38;&#x620F;&#x6B63;&#x5E38;&#x8FDB;&#x884C;&#x3002;</p>
+<h2 id="&#x5B8C;&#x6574;&#x4EE3;&#x7801;"><a href="#&#x5B8C;&#x6574;&#x4EE3;&#x7801;" class="headerlink" title="&#x5B8C;&#x6574;&#x4EE3;&#x7801;"></a>&#x5B8C;&#x6574;&#x4EE3;&#x7801;</h2><p>&#x2003;&#x2003;&#x5728;&#x5B8C;&#x6210;&#x4E86;&#x8FD9;&#x4E9B;&#x6838;&#x5FC3;&#x7684;&#x7B97;&#x6CD5;&#x4EE5;&#x540E;&#xFF0C;&#x5269;&#x4E0B;&#x7684;&#x4E8B;&#x60C5;&#x5C31;&#x4EA4;&#x7ED9;Love2D&#x5F15;&#x64CE;&#x6765;&#x7ED8;&#x5236;&#x5427;&#xFF0C;&#x6700;&#x540E;&#x7ED9;&#x51FA;&#x5B8C;&#x6574;&#x7684;&#x7A0B;&#x5E8F;&#x4EE3;&#x7801;&#xFF1A;<br></p><figure class="highlight lua"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--&#x5B9A;&#x4E49;&#x7A97;&#x53E3;&#x5BBD;&#x5EA6;&#x548C;&#x9AD8;&#x5EA6;</span></span><br><span class="line"><span class="keyword">local</span> w=<span class="number">640</span></span><br><span class="line"><span class="keyword">local</span> h=<span class="number">640</span></span><br><span class="line"><span class="comment">--&#x5B9A;&#x4E49;&#x7F51;&#x683C;&#x5355;&#x5143;&#x5927;&#x5C0F;</span></span><br><span class="line"><span class="keyword">local</span> unitSize=<span class="number">20</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x65B9;&#x5757;&#x7684;&#x521D;&#x59CB;&#x4F4D;&#x7F6E;</span></span><br><span class="line"><span class="keyword">local</span> initX=<span class="number">320</span></span><br><span class="line"><span class="keyword">local</span> initY=<span class="number">320</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x79FB;&#x52A8;&#x65B9;&#x5411;</span></span><br><span class="line"><span class="keyword">local</span> dir=<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x8D2A;&#x5403;&#x86C7;&#x96C6;&#x5408;</span></span><br><span class="line"><span class="keyword">local</span> snakes={}</span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x98DF;&#x7269;&#x72B6;&#x6001;</span></span><br><span class="line"><span class="comment">--WaitToEat&#xFF1A;&#x7ED8;&#x5236;&#x98DF;&#x7269;</span></span><br><span class="line"><span class="comment">--BeEated&#xFF1A;&#x968F;&#x673A;&#x751F;&#x6210;&#x98DF;&#x7269;</span></span><br><span class="line"><span class="keyword">local</span> foodState=<span class="string">&quot;WaitToEat&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x6E38;&#x620F;&#x72B6;&#x6001;</span></span><br><span class="line"><span class="comment">--0&#xFF1A;&#x6E38;&#x620F;&#x7ED3;&#x675F;</span></span><br><span class="line"><span class="comment">--1&#xFF1A;&#x6E38;&#x620F;&#x6B63;&#x5E38;</span></span><br><span class="line"><span class="keyword">local</span> gameState=<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x98DF;&#x7269;&#x7684;&#x4F4D;&#x7F6E;</span></span><br><span class="line"><span class="keyword">local</span> foodX=<span class="number">0</span></span><br><span class="line"><span class="keyword">local</span> foodY=<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--Love2D&#x52A0;&#x8F7D;&#x4E8B;&#x4EF6;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">love.load</span><span class="params">()</span></span></span><br><span class="line">  <span class="comment">--&#x8BBE;&#x7F6E;&#x7A97;&#x53E3;&#x6807;&#x9898;</span></span><br><span class="line">  love.window.setTitle(<span class="string">&quot;Love2D-&#x8D2A;&#x5403;&#x86C7;&#x6E38;&#x620F;&quot;</span>)</span><br><span class="line">  <span class="comment">--&#x8BBE;&#x7F6E;&#x7A97;&#x53E3;&#x5927;&#x5C0F;</span></span><br><span class="line">  love.window.setMode(w,h)</span><br><span class="line">  <span class="comment">--&#x5B9A;&#x4E49;&#x5B57;&#x4F53;</span></span><br><span class="line">  myFont=love.graphics.newFont(<span class="number">30</span>)</span><br><span class="line">  <span class="comment">--&#x8BBE;&#x7F6E;&#x5B57;&#x4F53;</span></span><br><span class="line">  love.graphics.setFont(myFont)</span><br><span class="line">  <span class="comment">--&#x8BBE;&#x7F6E;&#x80CC;&#x666F;&#x8272;</span></span><br><span class="line">  love.graphics.setBackgroundColor(<span class="number">255</span>,<span class="number">255</span>,<span class="number">255</span>,<span class="number">255</span>)</span><br><span class="line">  <span class="comment">--&#x8BBE;&#x7F6E;&#x7EBF;&#x6761;&#x7C7B;&#x578B;&#x4E3A;&#x5E73;&#x6ED1;</span></span><br><span class="line">  love.graphics.setLineStyle(<span class="string">&quot;smooth&quot;</span>)</span><br><span class="line">  <span class="comment">--&#x8BBE;&#x7F6E;&#x7EBF;&#x5BBD;</span></span><br><span class="line">  love.graphics.setLineWidth(<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">--&#x86C7;&#x7684;&#x521D;&#x59CB;&#x5316;(&#x86C7;&#x7684;&#x957F;&#x5EA6;&#x4E3A;5)</span></span><br><span class="line">  <span class="keyword">for</span> i=<span class="number">1</span>,<span class="number">5</span> <span class="keyword">do</span></span><br><span class="line">    snake={}</span><br><span class="line">    snake.x=initX +(i<span class="number">-1</span>) * <span class="number">20</span></span><br><span class="line">    snake.y=initY</span><br><span class="line">    snakes[i]=snake</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">--&#x98DF;&#x7269;&#x521D;&#x59CB;&#x5316;</span></span><br><span class="line">  foodX=love.<span class="built_in">math</span>.<span class="built_in">random</span>(<span class="number">32</span><span class="number">-1</span>)*<span class="number">20</span></span><br><span class="line">  foodY=love.<span class="built_in">math</span>.<span class="built_in">random</span>(<span class="number">32</span><span class="number">-1</span>)*<span class="number">20</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">--Love2D&#x7ED8;&#x5236;&#x4E8B;&#x4EF6;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">love.draw</span><span class="params">()</span></span></span><br><span class="line">  <span class="comment">--&#x7ED8;&#x5236;&#x7AD6;&#x7EBF;</span></span><br><span class="line">  love.graphics.setColor(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>)</span><br><span class="line">  <span class="keyword">for</span> i=<span class="number">0</span>,w,unitSize <span class="keyword">do</span></span><br><span class="line">    love.graphics.line(<span class="number">0</span>,i,h,i)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="comment">--&#x7ED8;&#x5236;&#x6A2A;&#x7EBF;</span></span><br><span class="line">  <span class="keyword">for</span> j=<span class="number">0</span>,h,unitSize <span class="keyword">do</span></span><br><span class="line">    love.graphics.line(j,<span class="number">0</span>,j,w)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">--&#x7ED8;&#x5236;&#x86C7;</span></span><br><span class="line">  <span class="keyword">for</span> i=<span class="number">1</span>,<span class="built_in">table</span>.<span class="built_in">maxn</span>(snakes) <span class="keyword">do</span></span><br><span class="line">    love.graphics.setColor(<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>,<span class="number">255</span>)</span><br><span class="line">    love.graphics.rectangle(<span class="string">&quot;fill&quot;</span>,snakes[i].x,snakes[i].y,<span class="number">20</span>,<span class="number">20</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">--&#x7ED8;&#x5236;&#x98DF;&#x7269;</span></span><br><span class="line">  <span class="keyword">if</span>(foodState==<span class="string">&quot;WaitToEat&quot;</span>) <span class="keyword">then</span></span><br><span class="line">    love.graphics.setColor(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>)</span><br><span class="line">    love.graphics.rectangle(<span class="string">&quot;fill&quot;</span>,foodX,foodY,<span class="number">20</span>,<span class="number">20</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">--&#x5982;&#x679C;&#x6E38;&#x620F;&#x7ED3;&#x675F;&#x5219;&#x663E;&#x793A;GameOver</span></span><br><span class="line">  <span class="keyword">if</span>(gameState==<span class="number">0</span>) <span class="keyword">then</span></span><br><span class="line">    love.graphics.setColor(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>)</span><br><span class="line">    love.graphics.<span class="built_in">print</span>(<span class="string">&quot;Game Over&quot;</span>,<span class="number">250</span>,<span class="number">300</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">love.update</span><span class="params">(dt)</span></span></span><br><span class="line">  <span class="comment">--&#x5224;&#x65AD;&#x6E38;&#x620F;&#x72B6;&#x6001;</span></span><br><span class="line">  <span class="keyword">if</span>(snakes[<span class="number">1</span>].x&lt;=<span class="number">0</span> <span class="keyword">or</span> snakes[<span class="number">1</span>].x&gt;=<span class="number">640</span> <span class="keyword">or</span> snakes[<span class="number">1</span>].y&lt;=<span class="number">0</span> <span class="keyword">or</span> snakes[<span class="number">1</span>].y&gt;=<span class="number">640</span>) <span class="keyword">then</span></span><br><span class="line">    gameState=<span class="number">0</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    gameState=<span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">--&#x5982;&#x679C;&#x6E38;&#x620F;&#x72B6;&#x6001;&#x4E3A;&#x6B63;&#x5E38;</span></span><br><span class="line">  <span class="keyword">if</span>(gameState==<span class="number">1</span>) <span class="keyword">then</span></span><br><span class="line">    SnakeUpdate()</span><br><span class="line">    FoodUpdate()</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x6838;&#x5FC3;&#x7B97;&#x6CD5;&#x2014;&#x2014;&#x86C7;&#x7684;&#x79FB;&#x52A8;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SnakeUpdate</span><span class="params">()</span></span></span><br><span class="line">  <span class="comment">--&#x83B7;&#x53D6;&#x5143;&#x7D20;&#x4E2A;&#x6570;</span></span><br><span class="line">  <span class="keyword">local</span> n=<span class="built_in">table</span>.<span class="built_in">maxn</span>(snakes)</span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">table</span>.<span class="built_in">maxn</span>(snakes)&gt;<span class="number">0</span>) <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">if</span>(getNextPoint().x==foodX <span class="keyword">and</span> getNextPoint().y==foodY) <span class="keyword">then</span></span><br><span class="line">      <span class="comment">--&#x5C06;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;&#x7684;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x8868;&#x4E2D;</span></span><br><span class="line">      <span class="built_in">table</span>.<span class="built_in">insert</span>(snakes, <span class="number">1</span>, getNextPoint())</span><br><span class="line">      <span class="comment">--&#x5C06;&#x98DF;&#x7269;&#x72B6;&#x6001;&#x8BBE;&#x7F6E;&#x4E3A;BeEated</span></span><br><span class="line">      foodState=<span class="string">&quot;BeEated&quot;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="comment">--&#x5C06;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;&#x7684;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x8868;&#x4E2D;</span></span><br><span class="line">      <span class="built_in">table</span>.<span class="built_in">insert</span>(snakes, <span class="number">1</span>, getNextPoint())</span><br><span class="line">      <span class="comment">--&#x79FB;&#x9664;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5143;&#x7D20;</span></span><br><span class="line">      <span class="built_in">table</span>.<span class="built_in">remove</span>(snakes,n+<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">end</span> </span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x968F;&#x673A;&#x751F;&#x6210;&#x98DF;&#x7269;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FoodUpdate</span><span class="params">()</span></span></span><br><span class="line">  <span class="comment">--&#x5982;&#x679C;&#x98DF;&#x7269;&#x88AB;&#x86C7;&#x5403;&#x6389;&#x5219;&#x91CD;&#x65B0;&#x751F;&#x6210;&#x98DF;&#x7269;</span></span><br><span class="line">  <span class="keyword">if</span>(foodState==<span class="string">&quot;BeEated&quot;</span>) <span class="keyword">then</span></span><br><span class="line">    foodX=love.<span class="built_in">math</span>.<span class="built_in">random</span>(<span class="number">32</span><span class="number">-1</span>)*<span class="number">20</span></span><br><span class="line">    foodY=love.<span class="built_in">math</span>.<span class="built_in">random</span>(<span class="number">32</span><span class="number">-1</span>)*<span class="number">20</span></span><br><span class="line">    foodState=<span class="string">&quot;WaitToEat&quot;</span></span><br><span class="line">   <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x6839;&#x636E;&#x73A9;&#x5BB6;&#x6309;&#x4E0B;&#x7684;&#x952E;&#x4F4D;&#x5B9A;&#x4E49;&#x4E0D;&#x540C;&#x7684;&#x65B9;&#x5411;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">love.keypressed</span><span class="params">(key)</span></span></span><br><span class="line">  <span class="keyword">if</span>(key==<span class="string">&quot;a&quot;</span>) <span class="keyword">then</span> </span><br><span class="line">    dir=<span class="number">2</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(key==<span class="string">&quot;d&quot;</span>) <span class="keyword">then</span> </span><br><span class="line">    dir=<span class="number">3</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(key==<span class="string">&quot;w&quot;</span>) <span class="keyword">then</span> </span><br><span class="line">    dir=<span class="number">0</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(key==<span class="string">&quot;s&quot;</span>) <span class="keyword">then</span> </span><br><span class="line">    dir=<span class="number">1</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--&#x8BA1;&#x7B97;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getNextPoint</span><span class="params">()</span></span></span><br><span class="line">  <span class="comment">--&#x8BA1;&#x7B97;&#x4E0B;&#x4E00;&#x4E2A;&#x76EE;&#x6807;&#x70B9;</span></span><br><span class="line">  snake={}</span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">0</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x</span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y<span class="number">-20</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">1</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x</span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y+<span class="number">20</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">2</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x<span class="number">-20</span></span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">if</span>(dir==<span class="number">3</span>) <span class="keyword">then</span></span><br><span class="line">    snake.x=snakes[<span class="number">1</span>].x+<span class="number">20</span></span><br><span class="line">    snake.y=snakes[<span class="number">1</span>].y</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> snake</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x5C06;&#x4EE3;&#x7801;&#x538B;&#x7F29;&#x6210;.love&#x6587;&#x4EF6;&#x540E;&#x5C31;&#x53EF;&#x4EE5;&#x8FD0;&#x884C;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x770B;&#x6700;&#x7EC8;&#x7684;&#x6548;&#x679C;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://camo.githubusercontent.com/c67d24e7970bb47f8c6ed45bd520ab09dfb4c917/687474703a2f2f7069632e636f6e6e2e63632f62732e706e67" alt="Demo1" title>
+                </div>
+                <div class="image-caption">Demo1</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://camo.githubusercontent.com/479dd593c4a4f722e07ed4ccc5ddd574fe5dbd10/687474703a2f2f7069632e636f6e6e2e63632f5a722e706e67" alt="Demo2" title>
+                </div>
+                <div class="image-caption">Demo2</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x672C;&#x6587;&#x7684;&#x9879;&#x76EE;&#x4F5C;&#x4E3A;&#x5F00;&#x6E90;&#x9879;&#x76EE;&#x6258;&#x7BA1;&#x5728;Github&#x4E0A;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;<a href="https://github.com/qinyuanpei/Love2D_Snake" target="_blank" rel="noopener">Github</a>&#x6765;&#x83B7;&#x53D6;&#x9879;&#x76EE;&#x6E90;&#x4EE3;&#x7801;&#x3002;&#x8C22;&#x8C22;&#x5927;&#x5BB6;&#xFF0C;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x4E86;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/821259985/">在Unity3D中加载外部图片的两种方法</a></li><li><a href="https://qinyuanpei.github.io/posts/2799263488/">Unity3D游戏开发之反编译AssetBundle提取游戏资源</a></li><li><a href="https://qinyuanpei.github.io/posts/719322223/">Unity3D游戏开发之路：一周工作总结</a></li><li><a href="https://blog.yuanpei.me/posts/821259985/">在Unity3D中加载外部图片的两种方法</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/426338252/" rel="external">使用Love2D引擎开发贪吃蛇游戏</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/426338252/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/426338252/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Love2D/">Love2D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/贪吃蛇/">贪吃蛇</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/426338252/&title=《使用Love2D引擎开发贪吃蛇游戏》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/426338252/&title=《使用Love2D引擎开发贪吃蛇游戏》 — PayneQinのBlog&source=&emsp;&emsp;今天来介绍博主最近捣腾的一个小游戏“贪吃蛇”。“贪吃蛇”这个游戏相信大家都不会感到陌生吧。今天博主将通过Love2D这款游戏引擎来..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/426338252/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Love2D引擎开发贪吃蛇游戏》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/426338252/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/426338252/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3449402269/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">使用Unity3D创建一个幸运转盘</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3321992673/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">当梦想照进现实</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/426338252/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/426338252/&title=《使用Love2D引擎开发贪吃蛇游戏》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/426338252/&title=《使用Love2D引擎开发贪吃蛇游戏》 — PayneQinのBlog&source=&emsp;&emsp;今天来介绍博主最近捣腾的一个小游戏“贪吃蛇”。“贪吃蛇”这个游戏相信大家都不会感到陌生吧。今天博主将通过Love2D这款游戏引擎来..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/426338252/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Love2D引擎开发贪吃蛇游戏》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/426338252/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/426338252/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/426338252/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

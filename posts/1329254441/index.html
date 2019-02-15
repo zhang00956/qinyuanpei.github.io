@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        使用Python生成博客目录并自动更新README - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;#x2003;&amp;#x2003;&amp;#x5404;&amp;#x4F4D;&amp;#x670B;&amp;#x53CB;&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#x">
+<meta name="keywords" content="Github,Python,Script">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Python生成博客目录并自动更新README">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/1329254441/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;#x2003;&amp;#x2003;&amp;#x5404;&amp;#x4F4D;&amp;#x670B;&amp;#x53CB;&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#x">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Python生成博客目录并自动更新README">
+<meta name="twitter:description" content="&amp;#x2003;&amp;#x2003;&amp;#x5404;&amp;#x4F4D;&amp;#x670B;&amp;#x53CB;&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#x">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用Python生成博客目录并自动更新README</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用Python生成博客目录并自动更新README</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-23T09:32:45.000Z" itemprop="datePublished" class="page-time">
+  2018-02-23
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/独立博客/">独立博客</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-使用Python生成博客目录并更新README" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用Python生成博客目录并自动更新README</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-23 09:32:45" datetime="2018-02-23T09:32:45.000Z" itemprop="datePublished">2018-02-23</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/独立博客/">独立博客</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        14 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#xFF0C;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;Payne&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;&#xFF1A;<a href="https://qinyuanpei.github.io">https://qinyuanpei.github.io</a>&#x3002;&#x9996;&#x5148;&#x5728;&#x8FD9;&#x91CC;&#x795D;&#x5927;&#x5BB6;&#x6625;&#x8282;&#x5FEB;&#x4E50;&#xFF0C;&#x4F5C;&#x4E3A;&#x8FC7;&#x5B8C;&#x5E74;&#x4EE5;&#x540E;&#x7684;&#x7B2C;&#x4E00;&#x7BC7;&#x6587;&#x7AE0;&#xFF0C;&#x535A;&#x4E3B;&#x60F3;&#x5199;&#x70B9;&#x5185;&#x5BB9;&#x98CE;&#x683C;&#x76F8;&#x5BF9;&#x8F7B;&#x677E;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x81EA;&#x4ECE;&#x535A;&#x4E3B;&#x7684;&#x535A;&#x5BA2;&#x91C7;&#x7528; <a href="https://www.travis-ci.org/" target="_blank" rel="noopener">TravisCI</a> &#x63D0;&#x4F9B;&#x7684;&#x6301;&#x7EED;&#x96C6;&#x6210;(CI)&#x670D;&#x52A1;&#x4EE5;&#x4EE5;&#x6765;&#xFF0C;&#x535A;&#x5BA2;&#x7684;&#x66F4;&#x65B0;&#x90E8;&#x7F72;&#x53D8;&#x5F97;&#x8D8A;&#x6765;&#x8D8A;&#x7B80;&#x5355;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x6D41;&#x7A0B;&#x90FD;&#x88AB;&#x7B80;&#x5316;&#x4E3A;Git&#x5DE5;&#x4F5C;&#x6D41;&#x4E0B;&#x7684;<strong>&#x63D0;&#x4EA4;(commit)</strong>&#x548C;<strong>&#x63A8;&#x9001;(push)</strong>&#x64CD;&#x4F5C;&#x3002;&#x8003;&#x8651;&#x5230;&#x535A;&#x5BA2;&#x662F;&#x6258;&#x7BA1;&#x5728; <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" target="_blank" rel="noopener">Github</a> &#x4E0A;&#x7684;&#xFF0C;&#x4E00;&#x76F4;&#x5E0C;&#x671B;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x66F4;&#x65B0;&#x4ED3;&#x5E93;&#x4E3B;&#x9875;&#x7684;README&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x663E;&#x793A;&#x6BCF;&#x6B21;&#x63D0;&#x4EA4;&#x4EE3;&#x7801;&#x540E;&#x7684;&#x53D8;&#x66F4;&#x5386;&#x53F2;&#x3002;&#x57FA;&#x4E8E;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x6784;&#x60F3;&#xFF0C;&#x6211;&#x60F3;&#x5230;&#x4E86;&#x4E3A;&#x535A;&#x5BA2;&#x751F;&#x6210;&#x76EE;&#x5F55;&#x5E76;&#x81EA;&#x52A8;&#x66F4;&#x65B0;README&#xFF0C;&#x5176;&#x597D;&#x5904;&#x662F;&#x53EF;&#x4EE5;&#x4E3A;&#x8BFB;&#x8005;&#x5EFA;&#x7ACB;&#x826F;&#x597D;&#x7684;&#x6587;&#x6863;&#x5BFC;&#x822A;&#xFF0C;&#x800C;&#x4E14;Markdown&#x662F;&#x4E00;&#x79CD;&#x7B80;&#x5355;&#x53CB;&#x597D;&#x7684;&#x6587;&#x6863;&#x683C;&#x5F0F;&#xFF0C;Github&#x7B49;&#x4EE3;&#x7801;&#x6258;&#x7BA1;&#x5E73;&#x53F0;&#x5929;&#x751F;&#x5C31;&#x652F;&#x6301;Markdown&#x6587;&#x6863;&#x7684;&#x6E32;&#x67D3;&#x3002;&#x5173;&#x4E8E;&#x535A;&#x5BA2;&#x91C7;&#x7528; <a href="https://www.travis-ci.org/" target="_blank" rel="noopener">TravisCI</a>  &#x63D0;&#x4F9B;&#x6301;&#x7EED;&#x96C6;&#x6210;(CI)&#x670D;&#x52A1;&#x76F8;&#x5173;&#x5185;&#x5BB9;&#xFF0C;&#x53EF;&#x4EE5;&#x53C2;&#x8003; <a href="https://qinyuanpei.github.io/posts/3521618732/">&#x6301;&#x7EED;&#x96C6;&#x6210;&#x5728;Hexo&#x81EA;&#x52A8;&#x5316;&#x90E8;&#x7F72;&#x4E0A;&#x7684;&#x5B9E;&#x8DF5;</a> &#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x8003;&#x8651;&#x5982;&#x4F55;&#x4E3A;&#x535A;&#x5BA2;&#x751F;&#x6210;&#x76EE;&#x5F55;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x4E09;&#x4E2A;&#x8981;&#x7D20;&#xFF0C;&#x5373;&#x6807;&#x9898;&#x3001;&#x94FE;&#x63A5;&#x548C;&#x65F6;&#x95F4;&#x3002;&#x6807;&#x9898;&#x548C;&#x65F6;&#x95F4;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4ECE; <strong>_posts</strong> &#x76EE;&#x5F55;&#x4E0B;&#x7684;Markdown&#x6587;&#x6863;&#x4E2D;&#x8BFB;&#x53D6;&#x51FA;&#x6765;&#xFF0C;&#x94FE;&#x63A5;&#x4ECE;&#x4F55;&#x800C;&#x6765;&#x5462;&#xFF1F;&#x6211;&#x6700;&#x521D;&#x60F3;&#x5230;&#x7684;&#x529E;&#x6CD5;&#x662F;&#x8BFB;&#x53D6;&#x6BCF;&#x4E2A;Markdown&#x6587;&#x6863;&#x7684;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x7684;&#x4F7F;&#x7528;&#x4E60;&#x60EF;&#x662F;&#x91C7;&#x7528;&#x82F1;&#x6587;&#x547D;&#x540D;&#xFF0C;&#x8FD9;&#x6837;&#x5F53;&#x535A;&#x5BA2;&#x7684;<strong>&#x6C38;&#x4E45;&#x94FE;&#x63A5;(permalink)</strong>&#x91C7;&#x7528;&#x9ED8;&#x8BA4;&#x7684;<strong>:year/:month/:day/:title/</strong>&#x5F62;&#x5F0F;&#x65F6;&#xFF0C;&#x6BCF;&#x4E2A;Markdown&#x6587;&#x6863;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x7B49;&#x4EF7;&#x4E8E;&#x6587;&#x7AE0;&#x94FE;&#x63A5;&#x3002;&#x4E8B;&#x5B9E;&#x8BC1;&#x660E;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x611A;&#x8822;&#x7684;&#x60F3;&#x6CD5;&#xFF0C;&#x56E0;&#x4E3A;&#x5F53;&#x4F60;&#x6539;&#x53D8;&#x4E86;<strong>&#x6C38;&#x4E45;&#x94FE;&#x63A5;(permalink)</strong>&#x7684;&#x5F62;&#x5F0F;&#x65F6;&#xFF0C;&#x8FD9;&#x79CD;&#x660E;&#x663E;&#x6295;&#x673A;&#x7684;&#x7B56;&#x7565;&#x5C31;&#x4F1A;&#x5F7B;&#x5E95;&#x7684;&#x5931;&#x8D25;&#x3002;&#x76F8;&#x4FE1;&#x4F60;&#x5728;&#x6D4F;&#x89C8;&#x5668;&#x79CD;&#x6253;&#x5F00;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x65F6;&#xFF0C;&#x5DF2;&#x7136;&#x6CE8;&#x610F;&#x5230;&#x94FE;&#x63A5;&#x5F62;&#x5F0F;&#x53D1;&#x751F;&#x4E86;&#x53D8;&#x5316;&#xFF0C;&#x5F53;&#x7136;&#x8FD9;&#x662F;&#x6211;&#x4EEC;&#x5728;&#x7A0D;&#x540E;&#x7684;&#x6587;&#x7AE0;&#x4E2D;&#x8BA8;&#x8BBA;&#x7684;&#x8BDD;&#x9898;&#x5566;&#x3002;&#x81F3;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x4E0D;&#x5F97;&#x4E0D;&#x5BFB;&#x627E;&#x65B0;&#x7684;&#x601D;&#x8DEF;&#xFF0C;&#x90A3;&#x4E48;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x8BE5;&#x5982;&#x4F55;&#x89E3;&#x51B3;&#x5462;&#xFF1F;</p>
+<p>&#x2003;&#x2003;&#x6211;&#x610F;&#x8BC6;&#x5230;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x914D;&#x7F6E;&#x4E86; <a href="https://github.com/alexbruno/hexo-generator-json-content" target="_blank" rel="noopener">hexo-generator-json-content</a> &#x63D2;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E2A;&#x63D2;&#x4EF6;&#x6700;&#x521D;&#x7684;&#x76EE;&#x7684;&#x662F;&#x4E3A;&#x535A;&#x5BA2;&#x63D0;&#x4F9B;&#x79BB;&#x7EBF;&#x7684;&#x641C;&#x7D22;&#x80FD;&#x529B;&#xFF0C;&#x8BE5;&#x63D2;&#x4EF6;&#x4F1A;&#x5728;&#x535A;&#x5BA2;&#x7684;&#x6839;&#x76EE;&#x5F55;&#x91CC;&#x751F;&#x6210;&#x4E00;&#x4E2A;<strong>content.json</strong>&#x6587;&#x4EF6;&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x4E2D;&#x542B;&#x6709;&#x6211;&#x4EEC;&#x60F3;&#x8981;&#x7684;&#x4E00;&#x5207;&#x4FE1;&#x606F;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x7684;&#x601D;&#x8DEF;&#x8F6C;&#x53D8;&#x4E3A;&#x89E3;&#x6790;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#xFF0C;&#x4EBA;&#x751F;&#x82E6;&#x77ED;&#x554A;&#xFF0C;&#x6211;&#x679C;&#x65AD;&#x9009;&#x62E9;&#x4E86;&#x6211;&#x6700;&#x559C;&#x6B22;&#x7684;Python&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4F1A;&#x63D0;&#x53D6;&#x51FA;&#x6240;&#x6709;&#x7684;&#x6587;&#x7AE0;&#x4FE1;&#x606F;&#xFF0C;&#x6309;&#x7167;&#x65E5;&#x671F;&#x7531;&#x8FD1;&#x5230;&#x8FDC;&#x6392;&#x5E8F;&#x540E;&#x751F;&#x6210;&#x5217;&#x8868;&#x3002;Python&#x5F3A;&#x5927;&#x5230;&#x8BA9;&#x6211;&#x89C9;&#x5F97;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x65E0;&#x6CD5;&#x4E0B;&#x7B14;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x91CC;&#x76F4;&#x63A5;&#x7ED9;&#x51FA;&#x4EE3;&#x7801;&#x5566;&#xFF1A;<br></p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6587;&#x6863;&#x5B9E;&#x4F53;&#x7ED3;&#x6784;&#x5B9A;&#x4E49;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Post</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,date,link,title)</span>:</span></span><br><span class="line">        self.date  = date</span><br><span class="line">        self.link  = link</span><br><span class="line">        self.title = title</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getTitle</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.title</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getLink</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&apos;https://qinyuanpei.github.io/&apos;</span> + self.link</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getDate</span><span class="params">(self)</span>:</span></span><br><span class="line">        d = re.findall(<span class="string">r&apos;\d{4}-\d{1,2}-\d{1,2}&apos;</span>,self.date)[<span class="number">0</span>]</span><br><span class="line">        t = re.findall(<span class="string">r&apos;\d{2}:\d{2}:\d{2}&apos;</span>,self.date)[<span class="number">0</span>]</span><br><span class="line">        dt = <span class="string">&apos;%s %s&apos;</span> % (d,t)</span><br><span class="line">        <span class="keyword">return</span> datetime.datetime.strptime(dt,<span class="string">&apos;%Y-%m-%d %H:%M:%S&apos;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x4ECE;JSON&#x4E2D;&#x52A0;&#x8F7D;&#x6587;&#x6863;&#x6570;&#x636E;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loadData</span><span class="params">()</span>:</span></span><br><span class="line">    json_file = open(<span class="string">&apos;./public/content.json&apos;</span>,<span class="string">&apos;rb&apos;</span>)</span><br><span class="line">    json_data = json.load(json_file)</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> json_data:</span><br><span class="line">        <span class="keyword">yield</span> Post(item[<span class="string">&apos;date&apos;</span>],item[<span class="string">&apos;path&apos;</span>],item[<span class="string">&apos;title&apos;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x4ECE;&#x5217;&#x8868;&#x751F;&#x6210;Markdown&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mkMarkdown</span><span class="params">(items)</span>:</span></span><br><span class="line">    mdfile = open(<span class="string">&apos;README.md&apos;</span>,mode=<span class="string">&apos;wt&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">    itemTpl = <span class="string">&apos;* {0} - [{1}]({2})\n&apos;</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> items:</span><br><span class="line">        mdfile.write(itemTpl.format(</span><br><span class="line">            datetime.datetime.strftime(item.getDate(),<span class="string">&apos;%Y-%m-%d&apos;</span>),</span><br><span class="line">            item.getTitle(),</span><br><span class="line">            item.getLink()</span><br><span class="line">        ))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(__name__ == <span class="string">&quot;__main__&quot;</span>):</span><br><span class="line">    items = sorted(loadData(),key=<span class="keyword">lambda</span> x:x.getDate(),reverse=<span class="keyword">True</span>)</span><br><span class="line">    mkMarkdown(items)</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x6709;&#x4E24;&#x4E2A;&#x5730;&#x65B9;&#xFF0C;&#x7B2C;&#x4E00;&#xFF0C;&#x4ECE;JSON&#x4E2D;&#x89E3;&#x6790;&#x51FA;&#x6765;&#x7684;&#x65E5;&#x671F;&#x5F62;&#x5F0F;&#x4E3A;&#xFF1A;<strong>2018-02-23T01:32:45.000Z</strong>&#x3002;&#x5BF9;&#x4E8E;&#x8FD9;&#x4E2A;&#x5F62;&#x5F0F;&#x7684;&#x65E5;&#x671F;&#xFF0C;&#x535A;&#x4E3B;&#x5148;&#x540E;&#x5C1D;&#x8BD5;&#x4E86;&#x5185;&#x5EFA;&#x7684;time&#x6A21;&#x5757;&#x548C;&#x7B2C;&#x4E09;&#x65B9;&#x7684;datetime&#x6A21;&#x5757;&#xFF0C;&#x53D1;&#x73B0;&#x5747;&#x65E0;&#x6CD5;&#x76F4;&#x63A5;&#x8F6C;&#x6362;&#x4E3A;&#x65E5;&#x671F;&#x7C7B;&#x578B;&#xFF0C;&#x6240;&#x4EE5;&#x9996;&#x5148;&#x91C7;&#x7528;&#x6B63;&#x5219;&#x5339;&#x914D;&#x51FA;&#x65E5;&#x671F;&#x548C;&#x65F6;&#x95F4;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x7EC4;&#x5408;&#x4E3A;&#x6807;&#x51C6;&#x7684;<strong>%Y-%m-%d %H:%M:%S</strong>&#x7684;&#x683C;&#x5F0F;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;datetime&#x6A21;&#x5757;&#x8FDB;&#x884C;&#x5904;&#x7406;&#x5566;&#xFF0C;&#x6211;&#x8FD8;&#x662F;&#x60F3;&#x5410;&#x69FD;&#x4EBA;&#x7C7B;&#x5BF9;&#x5404;&#x79CD;&#x5404;&#x6837;format&#x7684;&#x6267;&#x7740;&#xFF0C;&#x8FD9;&#x4E9B;&#x901A;&#x914D;&#x7B26;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x8BED;&#x8A00;&#x4E2D;&#x5B58;&#x5728;&#x5DEE;&#x522B;&#xFF0C;&#x5C31;&#x50CF;SQL&#x548C;&#x6B63;&#x5219;&#x5F15;&#x64CE;&#x6216;&#x591A;&#x6216;&#x5C11;&#x5730;&#x5B58;&#x5728;&#x517C;&#x5BB9;&#x6027;&#x95EE;&#x9898;&#x4E00;&#x6837;&#x3002;&#x5982;&#x679C;&#x6709;&#x670B;&#x53CB;&#x77E5;&#x9053;&#x5982;&#x4F55;&#x5BF9;&#x8FD9;&#x79CD;&#x65E5;&#x671F;&#x5F62;&#x5F0F;&#x8FDB;&#x884C;&#x8F6C;&#x6362;&#xFF0C;&#x6B22;&#x8FCE;&#x5728;&#x535A;&#x5BA2;&#x4E2D;&#x8BC4;&#x8BBA;&#x7559;&#x8A00;&#xFF0C;&#x518D;&#x6B21;&#x8C22;&#x8C22;&#x5927;&#x5BB6;&#x3002;&#x7B2C;&#x4E8C;&#xFF0C;&#x4F7F;&#x7528;&#x5185;&#x7F6E;&#x51FD;&#x6570;sorted()&#x5BF9;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;lambda&#x8868;&#x8FBE;&#x5F0F;&#x4F7F;&#x7528;&#x8D77;&#x6765;&#x975E;&#x5E38;&#x68D2;&#xFF0C;&#x56E0;&#x4E3A;&#x9ED8;&#x8BA4;&#x662F;&#x5347;&#x5E8F;&#x6392;&#x5217;&#x5730;&#xFF0C;&#x800C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x7684;&#x662F;&#x65E5;&#x671F;&#x7531;&#x8FD1;&#x5230;&#x8FDC;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x91CC;&#x9009;&#x62E9;&#x4E86;&#x964D;&#x5E8F;&#x6392;&#x5217;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x66F4;&#x65B0;&#x535A;&#x5BA2;&#x65F6;&#x7684;&#x6D41;&#x7A0B;&#x5C06;&#x53D1;&#x751F;&#x53D8;&#x5316;&#xFF0C;&#x9996;&#x5148;&#x901A;&#x8FC7; <strong>hexo generate &#x6216; hexo g</strong>&#x547D;&#x4EE4;&#x751F;&#x6210;&#x535A;&#x5BA2;&#xFF0C;&#x8FD9;&#x6837;Hexo&#x4F1A;&#x4E3A;&#x6211;&#x4EEC;&#x751F;&#x6210; <strong> content.json</strong>&#xFF0C;&#x7136;&#x540E;&#x6211;&#x4EEC;&#x6267;&#x884C;&#x8FD9;&#x6BB5;Python&#x811A;&#x672C;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x751F;&#x6210;REAMD.md&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5C06;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x63A8;&#x9001;&#x5230;blog&#x5206;&#x652F;&#x3002;&#x76F8;&#x5BF9;&#x5E94;&#x5730;&#xFF0C;&#x6211;&#x4EEC;&#x4FEE;&#x6539; <a href="https://www.travis-ci.org/" target="_blank" rel="noopener">TravisCI</a> &#x7684;&#x811A;&#x672C;&#x6587;&#x4EF6; <strong>.travis.yml</strong> &#x6587;&#x4EF6;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">script:</span><br><span class="line">  - hexo clean</span><br><span class="line">  - hexo generate</span><br><span class="line">  - cp README.md ./public/README.md</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x663E;&#x7136;&#xFF0C;&#x8FD9;&#x662F;&#x544A;&#x8BC9; TravisCI &#x5728;&#x751F;&#x6210;&#x535A;&#x5BA2;&#x4EE5;&#x540E;&#xFF0C;&#x5C06; README.md &#x6587;&#x4EF6;&#x590D;&#x5236;&#x5230;&#x8F93;&#x51FA;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x6837;&#x5F53;&#x6211;&#x4EEC;&#x63A8;&#x9001;&#x535A;&#x5BA2;(&#x6307;&#x751F;&#x6210;&#x7684;&#x9759;&#x6001;&#x9875;&#x9762;)&#x5230; master &#x5206;&#x652F;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5B83;&#x4F1A;&#x548C; blog &#x5206;&#x652F;&#x540C;&#x6B65;&#x5171;&#x4EAB;&#x540C;&#x4E00;&#x4EFD; README &#x3002;&#x6211;&#x60F3;&#x4E00;&#x5B9A;&#x6709;&#x670B;&#x53CB;&#x4F1A;&#x95EE;&#x6211;&#xFF0C;&#x96BE;&#x9053;&#x751F;&#x6210; README.md &#x6587;&#x4EF6;&#x7684;&#x6B65;&#x9AA4;&#x4E0D;&#x80FD;&#x4EA4;&#x7ED9; TravisCI &#x6765;&#x5904;&#x7406;&#xFF1F;&#x4E00;&#x5B9A;&#x8981;&#x5728;&#x63A8;&#x9001;&#x5230; blog &#x5206;&#x652F;&#x4EE5;&#x524D;&#x624B;&#x52A8;&#x5730;&#x53BB;&#x6267;&#x884C;&#x811A;&#x672C;&#x5417;&#xFF1F;&#x6211;&#x6700;&#x521D;&#x5C1D;&#x8BD5;&#x8FC7;&#x8BA9; TravisCI &#x53BB;&#x6267;&#x884C;&#x8FD9;&#x4E2A; Python &#x811A;&#x672C;&#xFF0C;&#x53EF;&#x6211;&#x53D1;&#x73B0;&#x4E00;&#x4E2A;&#x6B8B;&#x9177;&#x7684;&#x4E8B;&#x5B9E;&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x4E2A;&#x865A;&#x62DF;&#x673A;&#x73AF;&#x5883;&#x662F; nodejs &#x7684;&#xFF0C;&#x8FD9;&#x5728;&#x6211;&#x4EEC;&#x5B9A;&#x4E49; <strong>.travis.yml</strong> &#x6587;&#x4EF6;&#x65F6;&#x5C31;&#x6307;&#x5B9A;&#x4E86;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x73AF;&#x5883;&#x4E2D;&#x53EF;&#x80FD;&#x662F;&#x6CA1;&#x6709; Python &#x652F;&#x6301;&#x7684;&#x3002;&#x8D77;&#x521D;&#x6211;&#x4EE5;&#x4E3A; Linux &#x7CFB;&#x7EDF;&#x81EA;&#x5E26; Python &#xFF0C; &#x56E0;&#x6B64;&#x5C1D;&#x8BD5;&#x5728; <strong>.travis.yml</strong> &#x6587;&#x4EF6;&#x4E2D;&#x4F7F;&#x7528; pip &#x5B89;&#x88C5;&#x76F8;&#x5173;&#x4F9D;&#x8D56;&#xFF0C;&#x7136;&#x540E;&#x6211;&#x53D1;&#x73B0;&#x6301;&#x7EED;&#x96C6;&#x6210;&#x670D;&#x52A1;&#x534E;&#x4E3D;&#x4E3D;&#x5730;&#x6302;&#x4E86;&#xFF0C;&#x56E0;&#x4E3A; TravisCI &#x9ED8;&#x8BA4;&#x7684; Python &#x7248;&#x672C;&#x662F; Python2.7 , &#x9664;&#x975E;&#x6211;&#x4EEC;&#x6307;&#x5B9A;&#x7684;&#x662F;&#x4E00;&#x4E2A; Python &#x7684;&#x8BED;&#x8A00;&#x73AF;&#x5883;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x79CD;&#x60F3;&#x6CD5;&#x4E0D;&#x5F97;&#x4E0D;&#x4F5C;&#x7F62;&#xFF0C;&#x6682;&#x65F6;&#x5C31;&#x624B;&#x52A8;&#x66F4;&#x65B0;&#x597D;&#x5566;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x6838;&#x5FC3;&#x7684;&#x5185;&#x5BB9;&#x5C31;&#x8FD9;&#x4E48;&#x591A;&#xFF0C;&#x4E0B;&#x9762;&#x60F3;&#x8BF4;&#x4E9B;&#x5173;&#x4E8E; Hexo &#x7684;&#x5EF6;&#x4F38;&#x8BDD;&#x9898;&#x3002; Hexo &#x662F;&#x4E00;&#x4E2A;&#x57FA;&#x4E8E; nodejs &#x7684;&#x9759;&#x6001;&#x535A;&#x5BA2;&#x751F;&#x6210;&#x5668;&#xFF0C;&#x6309;&#x7406;&#x8BF4;&#x4F7F;&#x7528; nodejs &#x53BB;&#x6269;&#x5C55;&#x529F;&#x80FD;&#x662F;&#x6700;&#x4F73;&#x7684;&#x5B9E;&#x8DF5;&#x65B9;&#x5F0F;&#xFF0C;&#x6240;&#x4EE5;&#x5373;&#x4F7F; Python &#x518D;&#x5F3A;&#x5927;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x8FD9;&#x91CC;&#x770B;&#x5230;&#x7684;&#x4F9D;&#x7136;&#x5B58;&#x5728;&#x7740;&#x5929;&#x7136;&#x7684;&#x5272;&#x88C2;&#x611F;&#xFF0C; &#x6211;&#x4EEC;&#x80FD;&#x4E0D;&#x80FD;&#x5C06;&#x6267;&#x884C;Python&#x811A;&#x672C;&#x7684;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x5408;&#x5E76;&#x5230; <strong>hexo generate &#x6216;&#x8005; hexo g</strong>&#x8FD9;&#x4E2A;&#x6B65;&#x9AA4;&#x4E2D;&#x53BB;&#x5462;&#xFF1F; &#x901A;&#x8FC7;&#x5B98;&#x65B9;&#x6587;&#x6863;&#x4E2D;&#x5173;&#x4E8E;<a href="https://hexo.io/api/events.html" target="_blank" rel="noopener">&#x4E8B;&#x4EF6;</a>&#x548C;<a href="https://hexo.io/api/events.html" target="_blank" rel="noopener">&#x751F;&#x6210;&#x5668;</a>&#x7684;&#x63CF;&#x8FF0;&#xFF0C;&#x6211;&#x4EEC;&#x83B7;&#x5F97;&#x4E86;&#x4E24;&#x79CD;&#x65B0;&#x7684;&#x601D;&#x8DEF;&#xFF0C;&#x5206;&#x522B;&#x662F;&#x5728;&#x751F;&#x6210;&#x9875;&#x9762;&#x4EE5;&#x540E;&#x901A;&#x8FC7; child_process &#x6A21;&#x5757;&#x8C03;&#x7528; python &#x811A;&#x672C;&#x3001;&#x901A;&#x8FC7; Locals &#x53D8;&#x91CF;&#x83B7;&#x53D6;&#x5168;&#x90E8;&#x6587;&#x7AE0;&#x4FE1;&#x606F;&#x540E;&#x751F;&#x6210;Markdown&#x3002;&#x4ECE;&#x65B9;&#x6848;&#x662F;&#x5426;&#x4F18;&#x96C5;&#x7684;&#x89D2;&#x5EA6;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x6211;&#x4E2A;&#x4EBA;&#x66F4;&#x503E;&#x5411;&#x4E8E;&#x7B2C;&#x4E8C;&#x79CD;&#x65B9;&#x6848;&#x3002;&#x57FA;&#x672C;&#x7684;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x65B9;&#x6848;&#x4E00;</span></span><br><span class="line">hexo.on(<span class="string">&apos;generateAfter&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">post</span>)</span>{</span><br><span class="line">  <span class="comment">//<span class="doctag">TODO:</span>&#x901A;&#x8FC7;content.json&#x6587;&#x4EF6;&#x751F;&#x6210;markdown&#x6587;&#x6863;</span></span><br><span class="line">});</span><br><span class="line"></span><br><span class="line"><span class="comment">//&#x65B9;&#x6848;&#x4E8C;</span></span><br><span class="line">hexo.extend.generator.register(<span class="string">&quot;markdown&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">locals</span>)</span>{</span><br><span class="line">  <span class="keyword">var</span> posts = locals.posts;</span><br><span class="line">  <span class="comment">//<span class="doctag">TODO:</span>&#x901A;&#x8FC7;posts&#x5C5E;&#x6027;&#x751F;&#x6210;markdown&#x6587;&#x6863;</span></span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x663E;&#x7136;&#xFF0C;&#x6211;&#x662F;&#x4E0D;&#x4F1A;&#x5199; nodejs &#x7684;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x65F6;&#x95F4;&#x548C;&#x7CBE;&#x529B;&#x7684;&#x8BDD;&#xFF0C;&#x6211;&#x53EF;&#x80FD;&#x4F1A;&#x8003;&#x8651;&#x91C7;&#x7528;&#x7B2C;&#x4E8C;&#x79CD;&#x65B9;&#x6848;&#x5199;&#x4E00;&#x4E2A;&#x63D2;&#x4EF6;&#xFF0C;&#x53EF;&#x662F;&#x50CF;&#x6211;&#x8FD9;&#x4E48;&#x61D2;&#x7684;&#x4E00;&#x4E2A;&#x4EBA;&#xFF0C;&#x8FD8;&#x662F;&#x4E0D;&#x8981;&#x63D0;&#x524D;&#x7ACB; flag &#x5566;&#xFF0C;&#x6BD5;&#x7ADF;&#x4EBA;&#x751F;&#x82E6;&#x77ED;&#x5450;&#xFF0C;&#x6211;&#x90FD;&#x9009;&#x62E9;&#x4F7F;&#x7528; Python &#x8FD9;&#x95E8;&#x8BED;&#x8A00;&#x6765;&#x5199;&#x5566;&#xFF0C;&#x6211;&#x5E72;&#x561B;&#x975E;&#x8981;&#x518D;&#x82B1;&#x65F6;&#x95F4;&#x53BB;&#x8FCE;&#x5408;&#x5B83;&#x5462;&#xFF1F;&#x597D;&#x5566;&#xFF0C;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x5566;&#xFF0C;&#x672C;&#x6587;&#x4E2D;&#x7684;&#x811A;&#x672C;&#x53EF;&#x4EE5;&#x5230; <a href="https://github.com/qinyuanpei/BlogScripts/blob/master/HexoBlog.py" target="_blank" rel="noopener">&#x8FD9;&#x91CC;</a> &#x6765;&#x83B7;&#x53D6;&#xFF0C;&#x672C;&#x6587;&#x751F;&#x6210;&#x7684;&#x76EE;&#x5F55;&#x53EF;&#x4EE5;&#x5230; <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" target="_blank" rel="noopener">&#x8FD9;&#x91CC;</a> &#x6765;&#x8BBF;&#x95EE;&#xFF0C;&#x518D;&#x6B21;&#x8C22;&#x8C22;&#x5927;&#x5BB6;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/1320325685/">Unity3D游戏开发之从Unity3D项目版本控制说起</a></li><li><a href="https://qinyuanpei.github.io/posts/3444626340/">博客图片迁移折腾记</a></li><li><a href="https://qinyuanpei.github.io/posts/2822230423/">基于Python实现Windows下壁纸切换功能</a></li><li><a href="https://hjptriplebee.github.io/Travis与Codecov入门.html/">Github美化-Travis与Codecov入门</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/1329254441/" rel="external">使用Python生成博客目录并自动更新README</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/1329254441/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/1329254441/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Github/">Github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Script/">Script</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/1329254441/&title=《使用Python生成博客目录并自动更新README》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/1329254441/&title=《使用Python生成博客目录并自动更新README》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/1329254441/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Python生成博客目录并自动更新README》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/1329254441/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/1329254441/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/2805694118/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">基于Python实现的微信好友数据分析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1933583281/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">愿你和我一样喜欢蛋炒饭</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/1329254441/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/1329254441/&title=《使用Python生成博客目录并自动更新README》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/1329254441/&title=《使用Python生成博客目录并自动更新README》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/1329254441/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Python生成博客目录并自动更新README》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/1329254441/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/1329254441/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/1329254441/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

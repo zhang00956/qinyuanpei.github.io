@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        扩展Unity3D编辑器的脚本模板 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;最近在学习Shader时感觉Shader语言参数众多、语法诡异，如果每次都从头开始写Shader一定是一件痛苦的事情。如果可以在本地定义好一组标准的Shader模板，这样当我们需要实现某些效果类似的Shader时，就可以在这个Shader模板的基础上进行修改。因为Shader文件是一个文本文件，所以我们可以非常容易地创建这样一个模板，在这个模板中我们可以进一步完善相关的参数">
+<meta name="keywords" content="Unity3D,编辑器,模板">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扩展Unity3D编辑器的脚本模板">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/3653662258/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;最近在学习Shader时感觉Shader语言参数众多、语法诡异，如果每次都从头开始写Shader一定是一件痛苦的事情。如果可以在本地定义好一组标准的Shader模板，这样当我们需要实现某些效果类似的Shader时，就可以在这个Shader模板的基础上进行修改。因为Shader文件是一个文本文件，所以我们可以非常容易地创建这样一个模板，在这个模板中我们可以进一步完善相关的参数">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.524Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="扩展Unity3D编辑器的脚本模板">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;最近在学习Shader时感觉Shader语言参数众多、语法诡异，如果每次都从头开始写Shader一定是一件痛苦的事情。如果可以在本地定义好一组标准的Shader模板，这样当我们需要实现某些效果类似的Shader时，就可以在这个Shader模板的基础上进行修改。因为Shader文件是一个文本文件，所以我们可以非常容易地创建这样一个模板，在这个模板中我们可以进一步完善相关的参数">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">扩展Unity3D编辑器的脚本模板</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">扩展Unity3D编辑器的脚本模板</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-01-08T13:58:44.000Z" itemprop="datePublished" class="page-time">
+  2016-01-08
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏引擎/">游戏引擎</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#按图索骥，模板在哪里？"><span class="post-toc-number">1.</span> <span class="post-toc-text">按图索骥，模板在哪里？</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#来自星星的黑科技"><span class="post-toc-number">2.</span> <span class="post-toc-text">来自星星的黑科技</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#小结"><span class="post-toc-number">3.</span> <span class="post-toc-text">小结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">4.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-扩展Unity3D编辑器的脚本模板" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">扩展Unity3D编辑器的脚本模板</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-01-08 13:58:44" datetime="2016-01-08T13:58:44.000Z" itemprop="datePublished">2016-01-08</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏引擎/">游戏引擎</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        14 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x6700;&#x8FD1;&#x5728;&#x5B66;&#x4E60;Shader&#x65F6;&#x611F;&#x89C9;Shader&#x8BED;&#x8A00;&#x53C2;&#x6570;&#x4F17;&#x591A;&#x3001;&#x8BED;&#x6CD5;&#x8BE1;&#x5F02;&#xFF0C;&#x5982;&#x679C;&#x6BCF;&#x6B21;&#x90FD;&#x4ECE;&#x5934;&#x5F00;&#x59CB;&#x5199;Shader&#x4E00;&#x5B9A;&#x662F;&#x4E00;&#x4EF6;&#x75DB;&#x82E6;&#x7684;&#x4E8B;&#x60C5;&#x3002;&#x5982;&#x679C;&#x53EF;&#x4EE5;&#x5728;&#x672C;&#x5730;&#x5B9A;&#x4E49;&#x597D;&#x4E00;&#x7EC4;&#x6807;&#x51C6;&#x7684;Shader&#x6A21;&#x677F;&#xFF0C;&#x8FD9;&#x6837;&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5B9E;&#x73B0;&#x67D0;&#x4E9B;&#x6548;&#x679C;&#x7C7B;&#x4F3C;&#x7684;Shader&#x65F6;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x4E2A;Shader&#x6A21;&#x677F;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#x3002;&#x56E0;&#x4E3A;Shader&#x6587;&#x4EF6;&#x662F;&#x4E00;&#x4E2A;&#x6587;&#x672C;&#x6587;&#x4EF6;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x975E;&#x5E38;&#x5BB9;&#x6613;&#x5730;&#x521B;&#x5EFA;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x6A21;&#x677F;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x6A21;&#x677F;&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8FDB;&#x4E00;&#x6B65;&#x5B8C;&#x5584;&#x76F8;&#x5173;&#x7684;&#x53C2;&#x6570;&#x6CE8;&#x91CA;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x4E0D;&#x7528;&#x6BCF;&#x6B21;&#x5199;Shader&#x7684;&#x65F6;&#x5019;&#x90FD;&#x9700;&#x8981;&#x67E5;&#x6587;&#x6863;&#x4E86;&#xFF0C;&#x4ECE;&#x8FD9;&#x4E2A;&#x89D2;&#x5EA6;&#x51FA;&#x53D1;&#xFF0C;&#x5C31;&#x8FDB;&#x5165;&#x4E86;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x6B63;&#x9898;&#xFF1A;&#x6269;&#x5C55;Unity3D&#x7F16;&#x8F91;&#x5668;&#x7684;&#x811A;&#x672C;&#x6A21;&#x677F;&#x3002;<br><a id="more"></a></p>
+<h1 id="&#x6309;&#x56FE;&#x7D22;&#x9AA5;&#xFF0C;&#x6A21;&#x677F;&#x5728;&#x54EA;&#x91CC;&#xFF1F;"><a href="#&#x6309;&#x56FE;&#x7D22;&#x9AA5;&#xFF0C;&#x6A21;&#x677F;&#x5728;&#x54EA;&#x91CC;&#xFF1F;" class="headerlink" title="&#x6309;&#x56FE;&#x7D22;&#x9AA5;&#xFF0C;&#x6A21;&#x677F;&#x5728;&#x54EA;&#x91CC;&#xFF1F;"></a>&#x6309;&#x56FE;&#x7D22;&#x9AA5;&#xFF0C;&#x6A21;&#x677F;&#x5728;&#x54EA;&#x91CC;&#xFF1F;</h1><p>&#x2003;&#x2003;Unity3D&#x9ED8;&#x8BA4;&#x7684;&#x811A;&#x672C;&#x6A21;&#x7248;&#x4F4D;&#x4E8E;/Editor/Data/Resources/ScriptTemplates/&#x76EE;&#x5F55;&#x4E0B;&#xFF0C;&#x6CE8;&#x610F;&#x8BE5;&#x76EE;&#x5F55;&#x76F8;&#x5BF9;Unity3D&#x7684;&#x5B89;&#x88C5;&#x76EE;&#x5F55;&#x800C;&#x8A00;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x627E;&#x5230;Unity3D&#x4E2D;&#x811A;&#x672C;&#x6A21;&#x677F;&#x7684;&#x67D0;&#x4E9B;&#x86DB;&#x4E1D;&#x9A6C;&#x8FF9;&#xFF0C;&#x9996;&#x5148;&#xFF0C;&#x811A;&#x672C;&#x6A21;&#x677F;&#x662F;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x6587;&#x672C;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E2A;&#x6587;&#x672C;&#x6587;&#x4EF6;&#x4E2D;&#x9884;&#x5148;&#x586B;&#x5145;&#x4E86;&#x5185;&#x5BB9;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x7F16;&#x8F91;&#x5668;&#x4E2D;&#x521B;&#x5EFA;&#x6A21;&#x811A;&#x672C;&#x6216;&#x8005;Shader&#x7684;&#x65F6;&#x5019;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x8BFB;&#x53D6;&#x8FD9;&#x4E9B;&#x6587;&#x4EF6;&#x7136;&#x540E;&#x5728;&#x5199;&#x5165;&#x9879;&#x76EE;&#x4E2D;&#x7684;&#x6307;&#x5B9A;&#x8DEF;&#x5F84;&#x7684;&#x3002;&#x5176;&#x6B21;&#xFF0C;&#x8FD9;&#x4E9B;&#x6A21;&#x677F;&#x6587;&#x4EF6;&#x4E2D;#SCRIPTNAME#&#x6216;&#x8005;#NAME#&#x8FD9;&#x6837;&#x7684;&#x6807;&#x8BB0;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x5728;&#x7F16;&#x8F91;&#x5668;&#x4E2D;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8FD9;&#x4E2A;&#x6807;&#x8BB0;&#x4F1A;&#x88AB;&#x66FF;&#x6362;&#x6210;&#x6307;&#x5B9A;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x3002;&#x6BD4;&#x5982;Unity3D&#x4E2D;&#x7EE7;&#x627F;&#x81EA;MonoBehaviour&#x7684;&#x811A;&#x672C;&#xFF0C;&#x6709;&#x4E00;&#x4E2A;&#x975E;&#x5E38;&#x91CD;&#x8981;&#x7684;&#x7279;&#x6027;&#x662F;&#x6587;&#x4EF6;&#x540D;&#x5FC5;&#x987B;&#x548C;&#x7C7B;&#x540D;&#x4FDD;&#x6301;&#x4E00;&#x81F4;&#xFF0C;&#x8FD9;&#x56FA;&#x7136;&#x662F;Unity3D&#x5F15;&#x64CE;&#x7684;&#x4E00;&#x4E2A;&#x8BBE;&#x5B9A;&#xFF0C;&#x53EF;&#x662F;&#x5728;&#x8FD9;&#x91CC;&#x4EA6;&#x53EF;&#x4EE5;&#x627E;&#x5230;&#x4E00;&#x4E2A;&#x53EF;&#x4EE5;&#x79F0;&#x5F97;&#x4E0A;&#x7406;&#x7531;&#x7684;&#x7406;&#x7531;&#x3002;&#x6211;&#x4EEC;&#x6CE8;&#x610F;&#x5230;&#x8FD9;&#x4E9B;&#x6A21;&#x677F;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x4E2D;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x72EC;&#x4E00;&#x65E0;&#x4E8C;&#x7684;&#x6570;&#x5B57;&#xFF0C;&#x6BD4;&#x5982;C#&#x811A;&#x672C;&#x7684;&#x6A21;&#x677F;&#x4E2D;&#x7684;&#x6570;&#x5B57;&#x662F;81&#x3001;Shader&#x6A21;&#x677F;&#x4E2D;&#x7684;&#x6570;&#x5B57;&#x662F;83&#xFF0C;&#x8FD9;&#x4E9B;&#x6570;&#x5B57;&#x662F;&#x4EC0;&#x4E48;&#x5462;&#xFF0C;&#x535A;&#x4E3B;&#x8FD9;&#x91CC;&#x5C06;&#x5176;&#x79F0;&#x4E3A;&#x6765;&#x81EA;&#x661F;&#x661F;&#x7684;&#x9ED1;&#x79D1;&#x6280;&#x3002;</p>
+<h1 id="&#x6765;&#x81EA;&#x661F;&#x661F;&#x7684;&#x9ED1;&#x79D1;&#x6280;"><a href="#&#x6765;&#x81EA;&#x661F;&#x661F;&#x7684;&#x9ED1;&#x79D1;&#x6280;" class="headerlink" title="&#x6765;&#x81EA;&#x661F;&#x661F;&#x7684;&#x9ED1;&#x79D1;&#x6280;"></a>&#x6765;&#x81EA;&#x661F;&#x661F;&#x7684;&#x9ED1;&#x79D1;&#x6280;</h1><p>&#x2003;&#x2003;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x7ECF;&#x5E38;&#x6363;&#x9F13;Unity3D&#x7F16;&#x8F91;&#x5668;&#x7684;&#x4EBA;&#xFF0C;&#x5982;&#x679C;&#x8BF4;&#x4F60;&#x4E0D;&#x77E5;&#x9053;MenuItem&#x3001;EditorWindow&#x3001;ScriptableWizard&#x8FD9;&#x4E9B;&#x9ED1;&#x79D1;&#x6280;&#xFF0C;&#x90A3;&#x4E48;&#x8BF4;&#x660E;&#x4F60;&#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x559C;&#x6B22;&#x6298;&#x817E;&#x548C;&#x63A2;&#x7D22;&#x7684;&#x4EBA;&#x3002;&#x4ECE;Unity3D&#x7684;API&#x6587;&#x6863;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;MenuItem&#x7684;&#x539F;&#x578B;&#x4E3A;&#xFF1A;<br></p><figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MenuItem(<span class="built_in">string</span> itemName,<span class="keyword">bool</span> isValidateFunction,<span class="keyword">int</span> priority)</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x6211;&#x77E5;&#x9053;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x4F7F;&#x7528;MenuItem&#x5E38;&#x5E38;&#x4F7F;&#x7528;&#x7684;&#x662F;&#x5B83;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#xFF0C;&#x5373;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x83DC;&#x5355;&#x9879;&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x201D;/&#x201C;&#x8FD9;&#x6837;&#x7684;&#x5206;&#x9694;&#x7B26;&#x6765;&#x8868;&#x793A;&#x83DC;&#x5355;&#x7684;&#x5C42;&#x7EA7;&#xFF0C;MenuItem&#x9700;&#x8981;&#x914D;&#x5408;&#x4E00;&#x4E2A;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#x6765;&#x4F7F;&#x7528;&#xFF0C;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x5F53;&#x6211;&#x4EEC;&#x70B9;&#x51FB;&#x5F53;&#x524D;&#x5B9A;&#x4E49;&#x7684;&#x83DC;&#x5355;&#x540E;&#x5C31;&#x4F1A;&#x53BB;&#x6267;&#x884C;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#x4E2D;&#x7684;&#x4EE3;&#x7801;&#xFF0C;&#x56E0;&#x6B64;MenuItem&#x5E38;&#x5E38;&#x53EF;&#x4EE5;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x505A;&#x4E9B;&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x5F00;&#x53D1;&#x7684;&#x5DE5;&#x4F5C;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x7B2C;&#x4E8C;&#x4E2A;&#x53C2;&#x6570;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x9A8C;&#x8BC1;&#x7684;&#x6807;&#x5FD7;&#xFF0C;&#x5982;&#x679C;&#x8BE5;&#x6807;&#x5FD7;&#x4E3A;true&#xFF0C;&#x610F;&#x5473;&#x7740;&#x6211;&#x4EEC;&#x5B9A;&#x4E49;&#x7684;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#x662F;&#x4E00;&#x4E2A;&#x9A8C;&#x8BC1;&#x65B9;&#x6CD5;&#x5728;&#x6267;&#x884C;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#x524D;&#x4F1A;&#x9996;&#x5148;&#x5BF9;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x9A8C;&#x8BC1;&#xFF0C;&#x8FD9;&#x4E2A;&#x6211;&#x4EEC;&#x6682;&#x4E14;&#x4E0D;&#x7BA1;&#xFF0C;&#x56E0;&#x4E3A;&#x4ECA;&#x5929;&#x6211;&#x4EEC;&#x8FD9;&#x4E2A;&#x6765;&#x81EA;&#x661F;&#x661F;&#x7684;&#x9ED1;&#x79D1;&#x6280;&#x4E3B;&#x8981;&#x548C;&#x7B2C;&#x4E09;&#x4E2A;&#x53C2;&#x6570;&#x6709;&#x5173;&#xFF0C;&#x7B2C;&#x4E09;&#x4E2A;&#x53C2;&#x6570;&#x8868;&#x793A;&#x4E00;&#x4E2A;&#x4F18;&#x5148;&#x7EA7;&#xFF0C;&#x5B83;&#x8868;&#x793A;&#x83DC;&#x5355;&#x9879;&#x5728;&#x83DC;&#x5355;&#x680F;&#x4E2D;&#x7684;&#x5C55;&#x793A;&#x987A;&#x5E8F;&#xFF0C;&#x4F18;&#x5148;&#x7EA7;&#x5927;&#x7684;&#x83DC;&#x5355;&#x9879;&#x4F1A;&#x5C55;&#x793A;&#x5728;&#x4F18;&#x5148;&#x7EA7;&#x5C0F;&#x7684;&#x83DC;&#x5355;&#x9879;&#x4E0B;&#x9762;&#xFF0C;&#x7531;&#x6B64;&#x6211;&#x4EEC;&#x5C31;&#x660E;&#x767D;&#x4E86;&#x4E86;&#x6A21;&#x677F;&#x6587;&#x4EF6;&#x540D;&#x4E2D;&#x7684;&#x7C7B;&#x4F3C;81&#x3001;83&#x8FD9;&#x6837;&#x7684;&#x6570;&#x5B57;&#x7684;&#x771F;&#x5B9E;&#x542B;&#x4E49;&#xFF0C;&#x6CE8;&#x610F;&#x5230;&#x6A21;&#x677F;&#x6587;&#x4EF6;&#x7684;&#x6392;&#x5217;&#x987A;&#x5E8F;&#x548C;&#x7F16;&#x8F91;&#x5668;&#x4E2D;&#x7684;&#x83DC;&#x5355;&#x9879;&#x987A;&#x5E8F;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x505A;&#x4E00;&#x4E2A;&#x5C1D;&#x8BD5;&#xFF0C;&#x7F16;&#x5199;&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#xFF1A;<br></p><figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[MenuItem(<span class="string">&quot;Assets/Create/Lua Scripts&quot;</span>, <span class="literal">false</span>, <span class="number">85</span>)]</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateLuaScripts</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">        </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">[MenuItem(<span class="string">&quot;Assets/Create/&#x56FA;&#x5B9A;&#x529F;&#x80FD;&#x7740;&#x8272;&#x5668;&quot;</span>, <span class="literal">false</span>, <span class="number">86</span>)]</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateFixedFunctionShader</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">        </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">[MenuItem(<span class="string">&quot;Assets/Create/&#x8868;&#x9762;&#x7740;&#x8272;&#x5668;&quot;</span>, <span class="literal">false</span>, <span class="number">87</span>)]</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateSurfaceShader</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">       </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">[MenuItem(<span class="string">&quot;Assets/Create/&#x53EF;&#x7F16;&#x7A0B;&#x7740;&#x8272;&#x5668;&quot;</span>, <span class="literal">false</span>, <span class="number">88</span>)]</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateVertexAndFragmentShader</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">        </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x6CE8;&#x610F;&#x5230;&#x6211;&#x4EEC;&#x6309;&#x7167;&#x5DF2;&#x77E5;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#x7EE7;&#x7EED;&#x5199;&#x4E86;&#x56DB;&#x4E2A;&#x65B9;&#x6CD5;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x5728;&#x7F16;&#x8F91;&#x5668;&#x4E2D;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#x9ED8;&#x8BA4;&#x7684;&#x83DC;&#x5355;&#x680F;&#x53D1;&#x751F;&#x4E86;&#x53D8;&#x5316;&#xFF1A;</p>
+<p><img src alt="&#x9ED1;&#x79D1;&#x6280;&#x8BA9;&#x83DC;&#x5355;&#x680F;&#x53D1;&#x751F;&#x4E86;&#x53D8;&#x5316;"></p>
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x7684;&#x8FD9;&#x56DB;&#x4E2A;&#x83DC;&#x5355;&#x90FD;&#x751F;&#x6548;&#x4E86;&#xFF0C;&#x867D;&#x7136;&#x5B83;&#x4EEC;&#x6682;&#x65F6;&#x4EC0;&#x4E48;&#x90FD;&#x505A;&#x4E0D;&#x4E86;&#xFF0C;&#x4F46;&#x987A;&#x7740;&#x8FD9;&#x4E2A;&#x65B9;&#x5411;&#x53BB;&#x63A2;&#x7D22;&#xFF0C;&#x6211;&#x4EEC;&#x662F;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x6700;&#x521D;&#x7684;&#x68A6;&#x60F3;&#x7684;&#x3002;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x6765;&#x601D;&#x8003;&#x5982;&#x4F55;&#x6839;&#x636E;&#x6A21;&#x677F;&#x6765;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E2A;&#x5BF9;&#x6211;&#x4EEC;&#x6765;&#x8BF4;&#x7B80;&#x76F4;&#x592A;&#x7B80;&#x5355;&#x4E86;&#xFF0C;&#x901A;&#x8FC7;StreamReader&#x6765;&#x8BFB;&#x53D6;&#x6A21;&#x677F;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x7528;StreamWriter&#x6765;&#x751F;&#x6210;&#x6587;&#x4EF6;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;&#x53EF;&#x662F;&#x8FD9;&#x6837;&#x521B;&#x5EFA;&#x7684;&#x6587;&#x4EF6;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x662F;&#x56FA;&#x5B9A;&#x7684;&#xFF0C;&#x5728;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x6CA1;&#x6CD5;&#x4FEE;&#x6539;&#xFF0C;&#x800C;&#x4E14;&#x5373;&#x4F7F;&#x4FEE;&#x6539;&#x4E86;&#x6587;&#x4EF6;&#x5185;&#x5B9A;&#x4E49;&#x7684;&#x540D;&#x5B57;&#x5E76;&#x4E0D;&#x4F1A;&#x6539;&#x53D8;&#x554A;&#x3002;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x4E00;&#x4E2A;&#x66F4;&#x597D;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x3002;Unity3D&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;UnityEditor.ProjectWindowCallback&#x7684;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x7A7A;&#x95F4;&#x4E2D;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;&#x79F0;&#x4E3A;EndNameEditAction&#x7684;&#x7C7B;&#xFF0C;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x7EE7;&#x627F;&#x8FD9;&#x4E2A;&#x7C7B;&#x5C31;&#x53EF;&#x4EE5;&#x5B8C;&#x6210;&#x8FD9;&#x4E2A;&#x4EFB;&#x52A1;&#x3002;&#x8FD9;&#x4E2A;&#x7C7B;&#x9700;&#x8981;&#x91CD;&#x5199;Action&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x5B8C;&#x6574;&#x6B65;&#x9AA4;&#x662F;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#x7136;&#x540E;&#x4F7F;&#x5176;&#x9AD8;&#x4EAE;&#x663E;&#x793A;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x90E8;&#x5206;&#x4EE3;&#x7801;&#x5B9E;&#x73B0;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x521B;&#x5EFA;&#x8D44;&#x6E90;&#x7684;Action&#x7C7B;&#x5E76;&#x5B9E;&#x73B0;&#x5176;Action&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title">CreateAssetAction</span> : <span class="title">EndNameEditAction</span></span><br><span class="line">{</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Action</span>(<span class="params"><span class="keyword">int</span> instanceId, <span class="keyword">string</span> pathName, <span class="keyword">string</span> resourceFile</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x521B;&#x5EFA;&#x8D44;&#x6E90;</span></span><br><span class="line">        Object obj = CreateAssetFormTemplate(pathName, resourceFile);</span><br><span class="line">        <span class="comment">//&#x9AD8;&#x4EAE;&#x663E;&#x793A;&#x8BE5;&#x8D44;&#x6E90;</span></span><br><span class="line">        ProjectWindowUtil.ShowCreatedAsset(obj);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> Object <span class="title">CreateAssetFormTemplate</span>(<span class="params"><span class="keyword">string</span> pathName, <span class="keyword">string</span> resourceFile</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x83B7;&#x53D6;&#x8981;&#x521B;&#x5EFA;&#x8D44;&#x6E90;&#x7684;&#x7EDD;&#x5BF9;&#x8DEF;&#x5F84;</span></span><br><span class="line">        <span class="keyword">string</span> fullName = Path.GetFullPath(pathName);</span><br><span class="line">        <span class="comment">//&#x8BFB;&#x53D6;&#x672C;&#x5730;&#x6A21;&#x7248;&#x6587;&#x4EF6;</span></span><br><span class="line">        StreamReader reader = <span class="keyword">new</span> StreamReader(resourceFile);</span><br><span class="line">        <span class="keyword">string</span> content = reader.ReadToEnd();</span><br><span class="line">        reader.Close();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x83B7;&#x53D6;&#x8D44;&#x6E90;&#x7684;&#x6587;&#x4EF6;&#x540D;</span></span><br><span class="line">        <span class="keyword">string</span> fileName = Path.GetFileNameWithoutExtension(pathName);</span><br><span class="line">        <span class="comment">//&#x66FF;&#x6362;&#x9ED8;&#x8BA4;&#x7684;&#x6587;&#x4EF6;&#x540D;</span></span><br><span class="line">        content = content.Replace(<span class="string">&quot;#NAME&quot;</span>, fileName);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x5199;&#x5165;&#x65B0;&#x6587;&#x4EF6;</span></span><br><span class="line">        StreamWriter writer = <span class="keyword">new</span> StreamWriter(fullName, <span class="literal">false</span>, System.Text.Encoding.UTF8);</span><br><span class="line">        writer.Write(content);</span><br><span class="line">        writer.Close();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x5237;&#x65B0;&#x672C;&#x5730;&#x8D44;&#x6E90;</span></span><br><span class="line">        AssetDatabase.ImportAsset(pathName);</span><br><span class="line">        AssetDatabase.Refresh();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> AssetDatabase.LoadAssetAtPath(pathName, <span class="keyword">typeof</span>(Object));</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x8FD9;&#x90E8;&#x5206;&#x4EE3;&#x7801;&#x76F8;&#x5BF9;&#x6765;&#x8BF4;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#xFF0C;&#x5C31;&#x662F;&#x8BFB;&#x53D6;&#x672C;&#x5730;&#x6A21;&#x677F;&#x6587;&#x4EF6;&#x7136;&#x540E;&#x751F;&#x6210;&#x65B0;&#x6587;&#x4EF6;&#xFF0C;&#x5728;&#x751F;&#x6210;&#x65B0;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x5C06;#NAME&#x66FF;&#x6362;&#x6210;&#x5B9E;&#x9645;&#x7684;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x5B8C;&#x6210;&#x4E86;&#x6587;&#x4EF6;&#x8D44;&#x6E90;&#x7684;&#x521B;&#x5EFA;&#x3002;&#x73B0;&#x5728;&#x7684;&#x95EE;&#x9898;&#x662F;&#x5982;&#x4F55;&#x5728;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#x83B7;&#x53D6;&#x5B9E;&#x9645;&#x7684;&#x8DEF;&#x5F84;&#xFF0C;&#x8FD9;&#x90E8;&#x5206;&#x4EE3;&#x7801;&#x5B9E;&#x73B0;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight typescript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">string</span> GetSelectedPath()</span><br><span class="line">{</span><br><span class="line">    <span class="comment">//&#x9ED8;&#x8BA4;&#x8DEF;&#x5F84;&#x4E3A;Assets</span></span><br><span class="line">    <span class="built_in">string</span> selectedPath = <span class="string">&quot;Assets&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x83B7;&#x53D6;&#x9009;&#x4E2D;&#x7684;&#x8D44;&#x6E90;</span></span><br><span class="line">    <span class="built_in">Object</span>[] selection = Selection.GetFiltered(<span class="keyword">typeof</span>(<span class="built_in">Object</span>), SelectionMode.Assets);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x904D;&#x5386;&#x9009;&#x4E2D;&#x7684;&#x8D44;&#x6E90;&#x4EE5;&#x8FD4;&#x56DE;&#x8DEF;&#x5F84;</span></span><br><span class="line">    foreach (<span class="built_in">Object</span> obj <span class="keyword">in</span> selection)</span><br><span class="line">    {</span><br><span class="line">        selectedPath = AssetDatabase.GetAssetPath(obj);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">string</span>.IsNullOrEmpty(selectedPath) &amp;&amp; File.Exists(selectedPath))</span><br><span class="line">        {</span><br><span class="line">            selectedPath = Path.GetDirectoryName(selectedPath);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> selectedPath;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x73B0;&#x5728;&#x89E3;&#x51B3;&#x4E86;&#x521B;&#x5EFA;&#x8D44;&#x6E90;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x63A5;&#x4E0B;&#x6765;&#x53EA;&#x8981;&#x8C03;&#x7528;ProjectWindowUtil&#x7684;StartNameEditingIfProjectWindowExists&#x65B9;&#x6CD5;&#x5373;&#x53EF;&#xFF0C;&#x8BE5;&#x65B9;&#x6CD5;&#x9700;&#x8981;&#x4F20;&#x5165;&#x4E00;&#x4E2A;&#x7EE7;&#x627F;&#x81EA;EndNameEditAction&#x7684;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x3001;&#x76EE;&#x6807;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x548C;&#x6A21;&#x677F;&#x6587;&#x4EF6;&#x7684;&#x8DEF;&#x5F84;&#x3002;&#x4F8B;&#x5982;&#x8981;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;Lua&#x811A;&#x672C;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x5B9E;&#x73B0;&#xFF1A;<br></p><figure class="highlight aspectj"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[MenuItem(<span class="string">&quot;Assets/Create/Lua Scripts&quot;</span>, <span class="keyword">false</span>, <span class="number">85</span>)]</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> CreateLuaScripts()</span><br><span class="line">{</span><br><span class="line">    ProjectWindowUtil.StartNameEditingIfProjectWindowExists(<span class="number">0</span>,</span><br><span class="line">        ScriptableObject.CreateInstance&lt;CreateAssetAction&gt;(),</span><br><span class="line">        GetSelectedPath() + <span class="string">&quot;/NewLuaScript.lua&quot;</span>, <span class="keyword">null</span>,</span><br><span class="line">        <span class="string">&quot;Assets/Editor/Template/85-Lua-NewLuaScript.lua.txt&quot;</span>);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h1 id="&#x5C0F;&#x7ED3;"><a href="#&#x5C0F;&#x7ED3;" class="headerlink" title="&#x5C0F;&#x7ED3;"></a>&#x5C0F;&#x7ED3;</h1><p>&#x2003;&#x2003;&#x73B0;&#x5728;&#x6709;&#x4E86;&#x8FD9;&#x4E2A;&#x9ED1;&#x79D1;&#x6280;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x66F4;&#x591A;&#x7684;&#x6A21;&#x677F;&#x6765;&#x6269;&#x5C55;&#x7F16;&#x8F91;&#x5668;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x6BD4;&#x5982;&#x5BF9;Shader&#x800C;&#x8A00;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x4E9B;&#x57FA;&#x7840;&#x6027;&#x7684;Shader&#x6A21;&#x677F;&#xFF0C;&#x7136;&#x540E;&#x6BCF;&#x6B21;&#x9700;&#x8981;&#x5199;Shader&#x7684;&#x65F6;&#x5019;&#x76F4;&#x63A5;&#x4ECE;&#x6A21;&#x677F;&#x5E93;&#x4E2D;&#x9009;&#x62E9;&#x4E00;&#x4E2A;&#x529F;&#x80FD;&#x7C7B;&#x4F3C;&#x7684;Shader&#x7136;&#x540E;&#x5728;&#x6B64;&#x57FA;&#x7840;&#x4E0A;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#xFF0C;&#x8FD9;&#x6837;&#x6BD4;&#x4ECE;&#x5934;&#x5F00;&#x59CB;&#x5199;&#x4E00;&#x4E2A;&#x65B0;&#x7684;Shader&#x5E94;&#x8BE5;&#x4F1A;&#x8F7B;&#x677E;&#x4E0D;&#x5C11;&#xFF0C;&#x8FD9;&#x6BB5;&#x65F6;&#x95F4;&#x5B66;&#x4E60;Shader&#xFF0C;&#x611F;&#x89C9;&#x8FDB;&#x7A0B;&#x7F13;&#x6162;&#x79BB;&#x56FE;&#x5F62;&#x5B66;&#x9AD8;&#x624B;&#x9065;&#x9065;&#x65E0;&#x671F;&#xFF0C;&#x884C;&#x4E86;&#xFF0C;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x4E86;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li><li><a href="https://qinyuanpei.github.io/posts/1156673678/">EasyAR尝鲜系列教程之自定义Marker的实现</a></li><li><a href="https://qinyuanpei.github.io/posts/4088452183/">Unity3D游戏开发之MMD For Unity插件研究</a></li><li><a href="https://blog.yuanpei.me/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/3653662258/" rel="external">扩展Unity3D编辑器的脚本模板</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/3653662258/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/3653662258/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Unity3D/">Unity3D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/模板/">模板</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3653662258/&title=《扩展Unity3D编辑器的脚本模板》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3653662258/&title=《扩展Unity3D编辑器的脚本模板》 — PayneQinのBlog&source=&emsp;&emsp;最近在学习Shader时感觉Shader语言参数众多、语法诡异，如果每次都从头开始写Shader一定是一件痛苦的事情。如果可以在本..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3653662258/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《扩展Unity3D编辑器的脚本模板》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3653662258/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3653662258/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/632291273/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">在Unity3D中基于订阅者模式实现事件机制</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1670305415/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">《Cg Programming in Unity》读书笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/3653662258/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3653662258/&title=《扩展Unity3D编辑器的脚本模板》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3653662258/&title=《扩展Unity3D编辑器的脚本模板》 — PayneQinのBlog&source=&emsp;&emsp;最近在学习Shader时感觉Shader语言参数众多、语法诡异，如果每次都从头开始写Shader一定是一件痛苦的事情。如果可以在本..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3653662258/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《扩展Unity3D编辑器的脚本模板》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3653662258/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3653662258/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/3653662258/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

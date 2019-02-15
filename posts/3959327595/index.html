@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        C#中Socket通信编程的同步实现 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;本文通过分析和总结C#中Socket通信编程的关键技术，按照同步实现的方式实现了一个简单的Socket聊天程序，目的是通过这个程序来掌握Socket编程，为进一步开发Unity3D网络游戏打下一个坚实的基础。">
+<meta name="keywords" content="Socket,通信,同步,多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C#中Socket通信编程的同步实现">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/3959327595/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;本文通过分析和总结C#中Socket通信编程的关键技术，按照同步实现的方式实现了一个简单的Socket聊天程序，目的是通过这个程序来掌握Socket编程，为进一步开发Unity3D网络游戏打下一个坚实的基础。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz01tlahhdj211y0lcgnz.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fyzctms5wsj211y0lc7ez.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C#中Socket通信编程的同步实现">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;本文通过分析和总结C#中Socket通信编程的关键技术，按照同步实现的方式实现了一个简单的Socket聊天程序，目的是通过这个程序来掌握Socket编程，为进一步开发Unity3D网络游戏打下一个坚实的基础。">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz01tlahhdj211y0lcgnz.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">C#中Socket通信编程的同步实现</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">C#中Socket通信编程的同步实现</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-03-15T15:05:56.000Z" itemprop="datePublished" class="page-time">
+  2015-03-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Socket编程基础"><span class="post-toc-number">1.</span> <span class="post-toc-text">Socket编程基础</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#什么是Socket编程的同步实现"><span class="post-toc-number">2.</span> <span class="post-toc-text">什么是Socket编程的同步实现</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#如何实现Socket同步通信"><span class="post-toc-number">3.</span> <span class="post-toc-text">如何实现Socket同步通信</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#服务端"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">服务端</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基本流程"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">基本流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#代码示例"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">代码示例</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#客户端"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">客户端</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基本流程-1"><span class="post-toc-number">3.2.1.</span> <span class="post-toc-text">基本流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#代码示例-1"><span class="post-toc-number">3.2.2.</span> <span class="post-toc-text">代码示例</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">5.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-C#中Socket通信编程的同步实现" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">C#中Socket通信编程的同步实现</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-03-15 15:05:56" datetime="2015-03-15T15:05:56.000Z" itemprop="datePublished">2015-03-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        24 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x672C;&#x6587;&#x901A;&#x8FC7;&#x5206;&#x6790;&#x548C;&#x603B;&#x7ED3;C#&#x4E2D;Socket&#x901A;&#x4FE1;&#x7F16;&#x7A0B;&#x7684;&#x5173;&#x952E;&#x6280;&#x672F;&#xFF0C;&#x6309;&#x7167;&#x540C;&#x6B65;&#x5B9E;&#x73B0;&#x7684;&#x65B9;&#x5F0F;&#x5B9E;&#x73B0;&#x4E86;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;Socket&#x804A;&#x5929;&#x7A0B;&#x5E8F;&#xFF0C;&#x76EE;&#x7684;&#x662F;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x7A0B;&#x5E8F;&#x6765;&#x638C;&#x63E1;Socket&#x7F16;&#x7A0B;&#xFF0C;&#x4E3A;&#x8FDB;&#x4E00;&#x6B65;&#x5F00;&#x53D1;Unity3D&#x7F51;&#x7EDC;&#x6E38;&#x620F;&#x6253;&#x4E0B;&#x4E00;&#x4E2A;&#x575A;&#x5B9E;&#x7684;&#x57FA;&#x7840;&#x3002;</p>
+<a id="more"></a>
+<h1 id="Socket&#x7F16;&#x7A0B;&#x57FA;&#x7840;"><a href="#Socket&#x7F16;&#x7A0B;&#x57FA;&#x7840;" class="headerlink" title="Socket&#x7F16;&#x7A0B;&#x57FA;&#x7840;"></a>Socket&#x7F16;&#x7A0B;&#x57FA;&#x7840;</h1><p>&#x2003;&#x2003;&#x5173;&#x4E8E;Socket&#x7F16;&#x7A0B;&#x57FA;&#x7840;&#x90E8;&#x5206;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x4E86;&#x89E3;&#x548C;&#x638C;&#x63E1;.NET&#x6846;&#x67B6;&#x4E0B;&#x4E3A;Socket&#x7F16;&#x7A0B;&#x63D0;&#x4F9B;&#x7684;&#x76F8;&#x5173;&#x7C7B;&#x548C;&#x63A5;&#x53E3;&#x65B9;&#x6CD5;&#x3002;.NET&#x4E2D;&#x5E38;&#x89C1;&#x7684;&#x7F51;&#x7EDC;&#x76F8;&#x5173;&#x7684;API&#x90FD;&#x96C6;&#x4E2D;&#x5728;System.Net&#x548C;System.Net.Socket&#x8FD9;&#x4E24;&#x4E2A;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x4E0B;&#xFF0C;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;MSDN&#x53BB;&#x4E86;&#x89E3;&#x8FD9;&#x4E24;&#x4E2A;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x4E0B;&#x76F8;&#x5173;&#x7684;&#x7C7B;&#x548C;&#x65B9;&#x6CD5;&#x3002;&#x8FD9;&#x91CC;&#x63F4;&#x5F15;&#x4E00;&#x4F4D;&#x670B;&#x53CB;&#x603B;&#x7ED3;&#x7684;&#x4E00;&#x7BC7;&#x6587;&#x7AE0;<a href="http://www.cnblogs.com/sunev/archive/2012/08/05/2604189.html" target="_blank" rel="noopener">http://www.cnblogs.com/sunev/archive/2012/08/05/2604189.html</a>&#xFF0C;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x4ECE;&#x8FD9;&#x91CC;&#x83B7;&#x5F97;&#x66F4;&#x4E3A;&#x76F4;&#x89C2;&#x7684;&#x8BA4;&#x8BC6;&#x3002;</p>
+<h1 id="&#x4EC0;&#x4E48;&#x662F;Socket&#x7F16;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x5B9E;&#x73B0;"><a href="#&#x4EC0;&#x4E48;&#x662F;Socket&#x7F16;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x5B9E;&#x73B0;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;Socket&#x7F16;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x5B9E;&#x73B0;"></a>&#x4EC0;&#x4E48;&#x662F;Socket&#x7F16;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x5B9E;&#x73B0;</h1><p>&#x2003;&#x2003;&#x672C;&#x6587;&#x7684;&#x76EE;&#x7684;&#x662F;&#x6309;&#x7167;&#x540C;&#x6B65;&#x5B9E;&#x73B0;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;Socket&#x804A;&#x5929;&#x7A0B;&#x5E8F;&#xFF0C;&#x56E0;&#x6B64;&#x5728;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x6765;&#x770B;&#x770B;&#x4EC0;&#x4E48;&#x662F;Socket&#x7F16;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x5B9E;&#x73B0;&#x3002;&#x6240;&#x8C13;Socket&#x7F16;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x5B9E;&#x73B0;&#x5C31;&#x662F;&#x6307;&#x6309;&#x7167;&#x540C;&#x6B65;&#x8FC7;&#x7A0B;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x5B9E;&#x73B0;Socket&#x901A;&#x4FE1;&#x3002;&#x4ECE;&#x7F16;&#x7A0B;&#x6765;&#x8BF4;&#xFF0C;&#x6211;&#x4EEC;&#x5E38;&#x7528;&#x7684;&#x65B9;&#x6CD5;&#x6216;&#x8005;&#x51FD;&#x6570;&#x90FD;&#x662F;&#x540C;&#x6B65;&#x8FC7;&#x7A0B;&#x3002;&#x56E0;&#x4E3A;&#x5F53;&#x6211;&#x4EEC;&#x8C03;&#x7528;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x6216;&#x8005;&#x51FD;&#x6570;&#x7684;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x80FD;&#x591F;&#x7ACB;&#x5373;&#x5F97;&#x5230;&#x5B83;&#x7684;&#x8FD4;&#x56DE;&#x503C;&#x3002;&#x53EF;&#x662F;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5728;Socket&#x901A;&#x4FE1;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x4E0D;&#x80FD;&#x4FDD;&#x8BC1;&#x65F6;&#x65F6;&#x523B;&#x523B;&#x8FDE;&#x63A5;&#x90FD;&#x901A;&#x7545;&#x3001;&#x66F4;&#x4E0D;&#x80FD;&#x591F;&#x4FDD;&#x8BC1;&#x65F6;&#x65F6;&#x523B;&#x523B;&#x90FD;&#x6709;&#x6570;&#x636E;&#x6536;&#x53D1;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x5C31;&#x9700;&#x8981;&#x4E0D;&#x65AD;&#x53BB;&#x8BFB;&#x53D6;&#x76F8;&#x5E94;&#x7684;&#x503C;&#x6765;&#x786E;&#x5B9A;&#x6574;&#x4E2A;&#x8FC7;&#x7A0B;&#x7684;&#x72B6;&#x6001;&#x3002;&#x8FD9;&#x5C31;&#x662F;Socket&#x7F16;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x5B9E;&#x73B0;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x5177;&#x4F53;&#x7684;&#x5B9E;&#x73B0;&#x8FC7;&#x7A0B;&#x3002;</p>
+<h1 id="&#x5982;&#x4F55;&#x5B9E;&#x73B0;Socket&#x540C;&#x6B65;&#x901A;&#x4FE1;"><a href="#&#x5982;&#x4F55;&#x5B9E;&#x73B0;Socket&#x540C;&#x6B65;&#x901A;&#x4FE1;" class="headerlink" title="&#x5982;&#x4F55;&#x5B9E;&#x73B0;Socket&#x540C;&#x6B65;&#x901A;&#x4FE1;"></a>&#x5982;&#x4F55;&#x5B9E;&#x73B0;Socket&#x540C;&#x6B65;&#x901A;&#x4FE1;</h1><h2 id="&#x670D;&#x52A1;&#x7AEF;"><a href="#&#x670D;&#x52A1;&#x7AEF;" class="headerlink" title="&#x670D;&#x52A1;&#x7AEF;"></a>&#x670D;&#x52A1;&#x7AEF;</h2><p>&#x2003;&#x2003;&#x670D;&#x52A1;&#x7AEF;&#x7684;&#x4E3B;&#x8981;&#x804C;&#x8D23;&#x662F;&#x5904;&#x7406;&#x5404;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x9001;&#x6765;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x56E0;&#x6B64;&#x5728;&#x5BA2;&#x6237;&#x7AEF;&#x7684;Socket&#x7F16;&#x7A0B;&#x4E2D;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x4E24;&#x4E2A;&#x7EBF;&#x7A0B;&#x6765;&#x5FAA;&#x73AF;&#x5904;&#x7406;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#xFF0C;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x7528;&#x4E8E;&#x76D1;&#x542C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8FDE;&#x63A5;&#x60C5;&#x51B5;&#xFF0C;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x7528;&#x4E8E;&#x76D1;&#x542C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x6D88;&#x606F;&#x53D1;&#x9001;&#xFF0C;&#x5F53;&#x670D;&#x52A1;&#x7AEF;&#x63A5;&#x6536;&#x5230;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x6D88;&#x606F;&#x540E;&#x9700;&#x8981;&#x5C06;&#x6D88;&#x606F;&#x5904;&#x7406;&#x540E;&#x518D;&#x5206;&#x53D1;&#x7ED9;&#x5404;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x3002;</p>
+<h3 id="&#x57FA;&#x672C;&#x6D41;&#x7A0B;"><a href="#&#x57FA;&#x672C;&#x6D41;&#x7A0B;" class="headerlink" title="&#x57FA;&#x672C;&#x6D41;&#x7A0B;"></a>&#x57FA;&#x672C;&#x6D41;&#x7A0B;</h3><ul>
+<li>&#x521B;&#x5EFA;&#x5957;&#x63A5;&#x5B57;</li>
+<li>&#x7ED1;&#x5B9A;&#x5957;&#x63A5;&#x5B57;&#x7684;IP&#x548C;&#x7AEF;&#x53E3;&#x53F7;&#x2014;&#x2014;Bind()</li>
+<li>&#x5C06;&#x5957;&#x63A5;&#x5B57;&#x5904;&#x4E8E;&#x76D1;&#x542C;&#x72B6;&#x6001;&#x7B49;&#x5F85;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8FDE;&#x63A5;&#x8BF7;&#x6C42;&#x2014;&#x2014;Listen()</li>
+<li>&#x5F53;&#x8BF7;&#x6C42;&#x5230;&#x6765;&#x540E;&#xFF0C;&#x63A5;&#x53D7;&#x8BF7;&#x6C42;&#x5E76;&#x8FD4;&#x56DE;&#x672C;&#x6B21;&#x4F1A;&#x8BDD;&#x7684;&#x5957;&#x63A5;&#x5B57;&#x2014;&#x2014;Accept()</li>
+<li>&#x4F7F;&#x7528;&#x8FD4;&#x56DE;&#x7684;&#x5957;&#x63A5;&#x5B57;&#x548C;&#x5BA2;&#x6237;&#x7AEF;&#x901A;&#x4FE1;&#x2014;&#x2014;Send()/Receive()</li>
+<li>&#x8FD4;&#x56DE;&#xFF0C;&#x518D;&#x6B21;&#x7B49;&#x5F85;&#x65B0;&#x7684;&#x8FDE;&#x63A5;&#x8BF7;&#x6C42;</li>
+<li>&#x5173;&#x95ED;&#x5957;&#x63A5;&#x5B57;</li>
+</ul>
+<h3 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;"><a href="#&#x4EE3;&#x7801;&#x793A;&#x4F8B;" class="headerlink" title="&#x4EE3;&#x7801;&#x793A;&#x4F8B;"></a>&#x4EE3;&#x7801;&#x793A;&#x4F8B;</h3><figure class="highlight c#"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Net;</span><br><span class="line"><span class="keyword">using</span> System.Net.Sockets;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TCPLib</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TCPServer</span></span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">byte</span>[] result = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6700;&#x5927;&#x7684;&#x76D1;&#x542C;&#x6570;&#x91CF;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> maxClientCount;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> MaxClientCount</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">get</span> { <span class="keyword">return</span> maxClientCount; }</span><br><span class="line">            <span class="keyword">set</span> { maxClientCount = <span class="keyword">value</span>; }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> IP&#x5730;&#x5740;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">string</span> ip;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> IP</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">get</span> { <span class="keyword">return</span> ip; }</span><br><span class="line">            <span class="keyword">set</span> { ip = <span class="keyword">value</span>; }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x7AEF;&#x53E3;&#x53F7;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> port;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> Port</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">get</span> { <span class="keyword">return</span> port; }</span><br><span class="line">            <span class="keyword">set</span> { port = <span class="keyword">value</span>; }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5BA2;&#x6237;&#x7AEF;&#x5217;&#x8868;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> List&lt;Socket&gt; mClientSockets;</span><br><span class="line">        <span class="keyword">public</span> List&lt;Socket&gt; ClientSockets</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">get</span> { <span class="keyword">return</span> mClientSockets; }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> IP&#x7EC8;&#x7AEF;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> IPEndPoint ipEndPoint;</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x670D;&#x52A1;&#x7AEF;Socket</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> Socket mServerSocket;</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5F53;&#x524D;&#x5BA2;&#x6237;&#x7AEF;Socket</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> Socket mClientSocket;</span><br><span class="line">        <span class="keyword">public</span> Socket ClientSocket </span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">get</span> { <span class="keyword">return</span> mClientSocket;  }</span><br><span class="line">            <span class="keyword">set</span> { mClientSocket = <span class="keyword">value</span>; }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6784;&#x9020;&#x51FD;&#x6570;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;port&quot;&gt;</span>&#x7AEF;&#x53E3;&#x53F7;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;count&quot;&gt;</span>&#x76D1;&#x542C;&#x7684;&#x6700;&#x5927;&#x6811;&#x76EE;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">TCPServer</span>(<span class="params"><span class="keyword">int</span> port, <span class="keyword">int</span> count</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">this</span>.ip = IPAddress.Any.ToString();</span><br><span class="line">            <span class="keyword">this</span>.port = port;</span><br><span class="line">            <span class="keyword">this</span>.maxClientCount=count;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">this</span>.mClientSockets = <span class="keyword">new</span> List&lt;Socket&gt;();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x521D;&#x59CB;&#x5316;IP&#x7EC8;&#x7AEF;</span></span><br><span class="line">            <span class="keyword">this</span>.ipEndPoint = <span class="keyword">new</span> IPEndPoint(IPAddress.Any, port);</span><br><span class="line">            <span class="comment">//&#x521D;&#x59CB;&#x5316;&#x670D;&#x52A1;&#x7AEF;Socket</span></span><br><span class="line">            <span class="keyword">this</span>.mServerSocket = <span class="keyword">new</span> Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);</span><br><span class="line">            <span class="comment">//&#x7AEF;&#x53E3;&#x7ED1;&#x5B9A;</span></span><br><span class="line">            <span class="keyword">this</span>.mServerSocket.Bind(<span class="keyword">this</span>.ipEndPoint);</span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x6570;&#x76EE;</span></span><br><span class="line">            <span class="keyword">this</span>.mServerSocket.Listen(maxClientCount);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6784;&#x9020;&#x51FD;&#x6570;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;ip&quot;&gt;</span>ip&#x5730;&#x5740;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;port&quot;&gt;</span>&#x7AEF;&#x53E3;&#x53F7;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;count&quot;&gt;</span>&#x76D1;&#x542C;&#x7684;&#x6700;&#x5927;&#x6570;&#x76EE;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">TCPServer</span>(<span class="params"><span class="keyword">string</span> ip,<span class="keyword">int</span> port,<span class="keyword">int</span> count</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">this</span>.ip = ip;</span><br><span class="line">            <span class="keyword">this</span>.port = port;</span><br><span class="line">            <span class="keyword">this</span>.maxClientCount = count;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">this</span>.mClientSockets = <span class="keyword">new</span> List&lt;Socket&gt;();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x521D;&#x59CB;&#x5316;IP&#x7EC8;&#x7AEF;</span></span><br><span class="line">            <span class="keyword">this</span>.ipEndPoint = <span class="keyword">new</span> IPEndPoint(IPAddress.Parse(ip), port);</span><br><span class="line">            <span class="comment">//&#x521D;&#x59CB;&#x5316;&#x670D;&#x52A1;&#x7AEF;Socket</span></span><br><span class="line">            <span class="keyword">this</span>.mServerSocket = <span class="keyword">new</span> Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);</span><br><span class="line">            <span class="comment">//&#x7AEF;&#x53E3;&#x7ED1;&#x5B9A;</span></span><br><span class="line">            <span class="keyword">this</span>.mServerSocket.Bind(<span class="keyword">this</span>.ipEndPoint);</span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;&#x76D1;&#x542C;&#x6570;&#x76EE;</span></span><br><span class="line">            <span class="keyword">this</span>.mServerSocket.Listen(maxClientCount);</span><br><span class="line"></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5B9A;&#x4E49;&#x4E00;&#x4E2A;Start&#x65B9;&#x6CD5;&#x5C06;&#x6784;&#x9020;&#x51FD;&#x6570;&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&#x5206;&#x79BB;&#x51FA;&#x6765;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x521B;&#x5EFA;&#x670D;&#x52A1;&#x7AEF;&#x7EBF;&#x7A0B;&#xFF0C;&#x5B9E;&#x73B0;&#x5BA2;&#x6237;&#x7AEF;&#x8FDE;&#x63A5;&#x8BF7;&#x6C42;&#x7684;&#x5FAA;&#x73AF;&#x76D1;&#x542C;</span></span><br><span class="line">            <span class="keyword">var</span> mServerThread = <span class="keyword">new</span> Thread(<span class="keyword">this</span>.ListenClientConnect);</span><br><span class="line">            <span class="comment">//&#x670D;&#x52A1;&#x7AEF;&#x7EBF;&#x7A0B;&#x5F00;&#x542F;</span></span><br><span class="line">            mServerThread.Start();</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x76D1;&#x542C;&#x5BA2;&#x6237;&#x7AEF;&#x94FE;&#x63A5;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ListenClientConnect</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;&#x5FAA;&#x73AF;&#x6807;&#x5FD7;&#x4F4D;</span></span><br><span class="line">            <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">while</span> (flag)</span><br><span class="line">            {</span><br><span class="line">                <span class="comment">//&#x83B7;&#x53D6;&#x8FDE;&#x63A5;&#x5230;&#x670D;&#x52A1;&#x7AEF;&#x7684;&#x5BA2;&#x6237;&#x7AEF;</span></span><br><span class="line">                <span class="keyword">this</span>.ClientSocket = <span class="keyword">this</span>.mServerSocket.Accept();</span><br><span class="line">                <span class="comment">//&#x5C06;&#x83B7;&#x53D6;&#x5230;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x6DFB;&#x52A0;&#x5230;&#x5BA2;&#x6237;&#x7AEF;&#x5217;&#x8868;</span></span><br><span class="line">                <span class="keyword">this</span>.mClientSockets.Add(<span class="keyword">this</span>.ClientSocket);</span><br><span class="line">                <span class="comment">//&#x5411;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x9001;&#x4E00;&#x6761;&#x6D88;&#x606F;</span></span><br><span class="line">                <span class="keyword">this</span>.SendMessage(<span class="keyword">string</span>.Format(<span class="string">&quot;&#x5BA2;&#x6237;&#x7AEF;{0}&#x5DF2;&#x6210;&#x529F;&#x8FDE;&#x63A5;&#x5230;&#x670D;&#x52A1;&#x5668;&quot;</span>, <span class="keyword">this</span>.ClientSocket.RemoteEndPoint));</span><br><span class="line">                <span class="comment">//&#x521B;&#x5EFA;&#x5BA2;&#x6237;&#x7AEF;&#x6D88;&#x606F;&#x7EBF;&#x7A0B;&#xFF0C;&#x5B9E;&#x73B0;&#x5BA2;&#x6237;&#x7AEF;&#x6D88;&#x606F;&#x7684;&#x5FAA;&#x73AF;&#x76D1;&#x542C;</span></span><br><span class="line">                <span class="keyword">var</span> mReveiveThread = <span class="keyword">new</span> Thread(<span class="keyword">this</span>.ReceiveClient);</span><br><span class="line">                <span class="comment">//&#x6CE8;&#x610F;&#x5230;ReceiveClient&#x65B9;&#x6CD5;&#x4F20;&#x5165;&#x4E86;&#x4E00;&#x4E2A;&#x53C2;&#x6570;</span></span><br><span class="line">                <span class="comment">//&#x5B9E;&#x9645;&#x4E0A;&#x8FD9;&#x4E2A;&#x53C2;&#x6570;&#x5C31;&#x662F;&#x6B64;&#x65F6;&#x8FDE;&#x63A5;&#x5230;&#x670D;&#x52A1;&#x5668;&#x7684;&#x5BA2;&#x6237;&#x7AEF;</span></span><br><span class="line">                <span class="comment">//&#x5373;ClientSocket</span></span><br><span class="line">                mReveiveThread.Start(<span class="keyword">this</span>.ClientSocket);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x63A5;&#x6536;&#x5BA2;&#x6237;&#x7AEF;&#x6D88;&#x606F;&#x7684;&#x65B9;&#x6CD5;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ReceiveClient</span>(<span class="params"><span class="keyword">object</span> obj</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x83B7;&#x53D6;&#x5F53;&#x524D;&#x5BA2;&#x6237;&#x7AEF;</span></span><br><span class="line">            <span class="comment">//&#x56E0;&#x4E3A;&#x6BCF;&#x6B21;&#x53D1;&#x9001;&#x6D88;&#x606F;&#x7684;&#x53EF;&#x80FD;&#x5E76;&#x4E0D;&#x662F;&#x540C;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#xFF0C;&#x6240;&#x4EE5;&#x9700;&#x8981;&#x4F7F;&#x7528;var&#x6765;&#x5B9E;&#x4F8B;&#x5316;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x5BF9;&#x8C61;</span></span><br><span class="line">            <span class="comment">//&#x53EF;&#x662F;&#x6211;&#x611F;&#x89C9;&#x8FD9;&#x91CC;&#x7528;&#x5C40;&#x90E8;&#x53D8;&#x91CF;&#x66F4;&#x597D;&#x4E00;&#x70B9;</span></span><br><span class="line">            <span class="keyword">var</span> mClientSocket = (Socket)obj;</span><br><span class="line">            <span class="comment">// &#x5FAA;&#x73AF;&#x6807;&#x5FD7;&#x4F4D;</span></span><br><span class="line">            <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">while</span> (flag)</span><br><span class="line">            {</span><br><span class="line">                <span class="keyword">try</span></span><br><span class="line">                {</span><br><span class="line">                    <span class="comment">//&#x83B7;&#x53D6;&#x6570;&#x636E;&#x957F;&#x5EA6;</span></span><br><span class="line">                    <span class="keyword">int</span> receiveLength = mClientSocket.Receive(result);</span><br><span class="line">                    <span class="comment">//&#x83B7;&#x53D6;&#x5BA2;&#x6237;&#x7AEF;&#x6D88;&#x606F;</span></span><br><span class="line">                    <span class="keyword">string</span> clientMessage = Encoding.UTF8.GetString(result, <span class="number">0</span>, receiveLength);</span><br><span class="line">                    <span class="comment">//&#x670D;&#x52A1;&#x7AEF;&#x8D1F;&#x8D23;&#x5C06;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x6D88;&#x606F;&#x5206;&#x53D1;&#x7ED9;&#x5404;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;</span></span><br><span class="line">                    <span class="keyword">this</span>.SendMessage(<span class="keyword">string</span>.Format(<span class="string">&quot;&#x5BA2;&#x6237;&#x7AEF;{0}&#x53D1;&#x6765;&#x6D88;&#x606F;:{1}&quot;</span>,mClientSocket.RemoteEndPoint,clientMessage));</span><br><span class="line"></span><br><span class="line">                }</span><br><span class="line">                <span class="keyword">catch</span> (Exception e)</span><br><span class="line">                {</span><br><span class="line">                    <span class="comment">//&#x4ECE;&#x5BA2;&#x6237;&#x7AEF;&#x5217;&#x8868;&#x4E2D;&#x79FB;&#x9664;&#x8BE5;&#x5BA2;&#x6237;&#x7AEF;</span></span><br><span class="line">                    <span class="keyword">this</span>.mClientSockets.Remove(mClientSocket);</span><br><span class="line">                    <span class="comment">//&#x5411;&#x5176;&#x5B83;&#x5BA2;&#x6237;&#x7AEF;&#x544A;&#x77E5;&#x8BE5;&#x5BA2;&#x6237;&#x7AEF;&#x4E0B;&#x7EBF;</span></span><br><span class="line">                    <span class="keyword">this</span>.SendMessage(<span class="keyword">string</span>.Format(<span class="string">&quot;&#x670D;&#x52A1;&#x5668;&#x53D1;&#x6765;&#x6D88;&#x606F;:&#x5BA2;&#x6237;&#x7AEF;{0}&#x4ECE;&#x670D;&#x52A1;&#x5668;&#x65AD;&#x5F00;,&#x65AD;&#x5F00;&#x539F;&#x56E0;:{1}&quot;</span>,mClientSocket.RemoteEndPoint,e.Message));</span><br><span class="line">                    <span class="comment">//&#x65AD;&#x5F00;&#x8FDE;&#x63A5;</span></span><br><span class="line">                    mClientSocket.Shutdown(SocketShutdown.Both);</span><br><span class="line">                    mClientSocket.Close();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            </span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5411;&#x6240;&#x6709;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x7FA4;&#x53D1;&#x6D88;&#x606F;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;msg&quot;&gt;</span>message<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SendMessage</span>(<span class="params"><span class="keyword">string</span> msg</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x786E;&#x4FDD;&#x6D88;&#x606F;&#x975E;&#x7A7A;&#x4EE5;&#x53CA;&#x5BA2;&#x6237;&#x7AEF;&#x5217;&#x8868;&#x975E;&#x7A7A;</span></span><br><span class="line">            <span class="keyword">if</span> (msg == <span class="keyword">string</span>.Empty || <span class="keyword">this</span>.mClientSockets.Count &lt;= <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">            <span class="comment">//&#x5411;&#x6BCF;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x9001;&#x6D88;&#x606F;</span></span><br><span class="line">            <span class="keyword">foreach</span> (Socket s <span class="keyword">in</span> <span class="keyword">this</span>.mClientSockets)</span><br><span class="line">            {</span><br><span class="line">                (s <span class="keyword">as</span> Socket).Send(Encoding.UTF8.GetBytes(msg));</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5411;&#x6307;&#x5B9A;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x9001;&#x6D88;&#x606F;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;ip&quot;&gt;</span>ip<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;port&quot;&gt;</span>port<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;msg&quot;&gt;</span>message<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SendMessage</span>(<span class="params"><span class="keyword">string</span> ip,<span class="keyword">int</span> port,<span class="keyword">string</span> msg</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x6784;&#x9020;&#x51FA;&#x4E00;&#x4E2A;&#x7EC8;&#x7AEF;&#x5730;&#x5740;</span></span><br><span class="line">            IPEndPoint _IPEndPoint = <span class="keyword">new</span> IPEndPoint(IPAddress.Parse(ip), port);</span><br><span class="line">            <span class="comment">//&#x904D;&#x5386;&#x6240;&#x6709;&#x5BA2;&#x6237;&#x7AEF;</span></span><br><span class="line">            <span class="keyword">foreach</span> (Socket s <span class="keyword">in</span> mClientSockets)</span><br><span class="line">            {</span><br><span class="line">                <span class="keyword">if</span> (_IPEndPoint == (IPEndPoint)s.RemoteEndPoint)</span><br><span class="line">                {</span><br><span class="line">                    s.Send(Encoding.UTF8.GetBytes(msg));</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x5DF2;&#x7ECF;&#x7F16;&#x5199;&#x597D;&#x4E86;&#x4E00;&#x4E2A;&#x5177;&#x5907;&#x63A5;&#x6536;&#x548C;&#x53D1;&#x9001;&#x6570;&#x636E;&#x80FD;&#x529B;&#x7684;&#x670D;&#x52A1;&#x7AEF;&#x7A0B;&#x5E8F;&#x3002;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x6765;&#x5C1D;&#x8BD5;&#x8BA9;&#x670D;&#x52A1;&#x7AEF;&#x8FD0;&#x884C;&#x8D77;&#x6765;&#xFF1A;<br></p><figure class="highlight c#"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> TCPLib;</span><br><span class="line"><span class="keyword">using</span> System.Net;</span><br><span class="line"><span class="keyword">using</span> System.Net.Sockets;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TCPLib.Test</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    {</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x6307;&#x5B9A;IP&#x548C;&#x7AEF;&#x53E3;&#x53F7;&#x53CA;&#x6700;&#x5927;&#x76D1;&#x542C;&#x6570;&#x76EE;&#x7684;&#x65B9;&#x5F0F;</span></span><br><span class="line">            TCPLib.TCPServer s1 = <span class="keyword">new</span> TCPServer(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">6001</span>, <span class="number">10</span>);</span><br><span class="line">            <span class="comment">//&#x6307;&#x5B9A;&#x7AEF;&#x53E3;&#x53F7;&#x53CA;&#x6700;&#x5927;&#x76D1;&#x542C;&#x6570;&#x76EE;&#x7684;&#x65B9;&#x5F0F;</span></span><br><span class="line">            TCPLib.TCPServer s2 = <span class="keyword">new</span> TCPServer(<span class="number">6001</span>, <span class="number">10</span>);</span><br><span class="line">           </span><br><span class="line">            <span class="comment">//&#x6267;&#x884C;Start&#x65B9;&#x6CD5;</span></span><br><span class="line">            s1.Start();</span><br><span class="line">        </span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x770B;&#x7F16;&#x5199;&#x5BA2;&#x6237;&#x7AEF;Socket&#x7A0B;&#x5E8F;&#x7684;&#x57FA;&#x672C;&#x6D41;&#x7A0B;</p>
+<h2 id="&#x5BA2;&#x6237;&#x7AEF;"><a href="#&#x5BA2;&#x6237;&#x7AEF;" class="headerlink" title="&#x5BA2;&#x6237;&#x7AEF;"></a>&#x5BA2;&#x6237;&#x7AEF;</h2><p>&#x2003;&#x2003;&#x5BA2;&#x6237;&#x7AEF;&#x76F8;&#x5BF9;&#x4E8E;&#x670D;&#x52A1;&#x7AEF;&#x6765;&#x8BF4;&#x4EFB;&#x52A1;&#x8981;&#x8F7B;&#x8BB8;&#x591A;&#xFF0C;&#x56E0;&#x4E3A;&#x5BA2;&#x6237;&#x7AEF;&#x4EC5;&#x4EC5;&#x9700;&#x8981;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x901A;&#x4FE1;&#x5373;&#x53EF;&#xFF0C;&#x53EF;&#x662F;&#x56E0;&#x4E3A;&#x5728;&#x548C;&#x670D;&#x52A1;&#x5668;&#x901A;&#x4FE1;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF0C;&#x9700;&#x8981;&#x65F6;&#x523B;&#x4FDD;&#x6301;&#x8FDE;&#x63A5;&#x901A;&#x7545;&#xFF0C;&#x56E0;&#x6B64;&#x540C;&#x6837;&#x9700;&#x8981;&#x4E24;&#x4E2A;&#x7EBF;&#x7A0B;&#x6765;&#x5206;&#x522B;&#x5904;&#x7406;&#x8FDE;&#x63A5;&#x60C5;&#x51B5;&#x7684;&#x76D1;&#x542C;&#x548C;&#x6D88;&#x606F;&#x53D1;&#x9001;&#x7684;&#x76D1;&#x542C;&#x3002;</p>
+<h3 id="&#x57FA;&#x672C;&#x6D41;&#x7A0B;-1"><a href="#&#x57FA;&#x672C;&#x6D41;&#x7A0B;-1" class="headerlink" title="&#x57FA;&#x672C;&#x6D41;&#x7A0B;"></a>&#x57FA;&#x672C;&#x6D41;&#x7A0B;</h3><ul>
+<li>&#x521B;&#x5EFA;&#x5957;&#x63A5;&#x5B57;&#x4FDD;&#x8BC1;&#x4E0E;&#x670D;&#x52A1;&#x5668;&#x7684;&#x7AEF;&#x53E3;&#x4E00;&#x81F4;</li>
+<li>&#x5411;&#x670D;&#x52A1;&#x5668;&#x53D1;&#x51FA;&#x8FDE;&#x63A5;&#x8BF7;&#x6C42;&#x2014;&#x2014;Connect()</li>
+<li>&#x548C;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#x2014;&#x2014;Send()/Receive()</li>
+<li>&#x5173;&#x95ED;&#x5957;&#x63A5;&#x5B57;</li>
+</ul>
+<h3 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;-1"><a href="#&#x4EE3;&#x7801;&#x793A;&#x4F8B;-1" class="headerlink" title="&#x4EE3;&#x7801;&#x793A;&#x4F8B;"></a>&#x4EE3;&#x7801;&#x793A;&#x4F8B;</h3><figure class="highlight c#"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Net;</span><br><span class="line"><span class="keyword">using</span> System.Net.Sockets;</span><br><span class="line"><span class="keyword">using</span> System.Threading;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TCPLib</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TCPClient</span></span><br><span class="line">    {</span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5B9A;&#x4E49;&#x6570;&#x636E;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">byte</span>[] result = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5BA2;&#x6237;&#x7AEF;IP</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">string</span> ip;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">string</span> IP</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">get</span> { <span class="keyword">return</span> ip; }</span><br><span class="line">            <span class="keyword">set</span> { ip = <span class="keyword">value</span>; }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5BA2;&#x6237;&#x7AEF;&#x7AEF;&#x53E3;&#x53F7;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> port;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> Port</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">get</span> { <span class="keyword">return</span> port; }</span><br><span class="line">            <span class="keyword">set</span> { port = <span class="keyword">value</span>; }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> IP&#x7EC8;&#x7AEF;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> IPEndPoint ipEndPoint;</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5BA2;&#x6237;&#x7AEF;Socket</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> Socket mClientSocket;</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x662F;&#x5426;&#x8FDE;&#x63A5;&#x5230;&#x4E86;&#x670D;&#x52A1;&#x5668;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x9ED8;&#x8BA4;&#x4E3A;flase</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">bool</span> isConnected = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6784;&#x9020;&#x51FD;&#x6570;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;ip&quot;&gt;</span>IP&#x5730;&#x5740;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;port&quot;&gt;</span>&#x7AEF;&#x53E3;&#x53F7;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">TCPClient</span>(<span class="params"><span class="keyword">string</span> ip, <span class="keyword">int</span> port</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">this</span>.ip=ip;</span><br><span class="line">            <span class="keyword">this</span>.port=port;</span><br><span class="line">            <span class="comment">//&#x521D;&#x59CB;&#x5316;IP&#x7EC8;&#x7AEF;</span></span><br><span class="line">            <span class="keyword">this</span>.ipEndPoint = <span class="keyword">new</span> IPEndPoint(IPAddress.Parse(<span class="keyword">this</span>.ip), <span class="keyword">this</span>.port);</span><br><span class="line">            <span class="comment">//&#x521D;&#x59CB;&#x5316;&#x5BA2;&#x6237;&#x7AEF;Socket</span></span><br><span class="line">            mClientSocket = <span class="keyword">new</span> Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);</span><br><span class="line"></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x4EE5;&#x4E0D;&#x65AD;&#x8FDE;&#x63A5;&#x670D;&#x52A1;&#x5668;</span></span><br><span class="line">            <span class="keyword">var</span> mConnectThread = <span class="keyword">new</span> Thread(<span class="keyword">this</span>.ConnectToServer);</span><br><span class="line">            <span class="comment">//&#x5F00;&#x542F;&#x7EBF;&#x7A0B;</span></span><br><span class="line">            mConnectThread.Start();</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x8FDE;&#x63A5;&#x5230;&#x670D;&#x52A1;&#x5668;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ConnectToServer</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x5F53;&#x6CA1;&#x6709;&#x8FDE;&#x63A5;&#x5230;&#x670D;&#x52A1;&#x5668;&#x65F6;&#x5F00;&#x59CB;&#x8FDE;&#x63A5;</span></span><br><span class="line">            <span class="keyword">while</span> (!isConnected)</span><br><span class="line">            {</span><br><span class="line">                <span class="keyword">try</span></span><br><span class="line">                {</span><br><span class="line">                    <span class="comment">//&#x5F00;&#x59CB;&#x8FDE;&#x63A5;</span></span><br><span class="line">                    mClientSocket.Connect(<span class="keyword">this</span>.ipEndPoint);</span><br><span class="line">                    <span class="keyword">this</span>.isConnected = <span class="literal">true</span>;</span><br><span class="line">                }</span><br><span class="line">                <span class="keyword">catch</span> (Exception e)</span><br><span class="line">                {</span><br><span class="line">                    <span class="comment">//&#x8F93;&#x51FA;Debug&#x4FE1;&#x606F;</span></span><br><span class="line">                    Console.WriteLine(<span class="keyword">string</span>.Format(<span class="string">&quot;&#x56E0;&#x4E3A;&#x4E00;&#x4E2A;&#x9519;&#x8BEF;&#x7684;&#x53D1;&#x751F;&#xFF0C;&#x6682;&#x65F6;&#x65E0;&#x6CD5;&#x8FDE;&#x63A5;&#x5230;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x9519;&#x8BEF;&#x4FE1;&#x606F;&#x4E3A;:{0}&quot;</span>,e.Message));</span><br><span class="line">                    <span class="keyword">this</span>.isConnected = <span class="literal">false</span>;</span><br><span class="line">                }</span><br><span class="line"></span><br><span class="line">                <span class="comment">//&#x7B49;&#x5F85;5&#x79D2;&#x949F;&#x540E;&#x5C1D;&#x8BD5;&#x518D;&#x6B21;&#x8FDE;&#x63A5;</span></span><br><span class="line">                Thread.Sleep(<span class="number">5000</span>);</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;&#x6B63;&#x5728;&#x5C1D;&#x8BD5;&#x91CD;&#x65B0;&#x8FDE;&#x63A5;...&quot;</span>);</span><br><span class="line">            }</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x8FDE;&#x63A5;&#x6210;&#x529F;&#x540E;</span></span><br><span class="line">            Console.WriteLine(<span class="string">&quot;&#x8FDE;&#x63A5;&#x670D;&#x52A1;&#x5668;&#x6210;&#x529F;&#xFF0C;&#x73B0;&#x5728;&#x53EF;&#x4EE5;&#x548C;&#x670D;&#x52A1;&#x5668;&#x8FDB;&#x884C;&#x4F1A;&#x8BDD;&#x4E86;&quot;</span>);</span><br><span class="line">            <span class="comment">//&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x4EE5;&#x76D1;&#x542C;&#x6570;&#x636E;&#x63A5;&#x6536;</span></span><br><span class="line">            <span class="keyword">var</span> mReceiveThread = <span class="keyword">new</span> Thread(<span class="keyword">this</span>.ReceiveMessage);</span><br><span class="line">            <span class="comment">//&#x5F00;&#x542F;&#x7EBF;&#x7A0B;</span></span><br><span class="line">            mReceiveThread.Start();</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x56E0;&#x4E3A;&#x5BA2;&#x6237;&#x7AEF;&#x53EA;&#x63A5;&#x53D7;&#x6765;&#x81EA;&#x670D;&#x52A1;&#x5668;&#x7684;&#x6570;&#x636E;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x4E2D;&#x4E0D;&#x9700;&#x8981;&#x53C2;&#x6570;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ReceiveMessage</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;&#x5FAA;&#x73AF;&#x6807;&#x5FD7;&#x4F4D;</span></span><br><span class="line">            <span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">while</span> (flag)</span><br><span class="line">            {</span><br><span class="line">                <span class="keyword">try</span></span><br><span class="line">                {</span><br><span class="line">                    <span class="comment">//&#x83B7;&#x53D6;&#x6570;&#x636E;&#x957F;&#x5EA6;</span></span><br><span class="line">                    <span class="keyword">int</span> receiveLength = <span class="keyword">this</span>.mClientSocket.Receive(result);</span><br><span class="line">                    <span class="comment">//&#x83B7;&#x53D6;&#x670D;&#x52A1;&#x5668;&#x6D88;&#x606F;</span></span><br><span class="line">                    <span class="keyword">string</span> serverMessage = Encoding.UTF8.GetString(result, <span class="number">0</span>, receiveLength);</span><br><span class="line">                    <span class="comment">//&#x8F93;&#x51FA;&#x670D;&#x52A1;&#x5668;&#x6D88;&#x606F;</span></span><br><span class="line">                    Console.WriteLine(serverMessage);</span><br><span class="line">                }</span><br><span class="line">                <span class="keyword">catch</span> (Exception e)</span><br><span class="line">                {</span><br><span class="line">                    <span class="comment">//&#x505C;&#x6B62;&#x6D88;&#x606F;&#x63A5;&#x6536;</span></span><br><span class="line">                    flag = <span class="literal">false</span>;</span><br><span class="line">                    <span class="comment">//&#x65AD;&#x5F00;&#x670D;&#x52A1;&#x5668;</span></span><br><span class="line">                    <span class="keyword">this</span>.mClientSocket.Shutdown(SocketShutdown.Both);</span><br><span class="line">                    <span class="comment">//&#x5173;&#x95ED;&#x5957;&#x63A5;&#x5B57;</span></span><br><span class="line">                    <span class="keyword">this</span>.mClientSocket.Close();</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//&#x91CD;&#x65B0;&#x5C1D;&#x8BD5;&#x8FDE;&#x63A5;&#x670D;&#x52A1;&#x5668;</span></span><br><span class="line">                    <span class="keyword">this</span>.isConnected = <span class="literal">false</span>;</span><br><span class="line">                    ConnectToServer();</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            </span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x53D1;&#x9001;&#x6D88;&#x606F;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;msg&quot;&gt;</span>&#x6D88;&#x606F;&#x6587;&#x672C;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SendMessage</span>(<span class="params"><span class="keyword">string</span> msg</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span>(msg==<span class="keyword">string</span>.Empty || <span class="keyword">this</span>.mClientSocket==<span class="literal">null</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">            mClientSocket.Send(Encoding.UTF8.GetBytes(msg));</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x540C;&#x6837;&#x5730;&#xFF0C;&#x6211;&#x4EEC;&#x73B0;&#x5728;&#x6765;&#x8FD0;&#x884C;&#x5BA2;&#x6237;&#x7AEF;&#x7A0B;&#x5E8F;&#xFF0C;&#x8FD9;&#x6837;&#x5BA2;&#x6237;&#x7AEF;&#x5C31;&#x53EF;&#x4EE5;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#x4E86;&#xFF1A;<br></p><figure class="highlight c#"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> TCPLib;</span><br><span class="line"><span class="keyword">using</span> System.Net;</span><br><span class="line"><span class="keyword">using</span> System.Net.Sockets;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">TCPLib.Test</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    {</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="comment">//&#x4FDD;&#x8BC1;&#x7AEF;&#x53E3;&#x53F7;&#x548C;&#x670D;&#x52A1;&#x7AEF;&#x4E00;&#x81F4;</span></span><br><span class="line">            TCPLib.TCPClient c = <span class="keyword">new</span> TCPClient(<span class="string">&quot;127.0.0.1&quot;</span>,<span class="number">6001</span>);</span><br><span class="line">            <span class="comment">//&#x6267;&#x884C;Start&#x65B9;&#x6CD5;</span></span><br><span class="line">            c.Start();</span><br><span class="line">            <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">            {</span><br><span class="line">                <span class="comment">//&#x8BFB;&#x53D6;&#x5BA2;&#x6237;&#x7AEF;&#x8F93;&#x5165;&#x7684;&#x6D88;&#x606F;</span></span><br><span class="line">                <span class="keyword">string</span> msg = Console.ReadLine();</span><br><span class="line">                <span class="comment">//&#x53D1;&#x9001;&#x6D88;&#x606F;&#x5230;&#x670D;&#x52A1;&#x7AEF;</span></span><br><span class="line">                c.SendMessage(msg);</span><br><span class="line">            }</span><br><span class="line">        </span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x6CE8;&#x610F;&#x8981;&#x5148;&#x8FD0;&#x884C;&#x670D;&#x52A1;&#x7AEF;&#x7684;&#x7A0B;&#x5E8F;&#x3001;&#x518D;&#x8FD0;&#x884C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x7A0B;&#x5E8F;&#xFF0C;&#x4E0D;&#x7136;&#x7A0B;&#x5E8F;&#x4F1A;&#x62A5;&#x9519;&#xFF0C;&#x563F;&#x563F;&#xFF01;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x662F;&#x4ECA;&#x5929;&#x7684;&#x6548;&#x679C;&#x6F14;&#x793A;&#x56FE;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz01tlahhdj211y0lcgnz.jpg" alt="&#x804A;&#x5929;&#x7A97;&#x53E3;&#x6548;&#x679C;&#x6F14;&#x793A;" title>
+                </div>
+                <div class="image-caption">&#x804A;&#x5929;&#x7A97;&#x53E3;&#x6548;&#x679C;&#x6F14;&#x793A;</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fyzctms5wsj211y0lc7ez.jpg" alt="&#x5BA2;&#x6237;&#x7AEF;&#x4E0B;&#x7EBF;&#x6548;&#x679C;&#x6F14;&#x793A;" title>
+                </div>
+                <div class="image-caption">&#x5BA2;&#x6237;&#x7AEF;&#x4E0B;&#x7EBF;&#x6548;&#x679C;&#x6F14;&#x793A;</div>
+            </figure>
+<h1 id="&#x603B;&#x7ED3;"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</h1><p>&#x2003;&#x2003;&#x4ECA;&#x5929;&#x6211;&#x4EEC;&#x57FA;&#x672C;&#x4E0A;&#x5199;&#x51FA;&#x4E86;&#x4E00;&#x4E2A;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x7684;&#x7528;&#x4F8B;&#xFF0C;&#x4E0D;&#x8FC7;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x76EE;&#x524D;&#x8FD8;&#x5B58;&#x5728;&#x4EE5;&#x4E0B;&#x95EE;&#x9898;&#xFF1A;</p>
+<ul>
+<li>&#x8FD9;&#x91CC;&#x4EC5;&#x4EC5;&#x5B9E;&#x73B0;&#x4E86;&#x53D1;&#x9001;&#x5B57;&#x7B26;&#x4E32;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x5982;&#x4F55;&#x8BA9;&#x8FD9;&#x4E2A;&#x7A0B;&#x5E8F;&#x652F;&#x6301;&#x66F4;&#x591A;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x4ECE;&#x57FA;&#x7840;&#x7684;int&#x3001;float&#x3001;double&#x3001;string&#x3001;single&#x7B49;&#x7C7B;&#x578B;&#x5230;structure&#x3001;class&#x751A;&#x81F3;&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#x7684;&#x7C7B;&#x578B;&#xFF1F;</li>
+<li><p>&#x5982;&#x4F55;&#x8BA9;&#x8FD9;&#x4E2A;&#x7528;&#x4F8B;&#x66F4;&#x5177;&#x6709;&#x6269;&#x5C55;&#x6027;&#xFF0C;&#x6211;&#x4EEC;&#x53D1;&#x73B0;&#x6240;&#x6709;&#x7684;Socket&#x7F16;&#x7A0B;&#x6D41;&#x7A0B;&#x90FD;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x552F;&#x4E00;&#x4E0D;&#x540C;&#x5C31;&#x662F;&#x5728;&#x63A5;&#x6536;&#x5230;&#x6570;&#x636E;&#x4EE5;&#x540E;&#x8BE5;&#x5982;&#x4F55;&#x53BB;&#x5904;&#x7406;&#xFF0C;&#x56E0;&#x4E3A;&#x80FD;&#x4E0D;&#x80FD;&#x5C06;&#x6838;&#x5FC3;&#x529F;&#x80FD;&#x548C;&#x81EA;&#x5B9A;&#x4E49;&#x529F;&#x80FD;&#x5206;&#x79BB;&#x5F00;&#x6765;&#xFF1F;</p>
+</li>
+<li><p>&#x5728;&#x4ECA;&#x5929;&#x7684;&#x8FD9;&#x4E2A;&#x7528;&#x4F8B;&#x4E2D;&#xFF0C;&#x6570;&#x636E;&#x4F20;&#x8F93;&#x7684;&#x7F13;&#x51B2;&#x533A;&#x5927;&#x5C0F;&#x6211;&#x4EEC;&#x4EBA;&#x4E3A;&#x8BBE;&#x5B9A;&#x4E3A;1024&#xFF0C;&#x90A3;&#x4E48;&#x5982;&#x679C;&#x78B0;&#x5230;&#x6BD4;&#x8FD9;&#x4E2A;&#x8BBE;&#x5B9A;&#x66F4;&#x5927;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;&#x8FD9;&#x4E2A;&#x7528;&#x4F8B;&#x8BE5;&#x600E;&#x4E48;&#x6765;&#x5199;&#xFF1F;</p>
+</li>
+</ul>
+<p>&#x597D;&#x4E86;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x4E86;&#xFF0C;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x559C;&#x6B22;&#xFF0C;&#x540C;&#x65F6;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF01;</p>
+<p><strong>2016&#x5E74;1&#x6708;24&#x65E5;&#x66F4;&#x65B0;</strong>&#xFF1A;<br>&#x2003;&#x2003;&#x8981;&#x89E3;&#x51B3;&#x201C;&#x652F;&#x6301;&#x66F4;&#x591A;&#x7C7B;&#x578B;&#x7684;&#x95EE;&#x9898;&#x201D;&#xFF0C;&#x53EF;&#x4EE5;&#x4ECE;&#x4E24;&#x79CD;&#x601D;&#x8DEF;&#x6765;&#x8003;&#x8651;&#xFF0C;&#x5373;&#x5B9E;&#x73B0;&#x6240;&#x6709;&#x7C7B;&#x578B;&#x5230;byte[]&#x7C7B;&#x578B;&#x7684;&#x8F6C;&#x6362;&#x6216;&#x8005;&#x662F;&#x5B9E;&#x73B0;&#x6240;&#x6709;&#x7C7B;&#x578B;&#x5230;string&#x7C7B;&#x578B;&#x7684;&#x8F6C;&#x6362;&#xFF0C;&#x5BF9;&#x4E8E;&#x7B2C;&#x4E8C;&#x79CD;&#x601D;&#x8DEF;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x79F0;&#x4E4B;&#x4E3A;&#x5E8F;&#x5217;&#x5316;&#xFF0C;&#x5E8F;&#x5217;&#x5316;&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x6240;&#x6709;&#x7C7B;&#x578B;&#x5230;string&#x7C7B;&#x578B;&#x7684;&#x8F6C;&#x6362;&#x95EE;&#x9898;&#xFF0C;&#x552F;&#x4E00;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x8003;&#x91CF;&#x7684;&#x4E00;&#x4E2A;&#x90E8;&#x5206;&#x5C31;&#x662F;&#x7F13;&#x51B2;&#x533A;&#x7684;&#x5927;&#x5C0F;&#x95EE;&#x9898;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x8981;&#x89E3;&#x51B3;&#x201C;&#x5C06;&#x6838;&#x5FC3;&#x529F;&#x80FD;&#x548C;&#x81EA;&#x5B9A;&#x4E49;&#x529F;&#x80FD;&#x5206;&#x79BB;&#x201D;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x4EE5;&#x8003;&#x8651;&#x4F7F;&#x7528;&#x59D4;&#x6258;&#x673A;&#x5236;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x59D4;&#x6258;&#x673A;&#x5236;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x7684;&#x6307;&#x9488;&#xFF0C;&#x5728;&#x9700;&#x8981;&#x5C06;&#x51FD;&#x6570;&#x7684;&#x63A7;&#x5236;&#x6743;&#x4EA4;&#x7ED9;&#x7528;&#x6237;&#x6765;&#x5904;&#x7406;&#x7684;&#x573A;&#x666F;&#x4E2D;&#xFF0C;&#x59D4;&#x6258;&#x90FD;&#x662F;&#x4E00;&#x79CD;&#x6709;&#x6548;&#x800C;&#x660E;&#x667A;&#x7684;&#x9009;&#x62E9;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/2041685704/">C#中Socket通信编程的异步实现</a></li><li><a href="https://qinyuanpei.github.io/posts/2041685704/">C#中Socket通信编程的异步实现</a></li><li><a href="https://qinyuanpei.github.io/posts/345410188/">《C#多线程编程实战》读书笔记</a></li><li><a href="https://hiberabyss.github.io/2018/03/14/unix-socket-programming/">使用 Go 进行 Socket 编程</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/3959327595/" rel="external">C#中Socket通信编程的同步实现</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/3959327595/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/3959327595/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Socket/">Socket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/同步/">同步</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多线程/">多线程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/通信/">通信</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3959327595/&title=《C#中Socket通信编程的同步实现》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3959327595/&title=《C#中Socket通信编程的同步实现》 — PayneQinのBlog&source=&emsp;&emsp;本文通过分析和总结C#中Socket通信编程的关键技术，按照同步实现的方式实现了一个简单的Socket聊天程序，目的是通过这个程序..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3959327595/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《C#中Socket通信编程的同步实现》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3959327595/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3959327595/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/2041685704/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">C#中Socket通信编程的异步实现</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3449402269/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">使用Unity3D创建一个幸运转盘</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/3959327595/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3959327595/&title=《C#中Socket通信编程的同步实现》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3959327595/&title=《C#中Socket通信编程的同步实现》 — PayneQinのBlog&source=&emsp;&emsp;本文通过分析和总结C#中Socket通信编程的关键技术，按照同步实现的方式实现了一个简单的Socket聊天程序，目的是通过这个程序..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3959327595/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《C#中Socket通信编程的同步实现》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3959327595/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3959327595/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/3959327595/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

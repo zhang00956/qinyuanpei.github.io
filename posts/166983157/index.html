@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        Unity3D游戏开发之分页效果在uGUI中的实现 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。今天想和大家分享的是uGUI中分页效果的实现，我们知道相对NGUI来说uGUI在功能覆盖上来讲，它并没有像NGUI那样提供较为丰富和炫酷的组件，可是因为uGUI有着较好的扩展性，因此我们可以通过编写脚本来扩展它的功能。虽然在移动开发时代以开发速度论成败，可是这并不是我">
+<meta name="keywords" content="Unity3D,游戏开发,uGUI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity3D游戏开发之分页效果在uGUI中的实现">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/166983157/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。今天想和大家分享的是uGUI中分页效果的实现，我们知道相对NGUI来说uGUI在功能覆盖上来讲，它并没有像NGUI那样提供较为丰富和炫酷的组件，可是因为uGUI有着较好的扩展性，因此我们可以通过编写脚本来扩展它的功能。虽然在移动开发时代以开发速度论成败，可是这并不是我">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/None.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz68jx43btg20kp0gqne1.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity3D游戏开发之分页效果在uGUI中的实现">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。今天想和大家分享的是uGUI中分页效果的实现，我们知道相对NGUI来说uGUI在功能覆盖上来讲，它并没有像NGUI那样提供较为丰富和炫酷的组件，可是因为uGUI有着较好的扩展性，因此我们可以通过编写脚本来扩展它的功能。虽然在移动开发时代以开发速度论成败，可是这并不是我">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/None.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Unity3D游戏开发之分页效果在uGUI中的实现</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Unity3D游戏开发之分页效果在uGUI中的实现</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-11-10T20:46:35.000Z" itemprop="datePublished" class="page-time">
+  2015-11-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Unity3D游戏开发之分页效果在uGUI中的实现" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Unity3D游戏开发之分页效果在uGUI中的实现</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-11-10 20:46:35" datetime="2015-11-10T20:46:35.000Z" itemprop="datePublished">2015-11-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        29 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;<strong>&#x79E6;&#x5143;&#x57F9;</strong>&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x4ECA;&#x5929;&#x60F3;&#x548C;&#x5927;&#x5BB6;&#x5206;&#x4EAB;&#x7684;&#x662F;uGUI&#x4E2D;&#x5206;&#x9875;&#x6548;&#x679C;&#x7684;&#x5B9E;&#x73B0;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x76F8;&#x5BF9;NGUI&#x6765;&#x8BF4;uGUI&#x5728;&#x529F;&#x80FD;&#x8986;&#x76D6;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x5B83;&#x5E76;&#x6CA1;&#x6709;&#x50CF;NGUI&#x90A3;&#x6837;&#x63D0;&#x4F9B;&#x8F83;&#x4E3A;&#x4E30;&#x5BCC;&#x548C;&#x70AB;&#x9177;&#x7684;&#x7EC4;&#x4EF6;&#xFF0C;&#x53EF;&#x662F;&#x56E0;&#x4E3A;uGUI&#x6709;&#x7740;&#x8F83;&#x597D;&#x7684;&#x6269;&#x5C55;&#x6027;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x7F16;&#x5199;&#x811A;&#x672C;&#x6765;&#x6269;&#x5C55;&#x5B83;&#x7684;&#x529F;&#x80FD;&#x3002;&#x867D;&#x7136;&#x5728;&#x79FB;&#x52A8;&#x5F00;&#x53D1;&#x65F6;&#x4EE3;&#x4EE5;&#x5F00;&#x53D1;&#x901F;&#x5EA6;&#x8BBA;&#x6210;&#x8D25;&#xFF0C;&#x53EF;&#x662F;&#x8FD9;&#x5E76;&#x4E0D;&#x662F;&#x6211;&#x4EEC;&#x201C;&#x4E0D;&#x6C42;&#x751A;&#x89E3;&#x201D;&#x7684;&#x6B63;&#x5F53;&#x7406;&#x7531;&#x3002;&#x6BCF;&#x6B21;&#x770B;&#x5230;NGUI&#x5404;&#x79CD;&#x201D;&#x4E30;&#x5BCC;&#x201D;&#x7684;&#x7EC4;&#x4EF6;&#x5728;&#x8111;&#x6D77;&#x4E2D;&#x6253;&#x8F6C;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6BCF;&#x6B21;&#x770B;&#x5230;&#x7F16;&#x8BD1;&#x9879;&#x76EE;&#x65F6;&#x5F39;&#x51FA;&#x5404;&#x79CD;Warming&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x5185;&#x5FC3;&#x662F;&#x5982;&#x6B64;&#x5730;&#x671F;&#x671B;&#x6709;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x9AD8;&#x6548;&#x7684;UI&#x7CFB;&#x7EDF;&#x554A;&#xFF0C;&#x76F4;&#x5230;&#x6709;&#x4E00;&#x5929;&#x6211;&#x9047;&#x4E0A;&#x4E86;uGUI&#x3002;</p>
+<a id="more"></a>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x535A;&#x4E3B;&#x8FD9;&#x91CC;&#x5E76;&#x6CA1;&#x6709;&#x60F3;&#x8981;&#x8868;&#x8FBE;&#x539A;&#x6B64;&#x8584;&#x5F7C;&#x7684;&#x89C2;&#x70B9;&#x5566;&#xFF0C;&#x535A;&#x4E3B;&#x771F;&#x6B63;&#x60F3;&#x8981;&#x8868;&#x8FBE;&#x7684;&#x662F;&#x6211;&#x4EEC;&#x5728;&#x5F00;&#x53D1;&#x4E2D;&#x5E94;&#x8BE5;&#x6452;&#x5F03;&#x201C;&#x552F;&#x8BED;&#x8A00;&#x8BBA;&#x201D;&#x3001;&#x201C;&#x552F;&#x5E73;&#x53F0;&#x8BBA;&#x201D;&#x7684;&#x72ED;&#x9698;&#x89C2;&#x70B9;&#xFF0C;&#x52AA;&#x529B;&#x53BB;&#x638C;&#x63E1;&#x548C;&#x8BED;&#x8A00;&#x65E0;&#x5173;&#x3001;&#x5E73;&#x53F0;&#x65E0;&#x5173;&#x7684;&#x201C;&#x901A;&#x7528;&#x578B;&#x6280;&#x80FD;&#x201D;&#x3002;&#x8FD9;&#x6837;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x9762;&#x5BF9;&#x5168;&#x65B0;&#x7684;&#x4EFB;&#x52A1;&#x7684;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x66F4;&#x5FEB;&#x5730;&#x9002;&#x5E94;&#x65B0;&#x7684;&#x73AF;&#x5883;&#x3002;&#x8A00;&#x5F52;&#x6B63;&#x4F20;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x6765;&#x63A5;&#x7740;&#x8BF4;uGUI&#x4E2D;&#x7684;&#x5206;&#x9875;&#xFF0C;&#x5206;&#x9875;&#x901A;&#x5E38;&#x662F;&#x6307;&#x5C06;&#x5185;&#x5BB9;&#x5206;&#x6563;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x9875;&#x9762;&#x4E0A;&#x6765;&#x663E;&#x793A;&#x7684;&#x4E00;&#x79CD;&#x624B;&#x6BB5;&#xFF0C;&#x8FD9;&#x79CD;&#x624B;&#x6BB5;&#x6211;&#x4EEC;&#x5728;&#x4F20;&#x7EDF;&#x7684;Web&#x5F00;&#x53D1;&#x4E2D;&#x53EF;&#x4EE5;&#x7ECF;&#x5E38;&#x770B;&#x5230;&#x3002;&#x5230;&#x4E86;&#x79FB;&#x52A8;&#x4E92;&#x8054;&#x7F51;&#x4EE5;&#x540E;&#x5206;&#x9875;&#x88AB;&#x6211;&#x4EEC;&#x66F4;&#x4E3A;&#x719F;&#x77E5;&#x7684;&#x201C;&#x4E0B;&#x62C9;&#x66F4;&#x65B0;&#x201D;&#x6240;&#x66FF;&#x4EE3;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6211;&#x4EEC;&#x5C31;&#x66F4;&#x4E3A;&#x719F;&#x6089;&#x5566;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x56DE;&#x5230;&#x5206;&#x9875;&#xFF0C;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x8981;&#x5206;&#x9875;&#x5462;&#xFF1F;&#x8FD9;&#x91CC;&#x6709;&#x4E24;&#x4E2A;&#x5173;&#x952E;&#x70B9;&#xFF1A;<strong>&#x7B2C;&#x4E00;&#xFF0C;&#x5185;&#x5BB9;&#x5728;&#x4E00;&#x9875;&#x5185;&#x65E0;&#x6CD5;&#x5C55;&#x793A;&#x5B8C;&#x5168;&#xFF1B;&#x7B2C;&#x4E8C;&#xFF0C;&#x5BF9;&#x5185;&#x5BB9;&#x7684;&#x6570;&#x91CF;&#x65E0;&#x6CD5;&#x8FDB;&#x884C;&#x4F30;&#x8BA1;&#x3002;</strong></p>
+<p>&#x2003;&#x2003;&#x4F8B;&#x5982;&#xFF0C;&#x6211;&#x4EEC;&#x5728;uGUI&#x4E2D;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;ScrollRect&#x7EC4;&#x4EF6; + GridLayout&#x7EC4;&#x4EF6; + Mask&#x7EC4;&#x4EF6;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x6EDA;&#x52A8;&#x5217;&#x8868;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x6848;&#x4F8B;&#x53EF;&#x4EE5;&#x53C2;&#x8003;<a href="http://www.cnblogs.com/zhaoqingqing/p/3973167.html" target="_blank" rel="noopener">&#x8FD9;&#x91CC;</a>&#x3002;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6CE8;&#x610F;&#x5230;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#x5C31;&#x662F;&#x8FD9;&#x4E2A;&#x6EDA;&#x52A8;&#x5217;&#x8868;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x6EDA;&#x52A8;&#x7684;&#x8303;&#x56F4;&#x662F;&#x7531;Mask&#x7EC4;&#x4EF6;&#x6765;&#x51B3;&#x5B9A;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x6EDA;&#x52A8;&#x5217;&#x8868;&#x662F;&#x65E0;&#x6CD5;&#x65E0;&#x9650;&#x6EDA;&#x52A8;&#x7684;&#xFF0C;&#x867D;&#x7136;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5728;&#x6E38;&#x620F;&#x8BBE;&#x8BA1;&#x4E2D;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x8FD9;&#x79CD;&#x65E0;&#x9650;&#x6EDA;&#x52A8;&#x7684;&#x5217;&#x8868;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x662F;&#x4E3A;&#x4E86;&#x63A2;&#x8BA8;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5047;&#x8BBE;&#x8FD9;&#x4E2A;&#x60C5;&#x51B5;&#x662F;&#x5141;&#x8BB8;&#x53D1;&#x751F;&#x7684;&#x3002;&#x90A3;&#x4E48;&#x9762;&#x5BF9;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x6709;&#x4EC0;&#x4E48;&#x597D;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x5462;&#xFF1F;&#x535A;&#x4E3B;&#x5C1D;&#x8BD5;&#x8FC7;&#x4E00;&#x79CD;&#x601D;&#x8DEF;&#xFF0C;&#x5373;&#x501F;&#x9274;Android&#x4E2D;&#x7684;ListView&#x63A7;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E2A;&#x63A7;&#x4EF6;&#x7684;&#x7279;&#x70B9;&#x662F;&#x53EF;&#x4EE5;&#x5BF9;&#x5217;&#x8868;&#x4E2D;&#x7684;&#x9879;&#x76EE;&#x8FDB;&#x884C;&#x56DE;&#x6536;&#x3002;&#x76F8;&#x4FE1;&#x8BF4;&#x5230;&#x8FD9;&#x91CC;&#xFF0C;&#x5927;&#x5BB6;&#x90FD;&#x660E;&#x767D;&#x6211;&#x60F3;&#x505A;&#x4EC0;&#x4E48;&#x4E86;&#x5427;&#xFF0C;&#x5927;&#x6982;&#x7684;&#x601D;&#x8DEF;&#x5C31;&#x662F;&#x5236;&#x4F5C;&#x4E00;&#x4E2A;&#x9AD8;&#x5EA6;&#x5927;&#x4E8E;&#x5C4F;&#x5E55;&#x9AD8;&#x5EA6;&#x7684;&#x5217;&#x8868;&#xFF0C;&#x7136;&#x540E;&#x8BA9;&#x6240;&#x6709;&#x7684;&#x5217;&#x8868;&#x9879;&#x5728;&#x8FD9;&#x4E2A;&#x5217;&#x8868;&#x4E2D;&#x5FAA;&#x73AF;&#x663E;&#x793A;&#x3002;&#x53EF;&#x662F;&#x65B0;&#x7684;&#x95EE;&#x9898;&#x5C31;&#x6765;&#x4E86;&#xFF0C;<strong>&#x7B2C;&#x4E00;&#xFF0C;&#x9891;&#x7E41;&#x5730;&#x751F;&#x6210;&#x548C;&#x9500;&#x6BC1;&#x7269;&#x4F53;&#x662F;Unity3D&#x5927;&#x5FCC;</strong>&#x3002;&#x867D;&#x7136;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7F13;&#x5B58;&#x6C60;&#x6765;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x662F;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x5E76;&#x6CA1;&#x6709;&#x5177;&#x4F53;&#x8FD9;&#x6837;&#x5B9E;&#x8DF5;&#x8FC7;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x91CC;&#x76EE;&#x524D;&#x662F;&#x5B58;&#x7591;&#x7684;&#x3002;<strong>&#x7B2C;&#x4E8C;&#xFF0C;GridLayout&#x8FD9;&#x4E2A;&#x7EC4;&#x4EF6;&#x5185;&#x7684;&#x5143;&#x7D20;&#x6392;&#x5E8F;&#x662F;&#x6839;&#x636E;&#x5B50;&#x5143;&#x7D20;&#x6DFB;&#x52A0;&#x7684;&#x987A;&#x5E8F;&#x6765;&#x51B3;&#x5B9A;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x6BCF;&#x6B21;&#x5217;&#x8868;&#x66F4;&#x65B0;&#x4EE5;&#x540E;&#x90FD;&#x9700;&#x8981;&#x5C06;&#x6240;&#x6709;&#x7684;&#x5B50;&#x5143;&#x7D20;&#x66F4;&#x65B0;&#x4E00;&#x904D;&#x3002;</strong>&#x66FE;&#x7ECF;&#x56E0;&#x4E3A;&#x8FD9;&#x6837;&#x9700;&#x6C42;&#x548C;&#x7B56;&#x5212;&#x53D1;&#x751F;&#x8FC7;&#x4E89;&#x6267;&#xFF0C;&#x6700;&#x7EC8;&#x59A5;&#x534F;&#x7684;&#x4E00;&#x4E2A;&#x7ED3;&#x679C;&#x5C31;&#x662F;&#x91C7;&#x7528;&#x5206;&#x9875;&#x6765;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x3002;&#x5206;&#x9875;&#x9996;&#x5148;&#x89E3;&#x51B3;&#x4E86;&#x65E0;&#x9650;&#x6EDA;&#x52A8;&#x7684;&#x9700;&#x6C42;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x201C;&#x4EE5;&#x4E0D;&#x53D8;&#x5E94;&#x4E07;&#x53D8;&#x201D;&#x7684;&#x7B56;&#x7565;&#xFF0C;&#x4E0D;&#x8BBA;&#x5217;&#x8868;&#x5185;&#x5143;&#x7D20;&#x6709;&#x591A;&#x5C11;&#x5B83;&#x90FD;&#x53EF;&#x4EE5;&#x663E;&#x793A;&#x51FA;&#x6765;&#x3002;&#x5176;&#x6B21;&#xFF0C;&#x5728;&#x5206;&#x9875;&#x7684;&#x8FC7;&#x7A0B;&#x662F;&#x5C06;&#x6570;&#x636E;&#x6A21;&#x677F;&#x5316;&#x7684;&#x8FC7;&#x7A0B;&#xFF0C;&#x5B83;&#x6539;&#x53D8;&#x662F;&#x754C;&#x9762;&#x7684;&#x5916;&#x89C2;&#x548C;&#x884C;&#x4E3A;&#xFF0C;UI&#x7ED3;&#x6784;&#x662F;&#x76F8;&#x5BF9;&#x7A33;&#x5B9A;&#x7684;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x9891;&#x7E41;&#x5730;&#x751F;&#x6210;&#x548C;&#x9500;&#x6BC1;&#x7269;&#x4F53;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x4EE5;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x6848;&#x4F8B;&#x6765;&#x63A2;&#x8BA8;&#x5206;&#x9875;&#x6548;&#x679C;&#x5728;uGUI&#x4E2D;&#x7684;&#x5B9E;&#x73B0;&#xFF0C;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x4F7F;&#x7528;GridLayoutGroup&#x6765;&#x5236;&#x4F5C;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x7F51;&#x683C;&#x5E03;&#x5C40;&#xFF0C;&#x8BF7;&#x7528;&#x5FC3;&#x611F;&#x53D7;&#x4E0B;&#x56FE;&#x4E2D;&#x840C;&#x840C;&#x54D2;&#x5341;&#x4E8C;&#x751F;&#x8096;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/None.jpg" alt="&#x8BF7;&#x4E0D;&#x8981;&#x4F24;&#x5BB3;&#x4E00;&#x4E2A;&#x7A0B;&#x5E8F;&#x5458;&#x7684;&#x827A;&#x672F;&#x7EC6;&#x80DE;&#xFF0C;&#x867D;&#x7136;&#x6211;&#x77E5;&#x9053;&#x5B83;&#x6BD4;&#x8F83;&#x96BE;&#x770B;" title>
+                </div>
+                <div class="image-caption">&#x8BF7;&#x4E0D;&#x8981;&#x4F24;&#x5BB3;&#x4E00;&#x4E2A;&#x7A0B;&#x5E8F;&#x5458;&#x7684;&#x827A;&#x672F;&#x7EC6;&#x80DE;&#xFF0C;&#x867D;&#x7136;&#x6211;&#x77E5;&#x9053;&#x5B83;&#x6BD4;&#x8F83;&#x96BE;&#x770B;</div>
+            </figure>
+<p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4E0D;&#x518D;&#x5BF9;&#x8FD9;&#x4E2A;&#x5E03;&#x5C40;&#x7684;&#x5236;&#x4F5C;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x8BE6;&#x7EC6;&#x7684;&#x8BF4;&#x660E;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x4ECA;&#x5929;&#x7684;&#x91CD;&#x70B9;&#x4E0D;&#x5728;&#x8FD9;&#x91CC;&#x3002;&#x6211;&#x4EEC;&#x6CE8;&#x610F;&#x5230;&#x8FD9;&#x91CC;&#x6709;12&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x6BCF;&#x6B21;&#x5BF9;&#x9875;&#x9762;&#x8FDB;&#x884C;&#x5207;&#x6362;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#x8FD9;12&#x4E2A;&#x5143;&#x7D20;&#x662F;&#x57FA;&#x672C;&#x4E0D;&#x4F1A;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x7684;&#xFF0C;&#x771F;&#x6B63;&#x53D8;&#x5316;&#x7684;&#x662F;&#x8FD9;&#x4E9B;&#x5143;&#x7D20;&#x7684;&#x5916;&#x89C2;&#xFF08;&#x5982;&#x8FD9;&#x91CC;&#x7684;&#x7CBE;&#x7075;&#x56FE;&#x7247;&#x548C;&#x540D;&#x79F0;&#xFF09;&#x4EE5;&#x53CA;&#x5176;&#x5BF9;&#x5E94;&#x7684;UI&#x4E8B;&#x4EF6;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x6848;&#x4F8B;&#x4E2D;&#x6211;&#x4EEC;&#x5229;&#x7528;&#x533F;&#x540D;&#x51FD;&#x6570;&#x5B9E;&#x73B0;&#x4E86;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;Click&#x4E8B;&#x4EF6;&#x7684;&#x76D1;&#x542C;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x524D;&#x9762;&#x6211;&#x4EEC;&#x8BF4;&#x5230;&#x5206;&#x9875;&#x7684;&#x4E00;&#x4E2A;&#x76EE;&#x7684;&#x662F;&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x5217;&#x8868;&#x5185;&#x5143;&#x7D20;&#x6570;&#x76EE;&#x4E0D;&#x786E;&#x5B9A;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5229;&#x7528;&#x4E00;&#x4E2A;12&#x751F;&#x8096;&#x7684;&#x6570;&#x7EC4;&#x6765;&#x968F;&#x673A;&#x751F;&#x6210;&#x5143;&#x7D20;&#x6570;&#x76EE;&#x4E0D;&#x540C;&#x7684;&#x5217;&#x8868;&#xFF0C;&#x4EE3;&#x7801;&#x5B9E;&#x73B0;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight haxe"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line">   <span class="comment">/// &#x521D;&#x59CB;&#x5316;&#x5143;&#x7D20;</span></span><br><span class="line">   <span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line">   <span class="keyword">private</span> void InitItems()</span><br><span class="line">   {</span><br><span class="line">       <span class="comment">//&#x51C6;&#x5907;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x7740;12&#x751F;&#x8096;&#x4FE1;&#x606F;&#x7684;&#x6570;&#x7EC4;</span></span><br><span class="line">       GridItem[] items = <span class="keyword">new</span> <span class="type">GridItem</span>[]</span><br><span class="line">       {</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x9F20;&quot;</span>,<span class="string">&quot;Mouse&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x725B;&quot;</span>,<span class="string">&quot;Ox&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x864E;&quot;</span>,<span class="string">&quot;Tiger&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x5154;&quot;</span>,<span class="string">&quot;Rabbit&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x9F99;&quot;</span>,<span class="string">&quot;Dragon&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x86C7;&quot;</span>,<span class="string">&quot;Snake&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x9A6C;&quot;</span>,<span class="string">&quot;Horse&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x7F8A;&quot;</span>,<span class="string">&quot;Goat&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x7334;&quot;</span>,<span class="string">&quot;Monkey&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x9E21;&quot;</span>,<span class="string">&quot;Rooster&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x72D7;&quot;</span>,<span class="string">&quot;Dog&quot;</span>),</span><br><span class="line">           <span class="keyword">new</span> <span class="type">GridItem</span>(<span class="string">&quot;&#x732A;&quot;</span>,<span class="string">&quot;Pig&quot;</span>)</span><br><span class="line">       };</span><br><span class="line"></span><br><span class="line">       <span class="comment">//&#x5229;&#x7528;12&#x751F;&#x8096;&#x6570;&#x7EC4;&#x6765;&#x968F;&#x673A;&#x751F;&#x6210;&#x5217;&#x8868;</span></span><br><span class="line">       m_ItemsList = <span class="keyword">new</span> <span class="type">List</span>&lt;GridItem&gt;();</span><br><span class="line">       <span class="keyword">for</span>(int i = <span class="number">0</span>; i &lt; Random.Range(<span class="number">1</span>,<span class="number">1000</span>); i++)</span><br><span class="line">       {</span><br><span class="line">           m_ItemsList.Add(items[Random.Range(<span class="number">0</span>,items.Length)]);</span><br><span class="line">       }</span><br><span class="line"></span><br><span class="line">       <span class="comment">//&#x8BA1;&#x7B97;&#x5143;&#x7D20;&#x603B;&#x4E2A;&#x6570;</span></span><br><span class="line">       m_ItemsCount = m_ItemsList.Count;</span><br><span class="line">       <span class="comment">//&#x8BA1;&#x7B97;&#x603B;&#x9875;&#x6570;</span></span><br><span class="line">       m_PageCount = (m_ItemsCount % <span class="number">12</span>) == <span class="number">0</span> ? m_ItemsCount / <span class="number">12</span> : <span class="type"></span>(m_ItemsCount / <span class="number">12</span>) + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">       BindPage(m_PageIndex);</span><br><span class="line">       <span class="comment">//&#x66F4;&#x65B0;&#x754C;&#x9762;&#x9875;&#x6570;</span></span><br><span class="line">       m_PanelText.text = string.Format(<span class="string">&quot;{0}/{1}&quot;</span>,</span><br><span class="line">        m_PageIndex.ToString(),</span><br><span class="line">        m_PageCount.ToString());</span><br><span class="line">   }</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x5728;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x4E2D;&#xFF0C;m_ItemList&#x8868;&#x793A;&#x6211;&#x4EEC;&#x8981;&#x5C55;&#x793A;&#x7684;&#x5143;&#x7D20;&#x5217;&#x8868;&#xFF0C;m_ItemsCount&#x8868;&#x793A;&#x5143;&#x7D20;&#x5217;&#x8868;&#x4E2D;&#x5143;&#x7D20;&#x7684;&#x4E2A;&#x6570;&#xFF0C;m_PageCount&#x8868;&#x793A;&#x8FD9;&#x4E9B;&#x5143;&#x7D20;&#x53EF;&#x4EE5;&#x5206;&#x6210;&#x7684;&#x603B;&#x9875;&#x6570;&#xFF0C;m_PageIndex&#x8868;&#x793A;&#x9875;&#x6570;&#x7684;&#x7D22;&#x5F15;<strong>&#x9ED8;&#x8BA4;&#x4ECE;1&#x5F00;&#x59CB;</strong>&#x3002;&#x5176;&#x4E2D;GridItem&#x662F;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x7C7B;&#xFF0C;&#x5B83;&#x6709;ItemName&#x548C;ItemSprite&#x4E24;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;&#x8FD9;&#x91CC;&#x4E0D;&#x518D;&#x5177;&#x4F53;&#x8BF4;&#x660E;&#x4E86;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x6765;&#x601D;&#x8003;&#x5982;&#x4F55;&#x5C06;&#x8FD9;&#x4E9B;&#x5143;&#x7D20;&#x548C;UI&#x5BF9;&#x5E94;&#x8D77;&#x6765;&#xFF0C;&#x56E0;&#x4E3A;&#x5217;&#x8868;&#x4E2D;&#x5143;&#x7D20;&#x7684;&#x6570;&#x76EE;&#x4E0D;&#x786E;&#x5B9A;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x6210;&#x4E24;&#x79CD;&#x60C5;&#x51B5;&#x6765;&#x8BA8;&#x8BBA;&#xFF1A;</p>
+<ul>
+<li><p>&#x9875;&#x9762;&#x603B;&#x6570;&#x4E3A;1&#xFF0C;&#x5373;m_PageCount=1&#xFF0C;&#x6B64;&#x65F6;&#x5217;&#x8868;&#x5185;&#x7684;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#x7684;&#x8303;&#x56F4;&#x662F;1~12&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5229;&#x7528;&#x5FAA;&#x73AF;&#x5224;&#x65AD;&#x54EA;&#x4E9B;&#x5143;&#x7D20;&#x662F;&#x8981;&#x5C55;&#x793A;&#x7684;&#xFF1F;&#x54EA;&#x4E9B;&#x5143;&#x7D20;&#x662F;&#x4E0D;&#x9700;&#x8981;&#x7684;&#xFF1F;&#x56E0;&#x4E3A;&#x5982;&#x679C;&#x6B64;&#x65F6;&#x5217;&#x8868;&#x5185;&#x7684;&#x5143;&#x7D20;&#x4E3A;10&#xFF0C;&#x5219;&#x610F;&#x5473;&#x7740;&#x524D;&#x9762;10&#x4E2A;&#x5143;&#x7D20;&#x662F;&#x8981;&#x5C55;&#x793A;&#x7ED9;&#x7528;&#x6237;&#xFF0C;&#x800C;&#x5269;&#x4E0B;&#x7684;2&#x4E2A;&#x5143;&#x7D20;&#x662F;&#x4E0D;&#x9700;&#x8981;&#x7684;&#x3002;&#x5728;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x7B80;&#x5355;&#x5730;&#x4F7F;&#x7528;SetActive&#x6765;&#x8BA9;&#x8FD9;&#x4E9B;&#x5143;&#x7D20;&#x9690;&#x85CF;&#x8D77;&#x6765;&#x3002;</p>
+</li>
+<li><p>&#x9875;&#x9762;&#x603B;&#x6570;&#x5927;&#x4E8E;1&#xFF0C;&#x5373;m_PageCount&gt;1&#xFF0C;&#x6B64;&#x65F6;&#x524D;&#x9762;&#x7684;m_PageCount-1&#x4E2A;&#x9875;&#x9762;&#x90FD;&#x662F;&#x663E;&#x793A;&#x5B8C;&#x5168;&#x7684;&#xFF0C;&#x5B83;&#x76F8;&#x5F53;&#x4E8E;&#x5143;&#x7D20;&#x603B;&#x4E2A;&#x6570;&#x4E2D;&#x88AB;12&#x6574;&#x9664;&#x7684;&#x90E8;&#x5206;&#x3002;&#x800C;&#x7B2C;m_PageCount&#x4E2A;&#x9875;&#x9762;&#x6B64;&#x65F6;&#x7684;&#x60C5;&#x51B5;&#x548C;&#x9875;&#x6570;&#x603B;&#x6570;&#x4E3A;1&#x7684;&#x60C5;&#x51B5;&#x7C7B;&#x4F3C;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x91C7;&#x53D6;&#x548C;&#x9875;&#x9762;&#x603B;&#x6570;&#x4E3A;1&#x7C7B;&#x4F3C;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x5904;&#x7406;&#x3002;</p>
+</li>
+</ul>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x8FD9;&#x90E8;&#x5206;&#x4EE3;&#x7801;&#x7684;&#x5177;&#x4F53;&#x5B9E;&#x73B0;&#xFF1A;<br></p><figure class="highlight axapta"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// &#x7ED1;&#x5B9A;&#x6307;&#x5B9A;&#x7D22;&#x5F15;&#x5904;&#x7684;&#x9875;&#x9762;&#x5143;&#x7D20;</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;index&quot;&gt;&#x9875;&#x9762;&#x7D22;&#x5F15;&lt;/param&gt;</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> BindPage(<span class="keyword">int</span> <span class="keyword">index</span>)</span><br><span class="line">{</span><br><span class="line">    <span class="comment">//&#x5217;&#x8868;&#x5904;&#x7406;</span></span><br><span class="line">    <span class="keyword">if</span>(m_ItemsList == <span class="keyword">null</span> || m_ItemsCount &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x7D22;&#x5F15;&#x5904;&#x7406;</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">index</span> &lt; <span class="number">0</span> || <span class="keyword">index</span> &gt; m_ItemsCount)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x6309;&#x7167;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#x53EF;&#x4EE5;&#x5206;&#x4E3A;1&#x9875;&#x548C;1&#x9875;&#x4EE5;&#x4E0A;&#x4E24;&#x79CD;&#x60C5;&#x51B5;</span></span><br><span class="line">    <span class="keyword">if</span>(m_PageCount == <span class="number">1</span>)</span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">int</span> canDisplay = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">12</span>; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">if</span>(canDisplay &lt; <span class="number">12</span>){</span><br><span class="line">                BindGridItem(transform.GetChild(canDisplay), m_ItemsList[<span class="number">12</span> - i]);</span><br><span class="line">                transform.GetChild(canDisplay).gameObject.SetActive(<span class="keyword">true</span>);</span><br><span class="line">            }<span class="keyword">else</span>{</span><br><span class="line">                <span class="comment">//&#x5BF9;&#x8D85;&#x8FC7;canDispaly&#x7684;&#x7269;&#x4F53;&#x5B9E;&#x65BD;&#x9690;&#x85CF;</span></span><br><span class="line">                transform.GetChild(canDisplay).gameObject.SetActive(<span class="keyword">false</span>);</span><br><span class="line">            }</span><br><span class="line">            canDisplay += <span class="number">1</span>;</span><br><span class="line">        }</span><br><span class="line">    }<span class="keyword">else</span> <span class="keyword">if</span>(m_PageCount &gt; <span class="number">1</span>){</span><br><span class="line">        <span class="comment">//1&#x9875;&#x4EE5;&#x4E0A;&#x9700;&#x8981;&#x7279;&#x522B;&#x5904;&#x7406;&#x7684;&#x662F;&#x6700;&#x540E;1&#x9875;</span></span><br><span class="line">        <span class="comment">//&#x548C;1&#x9875;&#x65F6;&#x7684;&#x60C5;&#x51B5;&#x7C7B;&#x4F3C;&#x5224;&#x65AD;&#x6700;&#x540E;&#x4E00;&#x9875;&#x5269;&#x4E0B;&#x7684;&#x5143;&#x7D20;&#x6570;&#x76EE;</span></span><br><span class="line">        <span class="comment">//&#x7B2C;1&#x9875;&#x65F6;&#x663E;&#x7136;&#x5269;&#x4E0B;&#x7684;&#x4E3A;12&#x6240;&#x4EE5;&#x4E0D;&#x7528;&#x5904;&#x7406;</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">index</span> == m_PageCount){</span><br><span class="line">            <span class="keyword">int</span> canDisplay = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">12</span>; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">            {</span><br><span class="line">                <span class="comment">//&#x6700;&#x540E;&#x4E00;&#x9875;&#x5269;&#x4E0B;&#x7684;&#x5143;&#x7D20;&#x6570;&#x76EE;&#x4E3A; m_ItemsCount - 12 * (index-1)</span></span><br><span class="line">                <span class="keyword">if</span>(canDisplay &lt; m_ItemsCount - <span class="number">12</span> * (<span class="keyword">index</span><span class="number">-1</span>)){</span><br><span class="line">                    BindGridItem(transform.GetChild(canDisplay), m_ItemsList[<span class="number">12</span> * <span class="keyword">index</span>-i]);</span><br><span class="line">                    transform.GetChild(canDisplay).gameObject.SetActive(<span class="keyword">true</span>);</span><br><span class="line">                }<span class="keyword">else</span>{</span><br><span class="line">                    <span class="comment">//&#x5BF9;&#x8D85;&#x8FC7;canDispaly&#x7684;&#x7269;&#x4F53;&#x5B9E;&#x65BD;&#x9690;&#x85CF;</span></span><br><span class="line">                    transform.GetChild(canDisplay).gameObject.SetActive(<span class="keyword">false</span>);</span><br><span class="line">                }</span><br><span class="line">                canDisplay += <span class="number">1</span>;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">else</span>{</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">12</span>; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">            {</span><br><span class="line">                BindGridItem(transform.GetChild(<span class="number">12</span> - i), m_ItemsList[<span class="number">12</span> * <span class="keyword">index</span> - i]);</span><br><span class="line">                transform.GetChild(<span class="number">12</span> - i).gameObject.SetActive(<span class="keyword">true</span>);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x597D;&#x4E86;&#xFF0C;&#x5728;&#x8FD9;&#x91CC;&#x5B8C;&#x6210;BindPage&#x65B9;&#x6CD5;&#x7684;&#x5B9A;&#x4E49;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x7A0B;&#x5E8F;&#x663E;&#x793A;&#x5BF9;&#x5E94;&#x9875;&#x9762;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x6B64;&#x65F6;&#x4E0A;&#x4E00;&#x9875;&#x548C;&#x4E0B;&#x4E00;&#x9875;&#x7684;&#x5DE5;&#x4F5C;&#x57FA;&#x672C;&#x4E0A;&#x5C31;&#x662F;&#x6539;&#x53D8;&#x7D22;&#x5F15;&#x7684;&#x4E00;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E86;&#x3002;&#x8FD9;&#x90E8;&#x5206;&#x6211;&#x4EEC;&#x4E0D;&#x518D;&#x8BF4;&#x4E86;&#xFF0C;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x53BB;&#x770B;&#x6700;&#x7EC8;&#x7ED9;&#x51FA;&#x7684;&#x5B8C;&#x6574;&#x4EE3;&#x7801;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x6765;&#x770B;&#x770B;&#x5B9E;&#x9645;&#x7684;&#x6548;&#x679C;&#x5427;&#xFF01;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz68jx43btg20kp0gqne1.jpg" alt="&#x7B80;&#x5355;&#x7684;&#x5206;&#x9875;&#x6548;&#x679C;&#x5C55;&#x793A;" title>
+                </div>
+                <div class="image-caption">&#x7B80;&#x5355;&#x7684;&#x5206;&#x9875;&#x6548;&#x679C;&#x5C55;&#x793A;</div>
+            </figure>
+<p>&#x5176;&#x5B9E;&#x8FD9;&#x91CC;&#x6838;&#x5FC3;&#x7684;&#x5185;&#x5BB9;&#x662F;&#x5206;&#x9875;&#x7684;&#x5904;&#x7406;&#xFF0C;&#x5728;&#x5904;&#x7406;&#x91CC;&#x53EA;&#x6709;1&#x9875;&#x65F6;&#x7684;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#x548C;&#x8D85;&#x8FC7;1&#x9875;&#x7684;&#x6700;&#x540E;1&#x9875;&#x65F6;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x91C7;&#x53D6;&#x4E24;&#x4E2A;&#x5FAA;&#x73AF;&#x5904;&#x7406;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5373;&#x5148;&#x4ECE;0&#x5FAA;&#x73AF;&#x5230;m_ItemsCount - 12 <em> (index-1))&#x8BBE;&#x7F6E;&#x8981;&#x663E;&#x793A;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x4ECE;m_ItemsCount - 12 </em> (index-1))&#x5FAA;&#x73AF;&#x5230;12&#x8BBE;&#x7F6E;&#x8981;&#x9690;&#x85CF;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x53EF;&#x662F;&#x8FD9;&#x6837;&#x7684;&#x65B9;&#x5F0F;&#x6211;&#x4E0D;&#x592A;&#x559C;&#x6B22;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x6587;&#x7AE0;&#x4E2D;&#x5C31;&#x6CA1;&#x6709;&#x91C7;&#x53D6;&#x8FD9;&#x6837;&#x7684;&#x65B9;&#x5F0F;&#x3002;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x662F;&#x6839;&#x636E;&#x4E00;&#x4E2A;&#x9879;&#x76EE;&#x5F53;&#x65F6;&#x7684;&#x7ECF;&#x5386;&#x5199;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x65F6;&#x95F4;&#x8FC7;&#x5F97;&#x6BD4;&#x8F83;&#x4E45;&#xFF0C;&#x6240;&#x4EE5;&#x5982;&#x679C;&#x6587;&#x7AE0;&#x4E2D;&#x4E0D;&#x5F53;&#x4E4B;&#x5904;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x6307;&#x51FA;&#x5E76;&#x6279;&#x8BC4;&#x3002;&#x73B0;&#x5728;&#x8FD9;&#x4E2A;&#x65B9;&#x6848;&#x611F;&#x89C9;&#x8FD8;&#x53EF;&#x4EE5;&#x5728;&#x7279;&#x6548;&#x4E0A;&#x8FDB;&#x884C;&#x6539;&#x8FDB;&#xFF0C;&#x56E0;&#x4E3A;&#x73B0;&#x5728;&#x611F;&#x89C9;&#x5207;&#x6362;&#x7684;&#x65F6;&#x5019;&#x753B;&#x9762;&#x6BD4;&#x8F83;&#x7A81;&#x5140;&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x8BF7;&#x5927;&#x5BB6;&#x6CE8;&#x610F;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x7ED9;&#x51FA;&#x5B8C;&#x6574;&#x7684;&#x4EE3;&#x7801;&#x548C;&#x573A;&#x666F;&#x5E03;&#x5C40;&#x622A;&#x56FE;&#x3002;&#x518D;&#x6B21;&#x5F3A;&#x8C03;&#xFF1A;<strong>&#x8BF7;&#x5728;&#x770B;&#x61C2;&#x6587;&#x7AE0;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x201C;&#x6284;&#x201D;&#x4EE3;&#x7801;</strong>&#xFF0C;&#x6BCF;&#x6B21;&#x770B;&#x5230;&#x522B;&#x4EBA;&#x95EE;&#x6211;&#x628A;XXX&#x811A;&#x672C;&#x6302;&#x5230;&#x573A;&#x666F;&#x4E2D;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x8FD9;&#x7C7B;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x5C31;&#x89C9;&#x5F97;&#x6574;&#x4E2A;&#x4E16;&#x754C;&#x5145;&#x6EE1;&#x4E86;&#x6DF1;&#x6DF1;&#x5730;&#x7F6A;&#x6076;&#x611F;&#x3002;&#x522B;&#x4EBA;&#x613F;&#x610F;&#x5206;&#x4EAB;&#x6280;&#x672F;&#x6587;&#x7AE0;&#xFF0C;&#x66F4;&#x591A;&#x7684;&#x662F;&#x5E0C;&#x671B;&#x53EF;&#x4EE5;&#x548C;&#x522B;&#x4EBA;&#x4EA4;&#x6D41;&#x5B66;&#x4E60;&#x76F8;&#x4E92;&#x4FC3;&#x8FDB;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x53EA;&#x662F;&#x5E0C;&#x671B;&#x62FF;&#x5230;&#x4E00;&#x4E2A;&#x968F;&#x4FBF;&#x6284;&#x6765;&#x5C31;&#x80FD;&#x7528;&#x5730;&#x4EE3;&#x7801;&#xFF0C;&#x62B1;&#x6B49;&#xFF01;&#x8FD9;&#x8FDD;&#x80CC;&#x4E86;&#x6211;&#x7684;&#x521D;&#x8877;&#x6240;&#x4EE5;&#x6211;&#x5F88;&#x96BE;&#x505A;&#x5230;&#xFF01;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * &#x4E00;&#x4E2A;&#x57FA;&#x4E8E;uGUI&#x7684;&#x5206;&#x9875;&#x529F;&#x80FD;&#x7684;&#x5B9E;&#x73B0;</span></span><br><span class="line"><span class="comment"> * &#x4F5C;&#x8005;&#xFF1A;&#x79E6;&#x5143;&#x57F9;</span></span><br><span class="line"><span class="comment"> * &#x65F6;&#x95F4;&#xFF1A;2015&#x5E74;11&#x6708;11&#x65E5;</span></span><br><span class="line"><span class="comment"> * &#x535A;&#x5BA2;&#xFF1A;http://qinyuanpei.com</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PaginationPanel</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">{</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5F53;&#x524D;&#x9875;&#x9762;&#x7D22;&#x5F15;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> m_PageIndex = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x603B;&#x9875;&#x6570;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> m_PageCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5143;&#x7D20;&#x603B;&#x4E2A;&#x6570;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> m_ItemsCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5143;&#x7D20;&#x5217;&#x8868;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> List&lt;GridItem&gt; m_ItemsList;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x4E0A;&#x4E00;&#x9875;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Button m_BtnPrevious;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x4E0B;&#x4E00;&#x9875;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Button m_BtnNext;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x663E;&#x793A;&#x5F53;&#x524D;&#x9875;&#x6570;&#x7684;&#x6807;&#x7B7E;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Text m_PanelText;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>) </span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        InitGUI();</span><br><span class="line">        InitItems();</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x521D;&#x59CB;&#x5316;GUI</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">InitGUI</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        m_BtnNext = GameObject.Find(<span class="string">&quot;Canvas/Panel/BtnNext&quot;</span>).GetComponent&lt;Button&gt;();</span><br><span class="line">        m_BtnPrevious = GameObject.Find(<span class="string">&quot;Canvas/Panel/BtnPrevious&quot;</span>).GetComponent&lt;Button&gt;();</span><br><span class="line">        m_PanelText = GameObject.Find(<span class="string">&quot;Canvas/Panel/Text&quot;</span>).GetComponent&lt;Text&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x4E3A;&#x4E0A;&#x4E00;&#x9875;&#x548C;&#x4E0B;&#x4E00;&#x9875;&#x6DFB;&#x52A0;&#x4E8B;&#x4EF6;</span></span><br><span class="line">        m_BtnNext.onClick.AddListener(() =&gt; { Next(); });</span><br><span class="line">        m_BtnPrevious.onClick.AddListener(() =&gt; { Previous(); });</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x521D;&#x59CB;&#x5316;&#x5143;&#x7D20;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">InitItems</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x51C6;&#x5907;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x7740;12&#x751F;&#x8096;&#x4FE1;&#x606F;&#x7684;&#x6570;&#x7EC4;</span></span><br><span class="line">        GridItem[] items = <span class="keyword">new</span> GridItem[]</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x9F20;&quot;</span>,<span class="string">&quot;Mouse&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x725B;&quot;</span>,<span class="string">&quot;Ox&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x864E;&quot;</span>,<span class="string">&quot;Tiger&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x5154;&quot;</span>,<span class="string">&quot;Rabbit&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x9F99;&quot;</span>,<span class="string">&quot;Dragon&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x86C7;&quot;</span>,<span class="string">&quot;Snake&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x9A6C;&quot;</span>,<span class="string">&quot;Horse&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x7F8A;&quot;</span>,<span class="string">&quot;Goat&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x7334;&quot;</span>,<span class="string">&quot;Monkey&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x9E21;&quot;</span>,<span class="string">&quot;Rooster&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x72D7;&quot;</span>,<span class="string">&quot;Dog&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> GridItem(<span class="string">&quot;&#x732A;&quot;</span>,<span class="string">&quot;Pig&quot;</span>)</span><br><span class="line">        };</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x5229;&#x7528;12&#x751F;&#x8096;&#x6570;&#x7EC4;&#x6765;&#x968F;&#x673A;&#x751F;&#x6210;&#x5217;&#x8868;</span></span><br><span class="line">        m_ItemsList = <span class="keyword">new</span> List&lt;GridItem&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; Random.Range(<span class="number">1</span>,<span class="number">1000</span>); i++)</span><br><span class="line">        {</span><br><span class="line">            m_ItemsList.Add(items[Random.Range(<span class="number">0</span>,items.Length)]);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x8BA1;&#x7B97;&#x5143;&#x7D20;&#x603B;&#x4E2A;&#x6570;</span></span><br><span class="line">        m_ItemsCount = m_ItemsList.Count;</span><br><span class="line">        <span class="comment">//&#x8BA1;&#x7B97;&#x603B;&#x9875;&#x6570;</span></span><br><span class="line">        m_PageCount = (m_ItemsCount % <span class="number">12</span>) == <span class="number">0</span> ? </span><br><span class="line">        m_ItemsCount / <span class="number">12</span> : (m_ItemsCount / <span class="number">12</span>) + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        BindPage(m_PageIndex);</span><br><span class="line">        <span class="comment">//&#x66F4;&#x65B0;&#x754C;&#x9762;&#x9875;&#x6570;</span></span><br><span class="line">        m_PanelText.text = <span class="keyword">string</span>.Format(<span class="string">&quot;{0}/{1}&quot;</span>,</span><br><span class="line">         m_PageIndex.ToString(),</span><br><span class="line">          m_PageCount.ToString());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x4E0B;&#x4E00;&#x9875;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Next</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">if</span>(m_PageCount &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        <span class="comment">//&#x6700;&#x540E;&#x4E00;&#x9875;&#x7981;&#x6B62;&#x5411;&#x540E;&#x7FFB;&#x9875;</span></span><br><span class="line">        <span class="keyword">if</span>(m_PageIndex &gt;= m_PageCount)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        m_PageIndex += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (m_PageIndex &gt;= m_PageCount)</span><br><span class="line">            m_PageIndex = m_PageCount;</span><br><span class="line"></span><br><span class="line">        BindPage(m_PageIndex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x66F4;&#x65B0;&#x754C;&#x9762;&#x9875;&#x6570;</span></span><br><span class="line">        m_PanelText.text = <span class="keyword">string</span>.Format(<span class="string">&quot;{0}/{1}&quot;</span>,</span><br><span class="line">         m_PageIndex.ToString(), </span><br><span class="line">         m_PageCount.ToString());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x4E0A;&#x4E00;&#x9875;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Previous</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">if</span>(m_PageCount &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        <span class="comment">//&#x7B2C;&#x4E00;&#x9875;&#x65F6;&#x7981;&#x6B62;&#x5411;&#x524D;&#x7FFB;&#x9875;</span></span><br><span class="line">        <span class="keyword">if</span>(m_PageIndex &lt;= <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        m_PageIndex -= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(m_PageIndex &lt; <span class="number">1</span>)</span><br><span class="line">            m_PageIndex = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        BindPage(m_PageIndex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x66F4;&#x65B0;&#x754C;&#x9762;&#x9875;&#x6570;</span></span><br><span class="line">        m_PanelText.text = <span class="keyword">string</span>.Format(<span class="string">&quot;{0}/{1}&quot;</span>,</span><br><span class="line">         m_PageIndex.ToString(), </span><br><span class="line">         m_PageCount.ToString());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x7ED1;&#x5B9A;&#x6307;&#x5B9A;&#x7D22;&#x5F15;&#x5904;&#x7684;&#x9875;&#x9762;&#x5143;&#x7D20;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;index&quot;&gt;</span>&#x9875;&#x9762;&#x7D22;&#x5F15;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">BindPage</span>(<span class="params"><span class="keyword">int</span> index</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x5217;&#x8868;&#x5904;&#x7406;</span></span><br><span class="line">        <span class="keyword">if</span>(m_ItemsList == <span class="literal">null</span> || m_ItemsCount &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x7D22;&#x5F15;&#x5904;&#x7406;</span></span><br><span class="line">        <span class="keyword">if</span>(index &lt; <span class="number">0</span> || index &gt; m_ItemsCount)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x6309;&#x7167;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#x53EF;&#x4EE5;&#x5206;&#x4E3A;1&#x9875;&#x548C;1&#x9875;&#x4EE5;&#x4E0A;&#x4E24;&#x79CD;&#x60C5;&#x51B5;</span></span><br><span class="line">        <span class="keyword">if</span>(m_PageCount == <span class="number">1</span>)</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">int</span> canDisplay = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">12</span>; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">            {</span><br><span class="line">                <span class="keyword">if</span>(canDisplay &lt; <span class="number">12</span>){</span><br><span class="line">                    BindGridItem(transform.GetChild(canDisplay), m_ItemsList[<span class="number">12</span> - i]);</span><br><span class="line">                    transform.GetChild(canDisplay).gameObject.SetActive(<span class="literal">true</span>);</span><br><span class="line">                }<span class="keyword">else</span>{</span><br><span class="line">                    <span class="comment">//&#x5BF9;&#x8D85;&#x8FC7;canDispaly&#x7684;&#x7269;&#x4F53;&#x5B9E;&#x65BD;&#x9690;&#x85CF;</span></span><br><span class="line">                    transform.GetChild(canDisplay).gameObject.SetActive(<span class="literal">false</span>);</span><br><span class="line">                }</span><br><span class="line">                canDisplay += <span class="number">1</span>;</span><br><span class="line">            }</span><br><span class="line">        }<span class="keyword">else</span> <span class="keyword">if</span>(m_PageCount &gt; <span class="number">1</span>){</span><br><span class="line">            <span class="comment">//1&#x9875;&#x4EE5;&#x4E0A;&#x9700;&#x8981;&#x7279;&#x522B;&#x5904;&#x7406;&#x7684;&#x662F;&#x6700;&#x540E;1&#x9875;</span></span><br><span class="line">            <span class="comment">//&#x548C;1&#x9875;&#x65F6;&#x7684;&#x60C5;&#x51B5;&#x7C7B;&#x4F3C;&#x5224;&#x65AD;&#x6700;&#x540E;&#x4E00;&#x9875;&#x5269;&#x4E0B;&#x7684;&#x5143;&#x7D20;&#x6570;&#x76EE;</span></span><br><span class="line">            <span class="comment">//&#x7B2C;1&#x9875;&#x65F6;&#x663E;&#x7136;&#x5269;&#x4E0B;&#x7684;&#x4E3A;12&#x6240;&#x4EE5;&#x4E0D;&#x7528;&#x5904;&#x7406;</span></span><br><span class="line">            <span class="keyword">if</span>(index == m_PageCount){</span><br><span class="line">                <span class="keyword">int</span> canDisplay = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">12</span>; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">                {</span><br><span class="line">                    <span class="comment">//&#x6700;&#x540E;&#x4E00;&#x9875;&#x5269;&#x4E0B;&#x7684;&#x5143;&#x7D20;&#x6570;&#x76EE;&#x4E3A; m_ItemsCount - 12 * (index-1)</span></span><br><span class="line">                    <span class="keyword">if</span>(canDisplay &lt; m_ItemsCount - <span class="number">12</span> * (index<span class="number">-1</span>)){</span><br><span class="line">                        BindGridItem(transform.GetChild(canDisplay),</span><br><span class="line">                        m_ItemsList[<span class="number">12</span> * index-i]);</span><br><span class="line">                        transform.GetChild(canDisplay).</span><br><span class="line">                        gameObject.SetActive(<span class="literal">true</span>);</span><br><span class="line">                    }<span class="keyword">else</span>{</span><br><span class="line">                        <span class="comment">//&#x5BF9;&#x8D85;&#x8FC7;canDispaly&#x7684;&#x7269;&#x4F53;&#x5B9E;&#x65BD;&#x9690;&#x85CF;</span></span><br><span class="line">                        transform.GetChild(canDisplay).</span><br><span class="line">                        gameObject.SetActive(<span class="literal">false</span>);</span><br><span class="line">                    }</span><br><span class="line">                    canDisplay += <span class="number">1</span>;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">else</span>{</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">12</span>; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">                {</span><br><span class="line">                    BindGridItem(transform.GetChild(<span class="number">12</span> - i), m_ItemsList[<span class="number">12</span> * index - i]);</span><br><span class="line">                    transform.GetChild(<span class="number">12</span> - i).gameObject.SetActive(<span class="literal">true</span>);</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x52A0;&#x8F7D;&#x4E00;&#x4E2A;Sprite</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;assetName&quot;&gt;</span>&#x8D44;&#x6E90;&#x540D;&#x79F0;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Sprite <span class="title">LoadSprite</span>(<span class="params"><span class="keyword">string</span> assetName</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        Texture texture = (Texture)Resources.Load(assetName);</span><br><span class="line"></span><br><span class="line">        Sprite sprite = Sprite.Create((Texture2D)texture, </span><br><span class="line">        <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, texture.width, texture.height), </span><br><span class="line">        <span class="keyword">new</span> Vector2(<span class="number">0.5f</span>, <span class="number">0.5f</span>));</span><br><span class="line">        <span class="keyword">return</span> sprite;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5C06;&#x4E00;&#x4E2A;GridItem&#x5B9E;&#x4F8B;&#x7ED1;&#x5B9A;&#x5230;&#x6307;&#x5B9A;&#x7684;Transform&#x4E0A;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;trans&quot;&gt;</span><span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;gridItem&quot;&gt;</span><span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">BindGridItem</span>(<span class="params">Transform trans,GridItem gridItem</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        trans.GetComponent&lt;Image&gt;().sprite = LoadSprite(gridItem.ItemSprite);</span><br><span class="line">        trans.Find(<span class="string">&quot;Item/Name&quot;</span>).GetComponent&lt;Text&gt;().text = gridItem.ItemName;</span><br><span class="line">        trans.GetComponent&lt;Button&gt;().onClick.AddListener(()=&gt;</span><br><span class="line">        {</span><br><span class="line">            Debug.Log(<span class="string">&quot;&#x5F53;&#x524D;&#x70B9;&#x51FB;&#x7684;&#x5143;&#x7D20;&#x540D;&#x79F0;&#x4E3A;:&quot;</span> + gridItem.ItemName);</span><br><span class="line">        });</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x597D;&#x4E86;&#xFF0C;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x5566;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x7EE7;&#x7EED;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x8C22;&#x8C22;&#x5927;&#x5BB6;&#xFF01;</p>
+<p><strong>2016&#x5E74;1&#x6708;10&#x65E5;&#x66F4;&#x65B0;</strong>&#xFF1A;<br>&#x2003;&#x2003;&#x7ECF;&#x8FC7;&#x535A;&#x5BA2;&#x4E2D;&#x4E00;&#x4F4D;&#x670B;&#x53CB;&#x6307;&#x51FA;&#xFF0C;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x4E2D;&#x5B9E;&#x73B0;BindPage&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x65F6;&#x53EF;&#x4EE5;&#x5728;&#x4EE3;&#x7801;&#x4E0A;&#x518D;&#x7CBE;&#x7B80;&#x4E9B;&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x8003;&#x8651;&#x8FD9;&#x4E2A;&#x4EE3;&#x7801;&#x4E2D;&#x6709;&#x90E8;&#x5206;&#x529F;&#x80FD;&#x662F;&#x91CD;&#x5408;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x91CC;&#x5BF9;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x91CD;&#x5199;&#xFF0C;&#x5206;&#x9875;&#x4ECE;&#x672C;&#x8D28;&#x4E0A;&#x6765;&#x8BB2;&#x662F;&#x7F16;&#x5199;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#xFF1A;&#x8F93;&#x5165;&#x6570;&#x636E;&#x96C6;&#x5408;data&#x3001;&#x6BCF;&#x9875;&#x663E;&#x793A;&#x7684;&#x5143;&#x7D20;&#x4E2A;&#x6570;pageSize&#x4EE5;&#x53CA;&#x5F53;&#x524D;&#x9875;&#x6570;page&#xFF0C;&#x7136;&#x540E;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x6570;&#x636E;&#x96C6;&#x5408;&#x3002;&#x4E3A;&#x4E86;&#x8003;&#x8651;&#x6269;&#x5C55;&#x6027;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x5206;&#x9875;&#x7684;&#x6CDB;&#x578B;&#x65B9;&#x6CD5;&#xFF0C;&#x4EE3;&#x7801;&#x5B9E;&#x73B0;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight fortran"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">List&lt;T&gt; Pagination(List&lt;T&gt; <span class="keyword">data</span>,<span class="built_in">int</span> <span class="built_in">size</span>,<span class="built_in">int</span> page)</span><br><span class="line">{</span><br><span class="line">    //&#x8981;&#x8FD4;&#x56DE;&#x7684;&#x7ED3;&#x679C;</span><br><span class="line">    List&lt;T&gt; output = new List&lt;T&gt;();</span><br><span class="line"></span><br><span class="line">    //&#x8BA1;&#x7B97;&#x6700;&#x5927;&#x9875;&#x6570;</span><br><span class="line">    <span class="built_in">int</span> PageCount = (<span class="keyword">data</span>.<span class="built_in">Count</span> % <span class="built_in">size</span>) == <span class="number">0</span> ?</span><br><span class="line">    (<span class="keyword">data</span>.<span class="built_in">Count</span> / <span class="built_in">size</span>) : (<span class="keyword">data</span>.<span class="built_in">Count</span> / <span class="built_in">size</span>) + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    //&#x5224;&#x65AD;&#x8F93;&#x5165;&#x9875;&#x6570;&#x7684;&#x5408;&#x6CD5;&#x6027;</span><br><span class="line">    <span class="keyword">if</span>(page &lt; <span class="number">1</span> || page &gt; PageCount)</span><br><span class="line">        <span class="keyword">return</span> null;</span><br><span class="line"></span><br><span class="line">    //&#x8BA1;&#x7B97;&#x7B2C;page&#x9875;&#x7B2C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x7D22;&#x5F15;</span><br><span class="line">    <span class="built_in">int</span> startIndex = (page - <span class="number">1</span>) * <span class="built_in">size</span>;</span><br><span class="line"></span><br><span class="line">    //&#x9664;&#x4E86;&#x5C3E;&#x9875;&#x6240;&#x6709;&#x7684;&#x9875;&#x9762;&#x4E2D;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#x90FD;&#x662F;<span class="built_in">size</span>&#x4E2A;</span><br><span class="line">    <span class="keyword">if</span>(page &lt; PageCount)</span><br><span class="line">    {</span><br><span class="line">        for (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">size</span>; i++)</span><br><span class="line">        {</span><br><span class="line">            output.Add(<span class="keyword">data</span>[startIndex + i]);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    {</span><br><span class="line">        for (<span class="built_in">int</span> i = startIndex; i &lt; <span class="keyword">data</span>.<span class="built_in">Count</span>; i++)</span><br><span class="line">        {</span><br><span class="line">            output.Add(<span class="keyword">data</span>[i]);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x8003;&#x8651;&#x4F20;&#x5165;&#x7684;&#x9875;&#x6570;&#x662F;&#x4E0D;&#x662F;&#x5C3E;&#x9875;&#x5373;&#x53EF;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x6240;&#x6709;&#x7684;&#x9875;&#x9762;&#x4E2D;&#x9664;&#x4E86;&#x5C3E;&#x9875;&#x4EE5;&#x5916;&#x90FD;&#x6709;size&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x8BA1;&#x7B97;&#x51FA;&#x7B2C;page&#x9875;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x7D22;&#x5F15;&#xFF0C;&#x7136;&#x540E;&#x4EE5;&#x6B64;&#x9012;&#x589E;&#x5373;&#x53EF;&#xFF0C;&#x800C;&#x5C3E;&#x9875;&#x663E;&#x7136;&#x662F;&#x4ECE;startIndex&#x5230;data.Count-1&#x4E2A;&#x3002;&#x73B0;&#x5728;&#x56DE;&#x8FC7;&#x5934;&#x6765;&#x770B;&#xFF0C;&#x5199;&#x4E2A;&#x5206;&#x9875;&#x51FD;&#x6570;&#x786E;&#x5B9E;&#x662F;&#x7B80;&#x5355;&#x81F3;&#x6781;&#xFF0C;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#x663E;&#x7136;&#x662F;&#x5C0F;&#x9898;&#x5927;&#x505A;&#x4E86;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li><li><a href="https://qinyuanpei.github.io/posts/1156673678/">EasyAR尝鲜系列教程之自定义Marker的实现</a></li><li><a href="https://qinyuanpei.github.io/posts/4088452183/">Unity3D游戏开发之MMD For Unity插件研究</a></li><li><a href="https://blog.yuanpei.me/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/166983157/" rel="external">Unity3D游戏开发之分页效果在uGUI中的实现</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/166983157/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/166983157/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Unity3D/">Unity3D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uGUI/">uGUI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/166983157/&title=《Unity3D游戏开发之分页效果在uGUI中的实现》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/166983157/&title=《Unity3D游戏开发之分页效果在uGUI中的实现》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。今天想和大家分享的是u..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/166983157/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Unity3D游戏开发之分页效果在uGUI中的实现》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/166983157/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/166983157/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/1124152964/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">解析OBJ模型并将其加载到Unity3D场景中</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1156673678/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">EasyAR尝鲜系列教程之自定义Marker的实现</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/166983157/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/166983157/&title=《Unity3D游戏开发之分页效果在uGUI中的实现》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/166983157/&title=《Unity3D游戏开发之分页效果在uGUI中的实现》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。今天想和大家分享的是u..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/166983157/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Unity3D游戏开发之分页效果在uGUI中的实现》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/166983157/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/166983157/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/166983157/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

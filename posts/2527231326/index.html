@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        Unity3D游戏开发之C++插件接入 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。虽然Unity3D引擎依靠强大的跨平台能力睥睨高手林立的游戏引擎世界，我们在使用Unity3D游戏引擎的时候基本上不会去接触底层的东西，可是有时候面对某些奇葩的要求的时候，我们就不得不考虑使用C++这样的语言来为其编写相关的插件。你如果问我是什么样的奇葩要求，比如接入">
+<meta name="keywords" content="Unity3D,C++,插件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity3D游戏开发之C++插件接入">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/2527231326/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。虽然Unity3D引擎依靠强大的跨平台能力睥睨高手林立的游戏引擎世界，我们在使用Unity3D游戏引擎的时候基本上不会去接触底层的东西，可是有时候面对某些奇葩的要求的时候，我们就不得不考虑使用C++这样的语言来为其编写相关的插件。你如果问我是什么样的奇葩要求，比如接入">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix18bmvyj20qi0gwdgh.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/None.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/None.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/None.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz68jlzlyqj20kr08edfr.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity3D游戏开发之C++插件接入">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。虽然Unity3D引擎依靠强大的跨平台能力睥睨高手林立的游戏引擎世界，我们在使用Unity3D游戏引擎的时候基本上不会去接触底层的东西，可是有时候面对某些奇葩的要求的时候，我们就不得不考虑使用C++这样的语言来为其编写相关的插件。你如果问我是什么样的奇葩要求，比如接入">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix18bmvyj20qi0gwdgh.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Unity3D游戏开发之C++插件接入</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Unity3D游戏开发之C++插件接入</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-11-21T14:47:26.000Z" itemprop="datePublished" class="page-time">
+  2015-11-21
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Unity3D游戏开发之C++插件接入" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Unity3D游戏开发之C++插件接入</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-11-21 14:47:26" datetime="2015-11-21T14:47:26.000Z" itemprop="datePublished">2015-11-21</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        15 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;<strong>&#x79E6;&#x5143;&#x57F9;</strong>&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x867D;&#x7136;Unity3D&#x5F15;&#x64CE;&#x4F9D;&#x9760;&#x5F3A;&#x5927;&#x7684;&#x8DE8;&#x5E73;&#x53F0;&#x80FD;&#x529B;&#x7765;&#x7768;&#x9AD8;&#x624B;&#x6797;&#x7ACB;&#x7684;&#x6E38;&#x620F;&#x5F15;&#x64CE;&#x4E16;&#x754C;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x4F7F;&#x7528;Unity3D&#x6E38;&#x620F;&#x5F15;&#x64CE;&#x7684;&#x65F6;&#x5019;&#x57FA;&#x672C;&#x4E0A;&#x4E0D;&#x4F1A;&#x53BB;&#x63A5;&#x89E6;&#x5E95;&#x5C42;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x53EF;&#x662F;&#x6709;&#x65F6;&#x5019;&#x9762;&#x5BF9;&#x67D0;&#x4E9B;&#x5947;&#x8469;&#x7684;&#x8981;&#x6C42;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x4E0D;&#x5F97;&#x4E0D;&#x8003;&#x8651;&#x4F7F;&#x7528;C++&#x8FD9;&#x6837;&#x7684;&#x8BED;&#x8A00;&#x6765;&#x4E3A;&#x5176;&#x7F16;&#x5199;&#x76F8;&#x5173;&#x7684;&#x63D2;&#x4EF6;&#x3002;&#x4F60;&#x5982;&#x679C;&#x95EE;&#x6211;&#x662F;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x5947;&#x8469;&#x8981;&#x6C42;&#xFF0C;&#x6BD4;&#x5982;&#x63A5;&#x5165;&#x84DD;&#x7259;&#x624B;&#x67C4;&#x6765;&#x63A7;&#x5236;&#x6E38;&#x620F;&#x3001;&#x63A5;&#x5165;&#x7C7B;&#x4F3C;&#x8857;&#x673A;&#x7684;&#x8BBE;&#x5907;&#x6765;&#x63A7;&#x5236;&#x6E38;&#x620F;&#x3001;&#x63A5;&#x5165;&#x540C;&#x4E00;&#x4E2A;&#x6E38;&#x620F;&#x5230;&#x4E24;&#x4E2A;&#x4E0D;&#x540C;&#x7684;&#x8BBE;&#x5907;&#x4E0A;&#x5E76;&#x54CD;&#x5E94;&#x4E0D;&#x540C;&#x7684;&#x63A7;&#x5236;&#x2026;&#x2026;&#x8BF8;&#x5982;&#x6B64;&#x7C7B;&#x7684;&#x79CD;&#x79CD;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x80FD;&#x76EE;&#x524D;&#x5728;Unity3D&#x5F15;&#x64CE;&#x4E2D;&#x627E;&#x4E0D;&#x5230;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x5199;C++&#x63D2;&#x4EF6;&#x5C31;&#x53D8;&#x6210;&#x4E86;&#x4E00;&#x79CD;&#x521A;&#x6027;&#x9700;&#x6C42;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x4ECA;&#x5929;&#x8981;&#x6765;&#x4E00;&#x8D77;&#x63A2;&#x8BA8;&#x7684;&#x95EE;&#x9898;&#x3002;</p>
+<a id="more"></a>
+<p>&#x2003;&#x2003;Unity3D&#x4E3B;&#x8981;&#x4F7F;&#x7528;C#&#x8FDB;&#x884C;&#x5F00;&#x53D1;&#xFF0C;&#x6240;&#x4EE5;&#x4E3A;Unity3D&#x7F16;&#x5199;&#x63D2;&#x4EF6;&#x672C;&#x8D28;&#x4E0A;&#x5C31;&#x662F;&#x8BA9;C#&#x8C03;&#x7528;C++&#x4EE3;&#x7801;&#x3002;&#x76EE;&#x524D;&#x4E3B;&#x8981;&#x6709;C++ CLR&#x548C;C++ Native&#x4E24;&#x79CD;&#x5B9E;&#x73B0;&#x65B9;&#x6CD5;&#xFF0C;&#x5176;&#x4E2D;C++ CLR&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x8FD0;&#x884C;&#x5728;.Net CLR&#x5373;&#x516C;&#x5171;&#x8BED;&#x8A00;&#x8FD0;&#x884C;&#x5E93;&#x4E0A;&#x7684;C++&#x4EE3;&#x7801;&#xFF0C;&#x8FD9;&#x79CD;&#x4EE3;&#x7801;&#x662F;&#x6258;&#x7BA1;&#x7684;C++&#x4EE3;&#x7801;&#xFF0C;&#x76EE;&#x524D;&#x5E76;&#x6CA1;&#x6709;&#x88AB;C++&#x6807;&#x51C6;&#x627F;&#x8BA4;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x66F4;&#x50CF;&#x662F;C++&#x548C;C#&#x4E24;&#x79CD;&#x8BED;&#x8A00;&#x7684;&#x6DF7;&#x5408;&#x4EE3;&#x7801;&#xFF0C;&#x8FD9;&#x79CD;&#x4EE3;&#x7801;&#x7684;&#x4F18;&#x52BF;&#x662F;&#x53EF;&#x4EE5;&#x50CF;&#x666E;&#x901A;&#x7684;.NET&#x5E93;&#x4E00;&#x6837;&#x88AB;C#&#x8C03;&#x7528;&#xFF0C;&#x8003;&#x8651;&#x5230;Unity3D&#x5EFA;&#x7ACB;&#x5728;&#x548C;.Net&#x7C7B;&#x4F3C;&#x7684;Mono&#x4E0A;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x5E94;&#x8BE5;&#x662F;&#x6211;&#x4EEC;&#x7684;&#x6700;&#x4F73;&#x5B9E;&#x8DF5;&#x65B9;&#x6848;&#xFF1B;C++ Native&#x5219;&#x662F;&#x6307;&#x4F20;&#x7EDF;&#x7684;C++ &#x52A8;&#x6001;&#x94FE;&#x63A5;&#x5E93;&#xFF0C;&#x901A;&#x8FC7;DllImport&#x5728;C#&#x4E2D;&#x8FDB;&#x884C;&#x5305;&#x88C5;&#x540E;&#x5728;C#&#x4E2D;&#x8FDB;&#x884C;&#x8C03;&#x7528;&#xFF0C;&#x76F8;&#x5BF9;&#x5730;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x8C03;&#x7528;&#x7684;&#x662F;&#x975E;&#x6258;&#x7BA1;&#x7684;C++&#x4EE3;&#x7801;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x76F8;&#x4FE1;&#x63A5;&#x89E6;&#x8FC7;Windows&#x5F00;&#x53D1;&#x7684;&#x670B;&#x53CB;&#x5E94;&#x8BE5;&#x4E0D;&#x4F1A;&#x611F;&#x5230;&#x964C;&#x751F;&#x5566;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x66F4;&#x4E3A;&#x666E;&#x904D;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x4F8B;&#x5982;&#x6211;&#x4EEC;&#x8981;&#x63A5;&#x5165;&#x82F9;&#x679C;&#x5B98;&#x65B9;SDK&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x9700;&#x8981;&#x5BF9;Object C&#x7684;&#x4EE3;&#x7801;&#x8FDB;&#x884C;&#x5C01;&#x88C5;&#x540E;&#x4EA4;&#x7ED9;C#&#x53BB;&#x8C03;&#x7528;&#xFF0C;&#x800C;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x65B9;&#x6CD5;&#x5C31;&#x662F;DllImport&#x4E86;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x770B;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#x5404;&#x81EA;&#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0;&#x7684;&#x5427;&#xFF01;&#x8FD9;&#x91CC;&#x535A;&#x4E3B;&#x4F7F;&#x7528;&#x7684;&#x5F00;&#x53D1;&#x73AF;&#x5883;&#x662F;Windows 8.1 32bit &#x548C; Visual Studio 2012&#xFF0C;Unity3D&#x7684;&#x7248;&#x672C;&#x4E3A;4.6&#x7248;&#x672C;&#x3002;</p>
+<p>#C++ CLR</p>
+<p>##&#x521B;&#x5EFA;&#x4E00;&#x4E2A;C++ CLR&#x7C7B;&#x5E93;&#x9879;&#x76EE;<br>&#x2003;&#x2003;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x6309;&#x7167;&#x4E0B;&#x56FE;&#x4E2D;&#x7684;&#x6B65;&#x9AA4;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;C++ CLR&#x9879;&#x76EE;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzix18bmvyj20qi0gwdgh.jpg" alt="&#x622A;&#x56FE;&#x662F;&#x4EF6;&#x8BA8;&#x538C;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x867D;&#x7136;&#x61D2;&#x60F0;&#x7684;&#x4EBA;&#x4EEC;&#x90FD;&#x559C;&#x6B22;" title>
+                </div>
+                <div class="image-caption">&#x622A;&#x56FE;&#x662F;&#x4EF6;&#x8BA8;&#x538C;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x867D;&#x7136;&#x61D2;&#x60F0;&#x7684;&#x4EBA;&#x4EEC;&#x90FD;&#x559C;&#x6B22;</div>
+            </figure>
+<p>&#x8BF7;&#x6CE8;&#x610F;.Net&#x7248;&#x672C;&#x95EE;&#x9898;&#xFF0C;&#x91CD;&#x8981;&#x7684;&#x4E8B;&#x60C5;&#x8BF4;&#x4E09;&#x904D;&#xFF0C;&#x4E0D;&#x8BA4;&#x771F;&#x770B;&#x8FD9;&#x91CC;&#x7684;&#x4EBA;&#x51FA;&#x73B0;&#x95EE;&#x9898;&#x5C31;&#x4E0D;&#x8981;&#x5230;&#x6211;&#x8FD9;&#x91CC;&#x6765;&#x8BC4;&#x8BBA;&#x4E86;&#xFF0C;&#x6211;&#x6700;&#x8BA8;&#x538C;&#x8FDE;&#x6587;&#x7AE0;&#x90FD;&#x6CA1;&#x6709;&#x770B;&#x660E;&#x767D;&#x5C31;&#x6765;&#x548C;&#x4F60;&#x7EA0;&#x7F20;&#x4E0D;&#x6E05;&#x7684;&#x4EBA;&#xFF0C;&#x8C22;&#x8C22;&#x3002;&#x521B;&#x5EFA;&#x597D;&#x9879;&#x76EE;&#x540E;&#x8BF7;&#x6253;&#x5F00;&#x9879;&#x76EE;&#x5C5E;&#x6027;&#x7A97;&#x53E3;&#x8BBE;&#x7F6E;&#x3010;&#x516C;&#x5171;&#x8BED;&#x8A00;&#x8FD0;&#x884C;&#x65F6;&#x652F;&#x6301;&#x3011;&#x8282;&#x70B9;&#x7684;&#x503C;&#x4E3A;&#x3010;&#x5B89;&#x5168; MSIL &#x516C;&#x5171;&#x8BED;&#x8A00;&#x8FD0;&#x884C;&#x65F6;&#x652F;&#x6301;(/clr:safe)&#x3011;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x627E;&#x5230;CLR4Unity.h&#x6587;&#x4EF6;&#xFF0C;&#x6DFB;&#x52A0;ExampleClass&#x58F0;&#x660E;&#xFF1A;</p>
+<figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// &#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x6258;&#x7BA1;C++&#x793A;&#x4F8B;&#x7C7B;</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="keyword">public</span>  ref  <span class="class"><span class="keyword">class</span> <span class="title">ExampleClass</span></span></span><br><span class="line"><span class="class">{</span></span><br><span class="line">	<span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">	<span class="comment">/// &lt;summary&gt;</span></span><br><span class="line">	<span class="comment">/// &#x4EA7;&#x751F;&#x4E00;&#x4E2A;&#x4ECB;&#x4E8E;min&#x548C;max&#x4E4B;&#x95F4;&#x7684;&#x6574;&#x578B;&#x968F;&#x673A;&#x6570;</span></span><br><span class="line">	<span class="comment">/// &lt;returns&gt;&#x6574;&#x578B;&#x968F;&#x673A;&#x6570;&lt;/returns&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;param name=&quot;min&quot;&gt;&#x6700;&#x5C0F;&#x503C;&lt;/param&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;param name=&quot;max&quot;&gt;&#x6700;&#x5927;&#x503C;&lt;/param&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">int</span>  <span class="title">Random</span><span class="params">(<span class="keyword">int</span> min,<span class="keyword">int</span> max)</span></span></span><br><span class="line"><span class="function">	</span>{</span><br><span class="line">		<span class="comment">//&#x6CE8;&#x610F;&#x5728;&#x6258;&#x7BA1;&#x7684;C++&#x4E2D;&#x4F7F;&#x7528;gcnew&#x6765;&#x4EE3;&#x66FF;new</span></span><br><span class="line">		<span class="comment">//&#x6211;&#x627F;&#x8BA4;C++&#x5199;CLR&#x4EE3;&#x7801;&#x7565;&#x663E;&#x5947;&#x8469;&#x50CF;&#x662F;C++&#x548C;C#&#x8BED;&#x6CD5;&#x7684;&#x6DF7;&#x5408;</span></span><br><span class="line">		<span class="keyword">return</span> (gcnew System::Random)-&gt;Next(min,max);</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="comment">/// &lt;summary&gt;</span></span><br><span class="line">	<span class="comment">/// &#x8BA1;&#x7B97;&#x4E00;&#x4E2A;&#x6574;&#x6570;&#x7684;&#x5E73;&#x65B9;</span></span><br><span class="line">	<span class="comment">/// &lt;returns&gt;&#x6574;&#x578B;&#x6570;&#x503C;&lt;/returns&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;param name=&quot;a&quot;&gt;&#x9700;&#x8981;&#x5E73;&#x65B9;&#x7684;&#x6570;&#x503C;&lt;/param&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Square</span><span class="params">(<span class="keyword">int</span> a)</span></span></span><br><span class="line"><span class="function">	</span>{</span><br><span class="line">		<span class="keyword">return</span> a * a;</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="comment">/// &lt;summary&gt;</span></span><br><span class="line">	<span class="comment">/// &#x8FD4;&#x56DE;&#x4E24;&#x4E2A;&#x6570;&#x4E2D;&#x7684;&#x6700;&#x5927;&#x503C;</span></span><br><span class="line">    <span class="comment">/// &lt;returns&gt;&#x6574;&#x578B;&#x6570;&#x503C;&lt;/returns&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;param name=&quot;a&quot;&gt;&#x53C2;&#x6570;1&lt;/param&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;param name=&quot;b&quot;&gt;&#x53C2;&#x6570;2&lt;/param&gt;</span></span><br><span class="line">	<span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Max</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function">	</span>{</span><br><span class="line">		<span class="keyword">if</span>(a&lt;=b){</span><br><span class="line">			<span class="keyword">return</span> b;</span><br><span class="line">		}<span class="keyword">else</span>{</span><br><span class="line">			<span class="keyword">return</span> a;</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x663E;&#x7136;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5B9A;&#x4E49;&#x4E86;&#x4E09;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x6CE8;&#x610F;&#x5230;&#x7B2C;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;Random&#x4F9D;&#x8D56;&#x4E8E;System.Rnadom&#x7C7B;&#xFF0C;&#x800C;&#x5728;&#x6258;&#x7BA1;&#x7684;C++&#x4E2D;&#x662F;&#x4F7F;&#x7528;gcnew&#x6765;&#x4EE3;&#x66FF;new&#x8FD9;&#x4E2A;&#x5173;&#x952E;&#x5B57;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x8BF7;&#x5C3D;&#x60C5;&#x611F;&#x53D7;C#&#x548C;C++&#x7684;&#x6DF7;&#x642D;&#x8BED;&#x6CD5;&#x98CE;&#x683C;&#x5427;&#xFF01;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x7F16;&#x8BD1;&#x5F97;&#x5230;CLR4Unity.dll&#x8FD9;&#x4E2A;&#x7C7B;&#x5E93;&#xFF0C;&#x5C06;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x590D;&#x5236;&#x5230;Unity3D&#x9879;&#x76EE;&#x4E2D;&#x7684;Plugins&#x76EE;&#x5F55;&#x4E0B;&#x4E0B;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x5176;&#x52A0;&#x5165;&#x9879;&#x76EE;&#x5F15;&#x7528;&#x5217;&#x8868;&#x3002;&#x5982;&#x679C;&#x4F60;&#x4EE5;&#x4E3A;&#x5F15;&#x7528;&#x5C31;&#x662F;&#xFF1A;<br></p><figure class="highlight abnf"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">using CLR4Unity<span class="comment">;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x5475;&#x5475;&#xFF0C;&#x6211;&#x4E25;&#x91CD;&#x6000;&#x7591;&#x4F60;&#x5BF9;.Net&#x7684;&#x719F;&#x6089;&#x7A0B;&#x5EA6;&#x3002;&#x4F60;&#x6CA1;&#x6709;&#x6DFB;&#x52A0;&#x5BF9;CLR4Unity.dll&#x7684;&#x5F15;&#x7528;&#xFF0C;&#x4F60;&#x5230;&#x5E95;&#x5728;using&#x4EC0;&#x4E48;&#x554A;&#xFF1F;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/None.jpg" alt="&#x5148;&#x6DFB;&#x52A0;&#x5F15;&#x7528;&#x7136;&#x540E;using" title>
+                </div>
+                <div class="image-caption">&#x5148;&#x6DFB;&#x52A0;&#x5F15;&#x7528;&#x7136;&#x540E;using</div>
+            </figure>
+<p>&#x5982;&#x679C;&#x4F60;&#x5BF9;.NET&#x719F;&#x6089;&#x5230;&#x8DB3;&#x4EE5;&#x65E0;&#x89C6;&#x8FD9;&#x91CC;&#x7684;&#x4E00;&#x5207;&#xFF0C;&#x8BF7;&#x95ED;&#x4E0A;&#x773C;&#x63A5;&#x7740;&#x5F80;&#x4E0B;&#x770B;&#xFF0C;&#x54C8;&#x54C8;&#xFF01;</p>
+<p>##&#x5728;C#&#x4E2D;&#x6DFB;&#x52A0;&#x5F15;&#x7528;&#x53CA;&#x65B9;&#x6CD5;&#x8C03;&#x7528;<br>&#x2003;&#x2003;&#x63A5;&#x4E0B;&#x6765;&#x6211;&#x4EEC;&#x5728;Unity3D&#x4E2D;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x811A;&#x672C;PluginTest.cs&#xFF0C;&#x7136;&#x540E;&#x5728;OnGUI&#x65B9;&#x6CD5;&#x589E;&#x52A0;&#x4E0B;&#x5217;&#x4EE3;&#x7801;&#x3002;&#x53EF;&#x662F;&#x4F60;&#x8981;&#x4EE5;&#x4E3A;&#x8FD9;&#x4E9B;&#x4EE3;&#x7801;&#x5C31;&#x5E94;&#x8BE5;&#x5199;&#x5728;OnGUI&#x65B9;&#x6CD5;&#x4E2D;&#xFF0C;&#x62B1;&#x6B49;&#x8BF7;&#x4F60;&#x5148;&#x53BB;&#x4E86;&#x89E3;MonoBehaviour&#x8FD9;&#x4E2A;&#x7C7B;&#x3002;&#x4EC0;&#x4E48;&#xFF1F;&#x6DFB;&#x52A0;&#x4E86;&#x8FD9;&#x4E9B;&#x4EE3;&#x7801;&#x62A5;&#x9519;&#xFF1F;&#x6CA1;&#x6709;using&#x7684;&#x8BF7;&#x81EA;&#x884C;&#x9762;&#x58C1;&#xFF1A;<br></p><figure class="highlight lsl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x8C03;&#x7528;C++ CLR&#x4E2D;&#x7684;&#x65B9;&#x6CD5;</span></span><br><span class="line">if(GUILayout.Button(<span class="string">&quot;&#x8C03;&#x7528;C++ CLR&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&quot;</span>, GUILayout.Height (<span class="number">30</span>))) </span><br><span class="line">{</span><br><span class="line">	Debug.Log(<span class="string">&quot;&#x8C03;&#x7528;C++ CLR&#x4E2D;&#x7684;&#x65B9;&#x6CD5;Random(0,10):&quot;</span> + ExampleClass.Random(<span class="number">0</span>,<span class="number">10</span>));</span><br><span class="line">	Debug.Log(<span class="string">&quot;&#x8C03;&#x7528;C++ CLR&#x4E2D;&#x7684;&#x65B9;&#x6CD5;Max(5,10):&quot;</span> + ExampleClass.Max(<span class="number">5</span>,<span class="number">10</span>));</span><br><span class="line">	Debug.Log(<span class="string">&quot;&#x8C03;&#x7528;C++ CLR&#x4E2D;&#x7684;&#x65B9;&#x6CD5;Square(5):&quot;</span> + ExampleClass.Square(<span class="number">5</span>));</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>#C++ Native</p>
+<p>##&#x521B;&#x5EFA;&#x4E00;&#x4E2A;C++&#x52A8;&#x6001;&#x94FE;&#x63A5;&#x5E93;&#x9879;&#x76EE;<br>&#x2003;&#x2003;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x6309;&#x7167;&#x4E0B;&#x56FE;&#x4E2D;&#x7684;&#x6B65;&#x9AA4;&#x6765;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;C++ Win32&#x9879;&#x76EE;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/None.jpg" alt="&#x4E0D;&#x8981;&#x95EE;&#x6211;&#x4ECE;&#x54EA;&#x91CC;&#x6765;" title>
+                </div>
+                <div class="image-caption">&#x4E0D;&#x8981;&#x95EE;&#x6211;&#x4ECE;&#x54EA;&#x91CC;&#x6765;</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/None.jpg" alt="&#x6211;&#x7684;&#x6545;&#x4E61;&#x5728;&#x8FDC;&#x65B9;" title>
+                </div>
+                <div class="image-caption">&#x6211;&#x7684;&#x6545;&#x4E61;&#x5728;&#x8FDC;&#x65B9;</div>
+            </figure>
+<p>&#x597D;&#x4E86;&#xFF0C;&#x63A5;&#x4E0B;&#x6765;&#x6211;&#x4EEC;&#x627E;&#x5230;Native4Unity.cpp&#x5199;&#x5165;&#x4E0B;&#x5217;&#x4EE3;&#x7801;&#xFF1A;</p>
+<figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Native4Unity.cpp : &#x5B9A;&#x4E49; DLL &#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x5BFC;&#x51FA;&#x51FD;&#x6570;&#x3002;</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#include &quot;stdafx.h&quot;</span></span><br><span class="line"><span class="comment">//&#x4E3A;&#x4E86;&#x4F7F;&#x7528;rand()&#x51FD;&#x6570;&#x5F15;&#x5165;C++&#x6807;&#x51C6;&#x5E93;</span></span><br><span class="line"><span class="meta">#include &quot;stdlib.h&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x4EA7;&#x751F;&#x4E00;&#x4E2A;&#x4ECB;&#x4E8E;min&#x548C;max&#x4E4B;&#x95F4;&#x7684;&#x6574;&#x578B;&#x968F;&#x673A;&#x6570;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span>&#x6574;&#x578B;&#x968F;&#x673A;&#x6570;<span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;min&quot;&gt;</span>&#x6700;&#x5C0F;&#x503C;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;max&quot;&gt;</span>&#x6700;&#x5927;&#x503C;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> __declspec(dllexport) <span class="function"><span class="keyword">int</span> <span class="title">Random</span>(<span class="params"><span class="keyword">int</span> min,<span class="keyword">int</span> max</span>)</span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">	<span class="keyword">return</span> rand() % (max - min + <span class="number">1</span>) + min;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x8FD4;&#x56DE;&#x4E24;&#x4E2A;&#x6570;&#x4E2D;&#x7684;&#x6700;&#x5927;&#x503C;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span>&#x6574;&#x578B;&#x6570;&#x503C;<span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;a&quot;&gt;</span>&#x53C2;&#x6570;1<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;b&quot;&gt;</span>&#x53C2;&#x6570;2<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> __declspec(dllexport) <span class="function"><span class="keyword">int</span> <span class="title">Max</span>(<span class="params"><span class="keyword">int</span> a ,<span class="keyword">int</span> b</span>)</span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">	<span class="keyword">if</span>(a&lt;=b){</span><br><span class="line">	   <span class="keyword">return</span> b;</span><br><span class="line">    }<span class="keyword">else</span>{</span><br><span class="line">	   <span class="keyword">return</span> a;</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x8BA1;&#x7B97;&#x4E00;&#x4E2A;&#x6574;&#x6570;&#x7684;&#x5E73;&#x65B9;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span>&#x6574;&#x578B;&#x6570;&#x503C;<span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;a&quot;&gt;</span>&#x9700;&#x8981;&#x5E73;&#x65B9;&#x7684;&#x6570;&#x503C;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> __declspec(dllexport) <span class="function"><span class="keyword">int</span> <span class="title">Square</span>(<span class="params"><span class="keyword">int</span> a</span>)</span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">	<span class="keyword">return</span> a * a;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x548C;C++ CLR&#x7C7B;&#x4F3C;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x6807;&#x51C6;&#x7684;C++&#x8BED;&#x8A00;&#x6765;&#x5B9E;&#x73B0;&#x540C;&#x6837;&#x7684;&#x529F;&#x80FD;&#x3002;&#x6CE8;&#x610F;&#x5230;rand()&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x662F;C++&#x6807;&#x51C6;&#x5E93;&#x91CC;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5728;&#x6587;&#x4EF6;&#x5F00;&#x5934;&#x589E;&#x52A0;&#x4E86;&#x5BF9;stdlib.h&#x8FD9;&#x4E2A;&#x5934;&#x6587;&#x4EF6;&#x7684;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x4E00;&#x70B9;&#x662F;&#xFF1A;<strong>&#x6240;&#x6709;&#x5E0C;&#x671B;&#x4F7F;&#x7528;DllImport&#x5F15;&#x5165;C#&#x7684;C++&#x65B9;&#x6CD5;&#x90FD;&#x5E94;&#x8BE5;&#x5728;&#x65B9;&#x6CD5;&#x58F0;&#x660E;&#x4E2D;&#x589E;&#x52A0;__declspec(dllexport)&#x5173;&#x952E;&#x5B57;&#xFF0C;&#x9664;&#x975E;&#x5B83;&#x5728;.def&#x6587;&#x4EF6;&#x4E2D;&#x5BF9;&#x8FD9;&#x4E9B;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x663E;&#x793A;&#x58F0;&#x660E;</strong>&#x3002;&#x5173;&#x4E8E;.def&#x6587;&#x4EF6;&#x7684;&#x76F8;&#x5173;&#x5B9A;&#x4E49;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x5230;MSDN&#x4E0A;&#x68C0;&#x7D22;&#xFF0C;&#x8FD9;&#x4E9B;&#x90FD;&#x662F;&#x5C5E;&#x4E8E;C++&#x7F16;&#x8BD1;&#x5668;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x8FD9;&#x91CC;&#x4E0D;&#x518D;&#x8BE6;&#x7EC6;&#x8BF4;&#x4E86;&#x3002;</p>
+<p>##&#x5728;C#&#x4E2D;&#x4F7F;&#x7528;DllImport&#x5C01;&#x88C5;&#x65B9;&#x6CD5;</p>
+<p>&#x2003;&#x2003;&#x5C06;&#x7F16;&#x8BD1;&#x597D;&#x7684;Native4Unity.dll&#x590D;&#x5236;&#x5230;Plugins&#x76EE;&#x5F55;&#x4E2D;&#x540E;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x8981;&#x505A;&#x7684;&#x4E8B;&#x60C5;&#x5C31;&#x662F;&#x5728;C#&#x91CC;&#x5BF9;&#x8FD9;&#x4E9B;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x5C01;&#x88C5;&#x6216;&#x8005;&#x8BF4;&#x662F;&#x58F0;&#x660E;&#xFF1A;</p>
+<figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">DllImport(<span class="meta-string">&quot;Native4Unity&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">extern</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Random</span>(<span class="params"><span class="keyword">int</span> min, <span class="keyword">int</span> max</span>)</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">DllImport(<span class="meta-string">&quot;Native4Unity&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">extern</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Max</span>(<span class="params"><span class="keyword">int</span> a, <span class="keyword">int</span> b</span>)</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">DllImport(<span class="meta-string">&quot;Native4Unity&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">extern</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Square</span>(<span class="params"><span class="keyword">int</span> a</span>)</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x7136;&#x540E;&#x5C31;&#x662F;&#x7B80;&#x5355;&#x5730;&#x8C03;&#x7528;&#x5566;&#xFF1A;</p>
+<figure class="highlight lsl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x8C03;&#x7528;C++ Native&#x4E2D;&#x7684;&#x65B9;&#x6CD5;</span></span><br><span class="line">if(GUILayout.Button(<span class="string">&quot;&#x8C03;&#x7528;C++ Native&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&quot;</span>, GUILayout.Height (<span class="number">30</span>))) </span><br><span class="line">{</span><br><span class="line">    Debug.Log(<span class="string">&quot;&#x8C03;&#x7528;C++ Native&#x4E2D;&#x7684;&#x65B9;&#x6CD5;Random(0,10):&quot;</span> + Random(<span class="number">0</span>, <span class="number">10</span>));</span><br><span class="line">    Debug.Log(<span class="string">&quot;&#x8C03;&#x7528;C++ Native&#x7684;&#x65B9;&#x6CD5;Max(5,10):&quot;</span> + Max(<span class="number">5</span>, <span class="number">10</span>));</span><br><span class="line">    Debug.Log(<span class="string">&quot;&#x8C03;&#x7528;C++ Native&#x4E2D;&#x7684;&#x65B9;&#x6CD5;Square(5):&quot;</span> + Square(<span class="number">5</span>));</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x6700;&#x7EC8;&#x7A0B;&#x5E8F;&#x7684;&#x8FD0;&#x884C;&#x6548;&#x679C;&#x5982;&#x56FE;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz68jlzlyqj20kr08edfr.jpg" alt="&#x8FD9;&#x4E2A;&#x7ED3;&#x679C;&#x6765;&#x4E4B;&#x4E0D;&#x6613;&#x8BF7;&#x5927;&#x5BB6;&#x73CD;&#x60DC;" title>
+                </div>
+                <div class="image-caption">&#x8FD9;&#x4E2A;&#x7ED3;&#x679C;&#x6765;&#x4E4B;&#x4E0D;&#x6613;&#x8BF7;&#x5927;&#x5BB6;&#x73CD;&#x60DC;</div>
+            </figure>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li><li><a href="https://qinyuanpei.github.io/posts/1156673678/">EasyAR尝鲜系列教程之自定义Marker的实现</a></li><li><a href="https://qinyuanpei.github.io/posts/4088452183/">Unity3D游戏开发之MMD For Unity插件研究</a></li><li><a href="https://blog.yuanpei.me/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/2527231326/" rel="external">Unity3D游戏开发之C++插件接入</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/2527231326/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/2527231326/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Unity3D/">Unity3D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/插件/">插件</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/2527231326/&title=《Unity3D游戏开发之C++插件接入》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/2527231326/&title=《Unity3D游戏开发之C++插件接入》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。虽然Unity3D引擎..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/2527231326/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Unity3D游戏开发之C++插件接入》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/2527231326/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/2527231326/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/1394521917/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">青黄未接的2015</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/2950334112/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">在Hexo中为文章自动添加版权信息声明模块</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/2527231326/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/2527231326/&title=《Unity3D游戏开发之C++插件接入》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/2527231326/&title=《Unity3D游戏开发之C++插件接入》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。虽然Unity3D引擎..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/2527231326/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Unity3D游戏开发之C++插件接入》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/2527231326/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/2527231326/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/2527231326/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

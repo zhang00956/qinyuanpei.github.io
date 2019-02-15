@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        博客图片迁移折腾记 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;#x2003;&amp;#x2003;&amp;#x53BB;&amp;#x5E74;&amp;#x56FD;&amp;#x5E86;&amp;#x7684;&amp;#x65F6;&amp;#x5019;&amp;#xFF0C;&amp;#x4E03;&amp;#x725B;&amp;#x5B98;&amp;#x65B9;&amp;#x5F00;&amp;#x59CB;&amp;#x56DE;&amp;#x6536;&amp;#x6D4B;&amp;#x8BD5;&amp;#x57DF;&amp;#x540D;&amp;#xFF0C;&amp;#x8FD9;&amp;#x76F4;">
+<meta name="keywords" content="Python,七牛,图床">
+<meta property="og:type" content="article">
+<meta property="og:title" content="博客图片迁移折腾记">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/3444626340/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;#x2003;&amp;#x2003;&amp;#x53BB;&amp;#x5E74;&amp;#x56FD;&amp;#x5E86;&amp;#x7684;&amp;#x65F6;&amp;#x5019;&amp;#xFF0C;&amp;#x4E03;&amp;#x725B;&amp;#x5B98;&amp;#x65B9;&amp;#x5F00;&amp;#x59CB;&amp;#x56DE;&amp;#x6536;&amp;#x6D4B;&amp;#x8BD5;&amp;#x57DF;&amp;#x540D;&amp;#xFF0C;&amp;#x8FD9;&amp;#x76F4;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzakc094mzj20zb0a5qv5.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzakdbeka4j20fo0ex4qp.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.520Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="博客图片迁移折腾记">
+<meta name="twitter:description" content="&amp;#x2003;&amp;#x2003;&amp;#x53BB;&amp;#x5E74;&amp;#x56FD;&amp;#x5E86;&amp;#x7684;&amp;#x65F6;&amp;#x5019;&amp;#xFF0C;&amp;#x4E03;&amp;#x725B;&amp;#x5B98;&amp;#x65B9;&amp;#x5F00;&amp;#x59CB;&amp;#x56DE;&amp;#x6536;&amp;#x6D4B;&amp;#x8BD5;&amp;#x57DF;&amp;#x540D;&amp;#xFF0C;&amp;#x8FD9;&amp;#x76F4;">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzakc094mzj20zb0a5qv5.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">博客图片迁移折腾记</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">博客图片迁移折腾记</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-01-18T09:27:35.000Z" itemprop="datePublished" class="page-time">
+  2019-01-18
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/独立博客/">独立博客</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-博客图片迁移折腾记" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">博客图片迁移折腾记</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-01-18 09:27:35" datetime="2019-01-18T09:27:35.000Z" itemprop="datePublished">2019-01-18</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/独立博客/">独立博客</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        14 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x53BB;&#x5E74;&#x56FD;&#x5E86;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4E03;&#x725B;&#x5B98;&#x65B9;&#x5F00;&#x59CB;&#x56DE;&#x6536;&#x6D4B;&#x8BD5;&#x57DF;&#x540D;&#xFF0C;&#x8FD9;&#x76F4;&#x63A5;&#x5BFC;&#x81F4;&#x535A;&#x5BA2;&#x4E2D;&#x5927;&#x91CF;&#x56FE;&#x7247;&#x51FA;&#x73B0;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x867D;&#x7136;&#x535A;&#x4E3B;&#x7B2C;&#x4E00;&#x65F6;&#x95F4;&#x542F;&#x7528;&#x4E86;&#x65B0;&#x7684;&#x57DF;&#x540D;&#xFF1A;<a href="https://blog.yuanpei.me" target="_blank" rel="noopener">https://blog.yuanpei.me</a>&#xFF0C;&#x53EF;&#x662F;&#x56E0;&#x4E3A;&#x4E03;&#x725B;&#x5B98;&#x65B9;&#x8981;&#x6C42;&#x57DF;&#x540D;&#x5FC5;&#x987B;&#x5907;&#x6848;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x4E00;&#x76F4;&#x803D;&#x6401;&#x7740;&#x6CA1;&#x6709;&#x5F80;&#x4E0B;&#x8FDB;&#x884C;&#x3002;&#x81F3;&#x4E8E;&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x4E00;&#x76F4;&#x62D6;&#x5230;2019&#x5E74;&#xFF0C;&#x6211;&#x60F3;&#x5927;&#x5BB6;&#x90FD;&#x80FD;&#x731C;&#x5230;&#x4E00;&#x4E8C;&#xFF0C;&#x6CA1;&#x9519;&#xFF0C;&#x6211;&#x5C31;&#x662F;&#x61D2;&#x5F97;&#x53BB;&#x5F04;&#x57DF;&#x540D;&#x5907;&#x6848;&#x8FD9;&#x4E9B;&#x4E8B;&#x60C5;<span class="github-emoji" style="color: transparent;background:no-repeat url(https://assets-cdn.github.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f602.png?v8">&#x1F602;</span>&#x3002;&#x6700;&#x8FD1;&#x82B1;&#x4E86;&#x70B9;&#x65F6;&#x95F4;&#xFF0C;&#x628A;&#x535A;&#x5BA2;&#x91CC;&#x7684;&#x56FE;&#x7247;&#x4ECE;&#x4E03;&#x725B;&#x548C;CSDN&#x8FC1;&#x79FB;&#x4E86;&#x51FA;&#x6765;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x4ECA;&#x5929;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#xFF0C;&#x4E3B;&#x8981;&#x60F3;&#x548C;&#x5927;&#x5BB6;&#x5206;&#x4EAB;&#x4E0B;&#x8FD9;&#x4E2A;&#x6298;&#x817E;&#x7684;&#x8FC7;&#x7A0B;&#xFF0C;&#x5982;&#x679C;&#x80FD;&#x5E2E;&#x52A9;&#x5230;&#x548C;&#x6211;&#x4E00;&#x6837;&#xFF0C;&#x56E0;&#x4E3A;&#x4E03;&#x725B;&#x5B98;&#x65B9;&#x56DE;&#x6536;&#x4E86;&#x57DF;&#x540D;&#x800C;&#x65E0;&#x6CD5;&#x5BFC;&#x51FA;&#x56FE;&#x7247;&#x7684;&#x670B;&#x53CB;&#xFF0C;&#x5728;&#x4E0B;&#x5F00;&#x5FC3;&#x4E4B;&#x81F3;&#x3002;&#x867D;&#x7136;&#x4ECA;&#x5929;&#x6CA1;&#x6709;&#x56DE;&#x671B;&#x8FC7;&#x53BB;&#xFF0C;&#x6CA1;&#x6709;&#x7ED9;&#x65B0;&#x7684;&#x4E00;&#x5E74;&#x7ACB;flag&#xFF0C;&#x5C31;&#x5982;&#x6B64;&#x5E73;&#x6DE1;&#x5730;&#x8FC7;&#x6E21;&#x5230;&#x4E86;2019&#x5E74;&#xFF0C;&#x53EF;&#x6216;&#x8BB8;&#x8FD9;&#x624D;&#x662F;&#x751F;&#x6D3B;&#x672C;&#x6765;&#x7684;&#x6837;&#x5B50;&#x5427;&#xFF01;</p>
+<p>&#x2003;&#x2003;&#x4E03;&#x725B;&#x7684;&#x6D4B;&#x8BD5;&#x57DF;&#x540D;&#x88AB;&#x5B98;&#x65B9;&#x56DE;&#x6536;&#x4E86;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x6709;&#x4E24;&#x79CD;&#x601D;&#x8DEF;&#x53BB;&#x5BFC;&#x51FA;&#x8FD9;&#x4E9B;&#x56FE;&#x7247;&#xFF0C;&#x5176;&#x4E00;&#xFF0C;&#x662F;&#x4E34;&#x65F6;&#x50CF;&#x5B98;&#x65B9;&#x63D0;&#x5DE5;&#x5355;&#x7533;&#x8BF7;&#x4E00;&#x4E2A;&#x6D4B;&#x8BD5;&#x57DF;&#x540D;&#xFF0C;&#x8FD9;&#x6837;&#x5728;&#x6D4B;&#x8BD5;&#x57DF;&#x540D;&#x88AB;&#x56DE;&#x6536;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684;<a href="https://developer.qiniu.com/kodo/tools/qrsctl" target="_blank" rel="noopener">qrsctl</a>&#x6216;&#x8005;<a href="https://developer.qiniu.com/kodo/tools/qshell" target="_blank" rel="noopener">qshell</a>&#x5DE5;&#x5177;&#x8FDB;&#x884C;&#x6279;&#x91CF;&#x5BFC;&#x51FA;&#xFF0C;&#x56E0;&#x4E3A;&#x6B64;&#x65F6;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x91CC;&#x914D;&#x7F6E;&#x6D4B;&#x8BD5;&#x57DF;&#x540D;&#xFF0C;&#x5177;&#x4F53;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#xFF1A;<a href="https://www.jianshu.com/p/309709f7bfe4" target="_blank" rel="noopener">&#x8DD1;&#x8DEF;&#x4E4B;&#x540E;&#x4E03;&#x725B;&#x56FE;&#x7247;&#x5982;&#x4F55;&#x5BFC;&#x51FA;&#x5907;&#x4EFD;&#x81F3;&#x672C;&#x5730;</a>&#xFF0C;&#x751A;&#x81F3;&#x4F60;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5230;&#x4E03;&#x725B;&#x7684;&#x7BA1;&#x7406;&#x63A7;&#x5236;&#x53F0;&#x624B;&#x52A8;&#x4E0B;&#x8F7D;&#xFF0C;&#x53EF;&#x8FD9;&#x6837;&#x5C31;&#x4E00;&#x70B9;&#x90FD;&#x4E0D;&#x6781;&#x5BA2;&#x4E86;&#x5BF9;&#x5417;&#xFF1F;&#x6211;&#x4EEC;&#x662F;&#x4E00;&#x751F;&#x8FFD;&#x6C42;&#x505A;&#x6781;&#x5BA2;&#x7684;&#x4EBA;&#x597D;&#x4F10;&#x3002;&#x5176;&#x4E8C;&#xFF0C;&#x540C;&#x6837;&#x662F;&#x501F;&#x52A9;&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684;<a href="https://developer.qiniu.com/kodo/tools/qshell" target="_blank" rel="noopener">qshell</a>&#x5DE5;&#x5177;&#xFF0C;&#x56E0;&#x4E3A;&#x6CA1;&#x6709;&#x57DF;&#x540D;&#xFF0C;&#x6211;&#x4EEC;&#x6CA1;&#x6709;&#x529E;&#x6CD5;&#x6279;&#x91CF;&#x5BFC;&#x51FA;&#xFF0C;&#x53EF;&#x662F;&#x5DE5;&#x5177;&#x4E2D;&#x63D0;&#x4F9B;&#x4E86;&#x4E24;&#x4E2A;&#x975E;&#x5E38;&#x6709;&#x7528;&#x7684;&#x547D;&#x4EE4;&#xFF0C;&#x5B83;&#x4EEC;&#x5206;&#x522B;&#x662F;&#xFF1A;<strong>qshell listbucket</strong>&#x3001;<strong>qshell get</strong>&#x3002;&#x901A;&#x8FC7;&#x8FD9;&#x4E24;&#x4E2A;&#x547D;&#x4EE4;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x5217;&#x4E3E;&#x51FA;&#x6307;&#x5B9A;bucket&#x4E2D;&#x7684;&#x6587;&#x4EF6;&#x4EE5;&#x53CA;&#x4E0B;&#x8F7D;&#x6307;&#x5B9A;&#x6587;&#x4EF6;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x7684;&#x7B2C;&#x4E00;&#x6B65;&#xFF0C;&#x9996;&#x5148;&#x628A;&#x56FE;&#x7247;&#x4ECE;&#x4E03;&#x725B;&#x90A3;&#x91CC;&#x5BFC;&#x51FA;&#x5230;&#x672C;&#x5730;&#x3002;&#x4EE5;&#x535A;&#x4E3B;&#x7684;<strong>blogspace</strong>&#x4E3A;&#x4F8B;&#xFF1A;<br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">qshell account &lt;ak&gt; &lt;sk&gt; &apos;qinyuanpei@163.com&apos; /* &#x8BF7;&#x4F7F;&#x7528;&#x4F60;&#x7684;ak/sk&#xFF0C;&#x8C22;&#x8C22; */</span><br><span class="line">qshell listbucket blogspace</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzakc094mzj20zb0a5qv5.jpg" alt="&#x4F7F;&#x7528;listbucket&#x5217;&#x4E3E;&#x6307;&#x5B9A;bucket&#x5185;&#x6587;&#x4EF6;" title>
+                </div>
+                <div class="image-caption">&#x4F7F;&#x7528;listbucket&#x5217;&#x4E3E;&#x6307;&#x5B9A;bucket&#x5185;&#x6587;&#x4EF6;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x4E8B;&#x5B9E;&#x4E0A;&#xFF0C;&#x901A;&#x8FC7;&#x7B2C;&#x4E00;&#x5217;&#x7684;Key&#xFF0C;&#x5373;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x4E0B;&#x8F7D;&#x8BE5;&#x8D44;&#x6E90;&#x5230;&#x672C;&#x5730;&#xFF0C;&#x56E0;&#x4E3A;&#x4E03;&#x725B;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x91C7;&#x7528;&#x5BF9;&#x8C61;&#x5B58;&#x50A8;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x7EC4;&#x7EC7;&#x8D44;&#x6E90;&#x7684;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4EE5;&#x7B2C;&#x4E00;&#x5F20;&#x56FE;&#x7247;<strong>05549344-BF85-4e8c-BCBC-1F63DFE80E43.png</strong>&#x4E3A;&#x4F8B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qshell get blogspace 05549344-BF85-4e8c-BCBC-1F63DFE80E43.png</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x8BE5;&#x56FE;&#x7247;&#x4F1A;&#x4E0B;&#x8F7D;&#x5230;&#x5F53;&#x524D;&#x76EE;&#x5F55;&#x4E0B;&#xFF0C;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x548C;&#x8FDC;&#x7A0B;&#x6587;&#x4EF6;&#x540D;&#x4FDD;&#x6301;&#x4E00;&#x81F4;&#x3002;&#x5F53;&#x7136;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;-o&#x53C2;&#x6570;&#x6765;&#x6307;&#x5B9A;&#x8F93;&#x51FA;&#x6587;&#x4EF6;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzakdbeka4j20fo0ex4qp.jpg" alt="&#x4F7F;&#x7528;get&#x547D;&#x4EE4;&#x4E0B;&#x8F7D;&#x6307;&#x5B9A;&#x6587;&#x4EF6;" title>
+                </div>
+                <div class="image-caption">&#x4F7F;&#x7528;get&#x547D;&#x4EE4;&#x4E0B;&#x8F7D;&#x6307;&#x5B9A;&#x6587;&#x4EF6;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x6709;&#x4E86;&#x8FD9;&#x4E2A;&#x57FA;&#x7840;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x7740;&#x624B;&#x535A;&#x5BA2;&#x56FE;&#x7247;&#x7684;&#x8FC1;&#x79FB;&#x5566;&#x3002;&#x535A;&#x4E3B;&#x6700;&#x521D;&#x7684;&#x60F3;&#x6CD5;&#x662F;&#xFF0C;&#x5148;&#x83B7;&#x53D6;&#x5230;&#x6307;&#x5B9A;bucket&#x4E0B;&#x7684;&#x5168;&#x90E8;&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x5BF9;&#x7ED3;&#x679C;&#x8FDB;&#x884C;&#x62C6;&#x5206;&#xFF0C;&#x5FAA;&#x73AF;&#x6267;&#x884C;qshell get&#x547D;&#x4EE4;&#xFF0C;&#x53EF;&#x60DC;&#x518D;PowerShell&#x4E0B;&#x5E76;&#x6CA1;&#x6709;&#x7C7B;&#x4F3C;grep&#x7684;&#x547D;&#x4EE4;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x4E2A;&#x60F3;&#x6CD5;&#x653E;&#x5F03;&#x3002;&#x5176;&#x5B9E;&#xFF0C;&#x4F60;&#x4ED4;&#x7EC6;&#x89C2;&#x5BDF;&#x4E03;&#x725B;&#x56FE;&#x7247;&#x5916;&#x94FE;&#x7684;&#x683C;&#x5F0F;&#x5C31;&#x4F1A;&#x53D1;&#x73B0;&#xFF0C;&#x9664;&#x4E86;&#x57DF;&#x540D;&#x90E8;&#x5206;&#x4EE5;&#x5916;&#xFF0C;&#x5269;&#x4E0B;&#x7684;&#x5C31;&#x662F;&#x8BE5;&#x6587;&#x4EF6;&#x5728;bucket&#x91CC;&#x5BF9;&#x5E94;&#x7684;key&#x5566;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x535A;&#x4E3B;&#x7684;&#x60F3;&#x6CD5;&#x5F00;&#x59CB;&#x4ECE;Markdown&#x6587;&#x4EF6;&#x5165;&#x624B;&#xFF0C;&#x6700;&#x7EC8;&#x6211;&#x4EEC;&#x7684;&#x601D;&#x8DEF;&#x662F;&#xFF0C;&#x89E3;&#x6790;&#x535A;&#x5BA2;&#x5BF9;&#x5E94;&#x7684;Markdown&#x6587;&#x4EF6;&#xFF0C;&#x901A;&#x8FC7;&#x6B63;&#x5219;&#x5339;&#x914D;&#x6240;&#x6709;&#x7684;&#x56FE;&#x7247;&#x94FE;&#x63A5;&#xFF0C;&#x622A;&#x53D6;&#x51FA;&#x56FE;&#x7247;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x5E76;&#x901A;&#x8FC7;qshell&#x4E0B;&#x8F7D;&#x5230;&#x672C;&#x5730;&#x3002;&#x4EBA;&#x751F;&#x82E6;&#x77ED;&#xFF0C;&#x6211;&#x7528;Python&#x3002;&#x5177;&#x4F53;&#x5199;&#x51FA;&#x6765;&#xFF0C;&#x5927;&#x6982;&#x662F;&#x4E0B;&#x9762;&#x8FD9;&#x4E2A;&#x6837;&#x5B50;&#xFF1A;<br></p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sync</span><span class="params">(root,ak,sk,account,bucket)</span>:</span></span><br><span class="line">    files = []</span><br><span class="line">    children = os.listdir(root)</span><br><span class="line">    <span class="keyword">for</span> child <span class="keyword">in</span> children:</span><br><span class="line">        path = os.path.join(root,child)</span><br><span class="line">        <span class="keyword">if</span> os.path.isfile(path):</span><br><span class="line">            files.append(path)</span><br><span class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> files:</span><br><span class="line">        links = []</span><br><span class="line">        newContent = <span class="string">&apos;&apos;</span></span><br><span class="line">        <span class="keyword">with</span> open(file,<span class="string">&apos;rt&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">            content = fp.read()</span><br><span class="line">            matches = re.compile(<span class="string">&apos;!\\[.*?\\]\\((.*?)\\)&apos;</span>).findall(content) </span><br><span class="line">            <span class="keyword">if</span>(len(matches)&gt;<span class="number">0</span>):</span><br><span class="line">                links.extend(matches)</span><br><span class="line">            <span class="keyword">for</span> link <span class="keyword">in</span> links:</span><br><span class="line">                fileKey = link.split(<span class="string">&apos;/&apos;</span>)[<span class="number">-1</span>]</span><br><span class="line">                <span class="keyword">if</span>(<span class="string">&apos;http://img.blog.csdn.net&apos;</span> <span class="keyword">in</span> link):</span><br><span class="line">                    newLink = sync_csdn(link)</span><br><span class="line">                    newContent = content.replace(link,newLink)</span><br><span class="line">                <span class="keyword">elif</span>(<span class="string">&apos;clouddn.com&apos;</span> <span class="keyword">in</span> link):</span><br><span class="line">                    newLink = sync_qiniu(ak,sk,account,bucket,fileKey)</span><br><span class="line">                    newContent = content.replace(link,newLink)</span><br><span class="line">        <span class="keyword">if</span>(newContent != <span class="string">&apos;&apos;</span> <span class="keyword">and</span> len(links) &gt; <span class="number">0</span>):</span><br><span class="line">            <span class="keyword">with</span> open(file,<span class="string">&apos;wt&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">                fp.write(newContent)</span><br><span class="line">            print(<span class="string">&apos;&#x5DF2;&#x81EA;&#x52A8;&#x5B8C;&#x6210;&#x5BF9;{0}&#x4E2D;&#x56FE;&#x7247;&#x94FE;&#x63A5;&#x7684;&#x81EA;&#x52A8;&#x66F4;&#x65B0;&apos;</span>.format(file))</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x5728;&#x6B64;&#x4E4B;&#x524D;(&#x6307;2012&#x5E74;~2018&#x5E74;&#xFF0C;&#x66B4;&#x9732;&#x5E74;&#x9F84;&#x5566;<strong>ORZ</strong>)&#xFF0C;&#x4E3B;&#x8981;&#x90FD;&#x5728;&#xFF1A;<a href="https://blog.csdn.net/qinyuanpei" target="_blank" rel="noopener">https://blog.csdn.net/qinyuanpei</a>&#x8FD9;&#x91CC;&#x7EF4;&#x62A4;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x6B21;&#x5C31;&#x4E00;&#x5E76;&#x901A;&#x8FC7;&#x811A;&#x672C;&#x5904;&#x7406;&#x5566;&#x3002;&#x8FD9;&#x90E8;&#x5206;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x4E0D;&#x7528;&#x592A;&#x5173;&#x6CE8;&#xFF0C;&#x5BF9;&#x4E8E;&#x6258;&#x7BA1;&#x5728;&#x4E03;&#x725B;&#x4E0A;&#x7684;&#x56FE;&#x7247;&#x8D44;&#x6E90;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;<strong>sync_qiniu</strong>&#x65B9;&#x6CD5;&#x6765;&#x5B8C;&#x6210;&#x540C;&#x6B65;&#xFF1A;</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sync_qiniu</span><span class="params">(ak,sk,account,bucket,fileKey)</span>:</span></span><br><span class="line">    os.system(<span class="string">&apos;qshell account {0} {1} {2} -w&apos;</span>.format(ak,sk,account))</span><br><span class="line">    outfile = root + <span class="string">&quot;\\download\\blogspace\\&quot;</span> + fileKey</span><br><span class="line">    outfile = outfile.replace(<span class="string">&apos;\\&apos;</span>,<span class="string">&apos;/&apos;</span>)</span><br><span class="line">    <span class="keyword">if</span>(os.path.exists(outfile)):</span><br><span class="line">        os.remove(outfile)</span><br><span class="line">    os.system(<span class="string">&apos;qshell get {0} {1} -o {2}&apos;</span>.format(bucket,fileKey,outfile))</span><br><span class="line">    print(<span class="string">&quot;&#x540C;&#x6B65;&#x4E03;&#x725B;&#x56FE;&#x7247;{0}&#x5B8C;&#x6210;&quot;</span>.format(fileKey))</span><br><span class="line">    pid = upload(outfile)</span><br><span class="line">    <span class="keyword">if</span>(pid != <span class="keyword">None</span>):</span><br><span class="line">        print(<span class="string">&apos;&#x540C;&#x6B65;&#x540E;&#x7684;&#x56FE;&#x7247;&#x94FE;&#x63A5;&#x4E3A;:&apos;</span> + upload(outfile))</span><br><span class="line">        <span class="keyword">return</span> pid</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x535A;&#x5BA2;&#x4E2D;&#x7684;&#x56FE;&#x7247;&#x5BFC;&#x51FA;&#x5230;&#x672C;&#x5730;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x8981;&#x5F00;&#x59CB;&#x8003;&#x8651;&#x7B2C;&#x4E8C;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x8FD9;&#x4E9B;&#x56FE;&#x7247;&#x8981;&#x653E;&#x5230;&#x54EA;&#x91CC;&#x53BB;&#xFF0C;&#x76F4;&#x63A5;&#x548C;&#x535A;&#x5BA2;&#x653E;&#x5728;&#x4E00;&#x8D77;&#xFF0C;&#x4F30;&#x8BA1;&#x65E9;&#x665A;&#x4F1A;&#x7A81;&#x7834;Github&#x5355;&#x4E2A;&#x4ED3;&#x5E93;1G&#x7684;&#x9650;&#x5236;&#x3002;&#x4E03;&#x725B;&#x589E;&#x52A0;&#x57DF;&#x540D;&#x5907;&#x6848;&#x7684;&#x9650;&#x5236;&#x4EE5;&#x540E;&#xFF0C;&#x50CF;&#x53C8;&#x62CD;&#x4E91;&#x8FD9;&#x79CD;&#x540C;&#x7C7B;&#x4EA7;&#x54C1;&#x5FC5;&#x987B;&#x4F1A;&#x8DDF;&#x8FDB;&#x8FD9;&#x4E2A;<strong>feature</strong>&#xFF0C;&#x539F;&#x56E0;&#x561B;&#xFF0C;&#x6211;&#x60F3;&#x5927;&#x5BB6;&#x90FD;&#x77E5;&#x9053;&#x4E0D;&#x5FC5;&#x591A;&#x8BF4;&#x3002;&#x5927;&#x6982;&#x8003;&#x8651;&#x4E86;&#x50CF;&#x963F;&#x91CC;&#x4E91;&#x548C;&#x817E;&#x8BAF;&#x4E91;&#x7684;OSS&#x7C7B;&#x4EA7;&#x54C1;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x53F8;&#x7684;&#x4EA7;&#x54C1;&#x6700;&#x8FD1;&#x6B63;&#x5728;&#x7740;&#x624B;&#x4ECE;&#x81EA;&#x6709;&#x7684;FTP&#x4E0A;&#x5207;&#x6362;&#x5230;&#x963F;&#x91CC;&#x4E91;&#x7684;OSS&#x4E0A;&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x8003;&#x8651;&#x670D;&#x52A1;&#x5668;&#x7684;&#x7EF4;&#x62A4;&#x6210;&#x672C;&#xFF0C;&#x4F46;&#x5BF9;&#x535A;&#x4E3B;&#x8FD9;&#x6837;&#x7684;&#x4E2A;&#x4EBA;&#x7528;&#x6237;&#x800C;&#x8A00;&#xFF0C;&#x8FD9;&#x7C7B;OSS&#x4EA7;&#x54C1;&#x5B9E;&#x5728;&#x592A;&#x8D35;&#x4E86;&#xFF0C;&#x6700;&#x7EC8;&#xFF0C;&#x535A;&#x4E3B;&#x9009;&#x62E9;&#x56FD;&#x5185;&#x67D0;&#x77E5;&#x540D;&#x793E;&#x4EA4;&#x5E73;&#x53F0;&#x63D0;&#x4F9B;&#x7684;<strong>&#x201C;&#x56FE;&#x5E8A;&#x670D;&#x52A1;&#x201D;</strong>&#x3002;&#x53C2;&#x8003;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#xFF1A;<a href="https://segmentfault.com/a/1190000008490501" target="_blank" rel="noopener">PHP&#x4E0A;&#x4F20;&#x56FE;&#x7247;&#x5230;&#x5FAE;&#x535A;&#x56FE;&#x5E8A;</a>&#xFF0C;&#x6700;&#x7EC8;&#x5B9E;&#x73B0;&#x4E86;&#x4E00;&#x4E2A;&#x7B80;&#x6D01;(&#x964B;)&#x7684;&#x7248;&#x672C;&#xFF1A;<br></p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span><span class="params">(src_file)</span>:</span></span><br><span class="line">    url = <span class="string">&quot;http://picupload.service.weibo.com/interface/pic_upload.php&quot;</span></span><br><span class="line">    fileExt = src_file.split(<span class="string">&apos;.&apos;</span>)[<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">if</span>(fileExt == <span class="string">&apos;png&apos;</span>):</span><br><span class="line">        fileExt = <span class="string">&apos;jpg&apos;</span></span><br><span class="line">    timestamp = str(int(time.time()))</span><br><span class="line">    mimes = {<span class="string">&quot;gif&quot;</span>:<span class="string">&apos;image%2Fgif&apos;</span>,<span class="string">&apos;jpg&apos;</span>:<span class="string">&apos;image%2Fjpeg&apos;</span>,<span class="string">&apos;jpeg&apos;</span>:<span class="string">&apos;image%2Fjpeg&apos;</span>}</span><br><span class="line">    querystring = {<span class="string">&quot;mime&quot;</span>:mimes[fileExt],<span class="string">&quot;data&quot;</span>:<span class="string">&quot;base64&quot;</span>,<span class="string">&quot;url&quot;</span>:<span class="string">&quot;0&quot;</span>,<span class="string">&quot;markpos&quot;</span>:<span class="string">&quot;1&quot;</span>,<span class="string">&quot;logo&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;nick&quot;</span>:<span class="string">&quot;0&quot;</span>,<span class="string">&quot;marks&quot;</span>:<span class="string">&quot;1&quot;</span>,<span class="string">&quot;app&quot;</span>:<span class="string">&quot;miniblog&quot;</span>,<span class="string">&quot;cb&quot;</span>:<span class="string">&quot;http://weibo.com/aj/static/upimgback.html?_wv=5&quot;</span>,<span class="string">&quot;callback&quot;</span>:<span class="string">&quot;STK_ijax_&quot;</span> + timestamp}</span><br><span class="line">    headers = {</span><br><span class="line">        <span class="string">&apos;Cookie&apos;</span>: <span class="string">&quot;&#x5728;&#x8FD9;&#x91CC;&#x586B;&#x5165;Cookie&quot;</span>,</span><br><span class="line">    }</span><br><span class="line">    files = {<span class="string">&apos;pic1&apos;</span>:open(src_file,<span class="string">&apos;rb&apos;</span>).read()}</span><br><span class="line">    response = requests.request(<span class="string">&quot;POST&quot;</span>, url, headers=headers, params=querystring,files=files)</span><br><span class="line">    <span class="keyword">if</span>(response.status_code == <span class="number">200</span>):</span><br><span class="line">        result = re.sub(<span class="string">r&quot;&lt;meta.*&lt;/script&gt;&quot;</span>, <span class="string">&quot;&quot;</span>, response.text, flags=re.S)</span><br><span class="line">        image_result = json.loads(result)</span><br><span class="line">        image_id = image_result.get(<span class="string">&apos;data&apos;</span>).get(<span class="string">&apos;pics&apos;</span>).get(<span class="string">&apos;pic_1&apos;</span>).get(<span class="string">&apos;pid&apos;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&apos;https://ws1.sinaimg.cn/large/{0}.{1}&apos;</span>.format(image_id,fileExt)</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x5982;&#x679C;&#x4F60;&#x73B0;&#x5728;&#x8BBF;&#x95EE;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x5927;&#x6982;&#x5C31;&#x4F1A;&#x53D1;&#x73B0;&#xFF0C;&#x4E4B;&#x524D;&#x90A3;&#x4E9B;&#x65E0;&#x6CD5;&#x663E;&#x793A;&#x7684;&#x56FE;&#x7247;&#xFF0C;&#x73B0;&#x5728;&#x57FA;&#x672C;&#x4E0A;&#x90FD;&#x53EF;&#x4EE5;&#x663E;&#x793A;&#x5566;&#xFF0C;&#x800C;&#x6211;&#x6240;&#x505A;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x5C31;&#x662F;&#x6267;&#x884C;&#x8FD9;&#x4E9B;Python&#x811A;&#x672C;&#xFF0C;&#x8BA9;&#x5B83;&#x5E2E;&#x6211;&#x5B8C;&#x6210;&#x4ECE;&#x56FE;&#x7247;&#x4E0B;&#x8F7D;&#x3001;&#x4E0A;&#x4F20;&#x518D;&#x5230;&#x66FF;&#x6362;&#x94FE;&#x63A5;&#x7684;&#x6240;&#x6709;&#x4E8B;&#x60C5;&#x3002;&#x611F;&#x89C9;&#x914D;&#x5408;Typora&#x5728;&#x63D2;&#x5165;&#x56FE;&#x7247;&#x65F6;&#x53EF;&#x4EE5;&#x62F7;&#x8D1D;&#x5230;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x652F;&#x6301;&#x672C;&#x5730;&#x56FE;&#x7247;&#x94FE;&#x63A5;&#x81EA;&#x52A8;&#x66FF;&#x6362;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x8FD9;&#x6837;&#x5B50;&#x4EE5;&#x540E;&#x5199;&#x535A;&#x5BA2;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EA;&#x8981;&#x63D2;&#x5165;&#x51C6;&#x5907;&#x540E;&#x7684;&#x672C;&#x5730;&#x56FE;&#x7247;&#x5C31;&#x597D;&#x4E86;&#xFF0C;&#x771F;&#x662F;&#x60F3;&#x60F3;&#x90FD;&#x89C9;&#x5F97;&#x7F8E;&#x597D;&#x5462;&#xFF1F;&#x6211;&#x548C;&#x4E00;&#x4F4D;&#x670B;&#x53CB;&#x5206;&#x4EAB;&#x4E86;&#x8FD9;&#x4E2A;&#x60F3;&#x6CD5;&#xFF0C;&#x4ED6;&#x89C9;&#x5F97;<strong>&#x201C;&#x5FAE;&#x535A;&#x56FE;&#x5E8A;&#x201D;</strong>&#x5E76;&#x4E0D;&#x9760;&#x8C31;&#xFF0C;&#x8FD9;&#x6837;&#x8BF4;&#x8D77;&#x6765;&#xFF0C;&#x5B83;&#x6700;&#x4E0D;&#x597D;&#x7684;&#x5730;&#x65B9;&#x5927;&#x6982;&#x5C31;&#x662F;&#x6CA1;&#x6709;&#x529E;&#x6CD5;&#x4FDD;&#x7559;&#x539F;&#x6709;&#x7684;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x4E07;&#x4E00;&#x5C06;&#x6765;&#x6709;&#x4E00;&#x5929;&#x5B83;&#x6302;&#x4E86;&#xFF0C;&#x4F60;&#x8981;&#x6062;&#x590D;&#x8FD9;&#x4E9B;&#x56FE;&#x7247;&#x4F1A;&#x6BD4;&#x8F83;&#x9EBB;&#x70E6;&#xFF0C;&#x4E00;&#x4E2A;&#x597D;&#x7684;&#x5EFA;&#x8BAE;&#x662F;&#x7EF4;&#x62A4;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x8B6C;&#x5982;SQLite&#x8DB3;&#x77E3;&#xFF0C;&#x628A;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x540D;&#x548C;&#x8FDC;&#x7A0B;&#x6587;&#x4EF6;&#x540D;&#x5BF9;&#x5E94;&#x8D77;&#x6765;&#xFF0C;&#x751A;&#x81F3;&#x4F60;&#x53EF;&#x4EE5;&#x628A;&#x56FE;&#x7247;&#x7684;Base64&#x7F16;&#x7801;&#x5B58;&#x50A8;&#x5230;&#x6570;&#x636E;&#x5E93;&#x91CC;&#x5462;&#xFF0C;&#x5BF9;&#x5427;&#xFF1F;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x4EE5;&#x4E0A;&#x5C31;&#x8FD9;2019&#x5E74;&#x7B2C;&#x4E00;&#x7BC7;&#x788E;&#x788E;&#x5FF5;&#x5566;&#xFF0C;&#x4E3A;&#x4E86;&#x8BC1;&#x660E;&#x6211;&#x7684;&#x601D;&#x7EF4;&#x7684;&#x786E;&#x662F;&#x8DF3;&#x8DC3;&#x7684;&#xFF0C;&#x6700;&#x540E;&#x7684;&#x6700;&#x540E;&#xFF0C;&#x5F3A;&#x70C8;&#x5730;&#x5411;&#x5927;&#x5BB6;&#x5B89;&#x5229;&#x4E24;&#x4E2A;&#x56FE;&#x5E8A;&#x5DE5;&#x5177;&#xFF1A;<a href="https://github.com/xCss/WeiBox" target="_blank" rel="noopener">WeiBox</a>&#x3001;<a href="https://github.com/Molunerfinn/PicGo" target="_blank" rel="noopener">PicGo</a>&#xFF0C;&#x5B83;&#x4EEC;&#x90FD;&#x652F;&#x6301;&#x5FAE;&#x535A;&#x56FE;&#x5E8A;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x4F60;&#x731C;&#x6211;&#x662F;&#x7528;&#x54EA;&#x4E2A;&#x5DE5;&#x5177;&#x4E0A;&#x4F20;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x91CC;&#x5730;&#x56FE;&#x7247;&#x7684;&#x5462;&#xFF1F;&#x5F53;&#x7136;&#x662F;&#x811A;&#x672C;&#x554A;&#xFF0C;&#x90A3;&#x6837;&#x4E0D;&#x5C31;&#x4E0D;&#x90A3;&#x4E48;&#x6781;&#x5BA2;&#x4E86;&#x561B;&#xFF0C;&#x6211;&#x4EEC;&#x662F;&#x4E00;&#x751F;&#x8FFD;&#x6C42;&#x505A;&#x6781;&#x5BA2;&#x7684;&#x4EBA;&#x597D;&#x4F10;&#xFF01;<span class="github-emoji" style="color: transparent;background:no-repeat url(https://assets-cdn.github.com/images/icons/emoji/unicode/270c.png?v8) center/contain" data-src="https://assets-cdn.github.com/images/icons/emoji/unicode/270c.png?v8">&#x270C;</span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/1329254441/">使用Python生成博客目录并自动更新README</a></li><li><a href="https://qinyuanpei.github.io/posts/2822230423/">基于Python实现Windows下壁纸切换功能</a></li><li><a href="https://qinyuanpei.github.io/posts/2805694118/">基于Python实现的微信好友数据分析</a></li><li><a href="http://www.huweihuang.com/article/python/basics/python-advanced-features/">[Python] Python系列（三）之高级特性</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/3444626340/" rel="external">博客图片迁移折腾记</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/3444626340/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/3444626340/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图床/">图床</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3444626340/&title=《博客图片迁移折腾记》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3444626340/&title=《博客图片迁移折腾记》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3444626340/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《博客图片迁移折腾记》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3444626340/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3444626340/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3175881014/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">基于Server-Sent Events实现服务端消息推送</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/2418566449/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">基于EF的数据库主从复制、读写分离实现</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/3444626340/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3444626340/&title=《博客图片迁移折腾记》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3444626340/&title=《博客图片迁移折腾记》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3444626340/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《博客图片迁移折腾记》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3444626340/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3444626340/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/3444626340/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

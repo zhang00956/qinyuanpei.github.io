@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        在Unity3D中基于订阅者模式实现事件机制 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，欢迎大家关注我的博客，我是秦元培，我的博客地址是http://qinyuanpei.com。今天博主想和大家分享的是在Unity3D中基于订阅者模式实现消息传递机制，我们知道Unity3D中默认提供了一种消息传递机制SendMessage，虽然SendMessage使用起来的确非常简单，可是它的这种简单是建立在付出一定的代价的基础上的。经常有朋友提及不同的">
+<meta name="keywords" content="设计模式,消息,事件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Unity3D中基于订阅者模式实现事件机制">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/632291273/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，欢迎大家关注我的博客，我是秦元培，我的博客地址是http://qinyuanpei.com。今天博主想和大家分享的是在Unity3D中基于订阅者模式实现消息传递机制，我们知道Unity3D中默认提供了一种消息传递机制SendMessage，虽然SendMessage使用起来的确非常简单，可是它的这种简单是建立在付出一定的代价的基础上的。经常有朋友提及不同的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix8enrpvg20d108n0xz.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.520Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在Unity3D中基于订阅者模式实现事件机制">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，欢迎大家关注我的博客，我是秦元培，我的博客地址是http://qinyuanpei.com。今天博主想和大家分享的是在Unity3D中基于订阅者模式实现消息传递机制，我们知道Unity3D中默认提供了一种消息传递机制SendMessage，虽然SendMessage使用起来的确非常简单，可是它的这种简单是建立在付出一定的代价的基础上的。经常有朋友提及不同的">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix8enrpvg20d108n0xz.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">在Unity3D中基于订阅者模式实现事件机制</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">在Unity3D中基于订阅者模式实现事件机制</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-01-15T12:30:41.000Z" itemprop="datePublished" class="page-time">
+  2016-01-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-在Unity3D中基于订阅者模式实现事件机制" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">在Unity3D中基于订阅者模式实现事件机制</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-01-15 12:30:41" datetime="2016-01-15T12:30:41.000Z" itemprop="datePublished">2016-01-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        16 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#xFF0C;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x662F;&#x79E6;&#x5143;&#x57F9;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x4ECA;&#x5929;&#x535A;&#x4E3B;&#x60F3;&#x548C;&#x5927;&#x5BB6;&#x5206;&#x4EAB;&#x7684;&#x662F;&#x5728;Unity3D&#x4E2D;&#x57FA;&#x4E8E;&#x8BA2;&#x9605;&#x8005;&#x6A21;&#x5F0F;&#x5B9E;&#x73B0;&#x6D88;&#x606F;&#x4F20;&#x9012;&#x673A;&#x5236;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;Unity3D&#x4E2D;&#x9ED8;&#x8BA4;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x79CD;&#x6D88;&#x606F;&#x4F20;&#x9012;&#x673A;&#x5236;SendMessage&#xFF0C;&#x867D;&#x7136;SendMessage&#x4F7F;&#x7528;&#x8D77;&#x6765;&#x7684;&#x786E;&#x975E;&#x5E38;&#x7B80;&#x5355;&#xFF0C;&#x53EF;&#x662F;&#x5B83;&#x7684;&#x8FD9;&#x79CD;&#x7B80;&#x5355;&#x662F;&#x5EFA;&#x7ACB;&#x5728;&#x4ED8;&#x51FA;&#x4E00;&#x5B9A;&#x7684;&#x4EE3;&#x4EF7;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x7684;&#x3002;&#x7ECF;&#x5E38;&#x6709;&#x670B;&#x53CB;&#x63D0;&#x53CA;&#x4E0D;&#x540C;&#x7684;&#x6A21;&#x5757;&#x95F4;&#x5982;&#x4F55;&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x80FD;&#x7B54;&#x6848;&#x6700;&#x7EC8;&#x4F1A;&#x843D;&#x5230;<strong>&#x5355;&#x4F8B;&#x6A21;&#x5F0F;</strong>&#x3001;<strong>&#x59D4;&#x6258;</strong>&#x548C;<strong>&#x4E8B;&#x4EF6;&#x673A;&#x5236;</strong>&#x8FD9;&#x4E9B;&#x5173;&#x952E;&#x8BCD;&#x4E0A;&#xFF0C;&#x5728;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#x672C;&#x6587;&#x6240;&#x63A2;&#x8BA8;&#x7684;&#x5185;&#x5BB9;&#x53EF;&#x80FD;&#x4F1A;&#x5E2E;&#x52A9;&#x4F60;&#x627E;&#x5230;&#x6700;&#x7EC8;&#x7684;&#x7B54;&#x6848;&#x3002;</p>
+<a id="more"></a>
+<p>#&#x4ECE;&#x751F;&#x6D3B;&#x4E2D;&#x5F97;&#x5230;&#x7684;&#x542F;&#x793A;<br>&#x2003;&#x2003;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x901A;&#x8FC7;&#x5728;Unity3D&#x4E2D;&#x901A;&#x8FC7;GetComponent&#x5C31;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;&#x67D0;&#x4E2A;&#x6A21;&#x5757;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x8FDB;&#x800C;&#x5F15;&#x7528;&#x8FD9;&#x4E2A;&#x5B9E;&#x4F8B;&#x5B8C;&#x6210;&#x76F8;&#x5173;&#x4EFB;&#x52A1;&#x7684;&#x8C03;&#x7528;&#x3002;&#x53EF;&#x662F;&#x663E;&#x7136;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#xFF0C;&#x5C31;&#x50CF;&#x6211;&#x4EEC;&#x968F;&#x8EAB;&#x5E26;&#x7740;&#x73B0;&#x91D1;&#x53BB;&#x548C;&#x4E0D;&#x540C;&#x7684;&#x4EBA;&#x8FDB;&#x884C;&#x4EA4;&#x6613;&#xFF0C;&#x6BCF;&#x6B21;&#x4EA4;&#x6613;&#x7684;&#x65F6;&#x5019;&#x90FD;&#x9700;&#x8981;&#x6211;&#x4EEC;&#x8003;&#x8651;&#x73B0;&#x91D1;&#x7684;&#x652F;&#x5165;&#x548C;&#x652F;&#x51FA;&#x95EE;&#x9898;&#xFF0C;&#x4ECE;&#x5B89;&#x5168;&#x6027;&#x548C;&#x8026;&#x5408;&#x5EA6;&#x4E24;&#x4E2A;&#x65B9;&#x9762;&#x8FDB;&#x884C;&#x8003;&#x8651;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#x5728;&#x9762;&#x5BF9;&#x590D;&#x6742;&#x7684;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x975E;&#x5E38;&#x5BB9;&#x6613;&#x9020;&#x6210;&#x6A21;&#x5757;&#x95F4;&#x7684;&#x76F8;&#x4E92;&#x4F9D;&#x8D56;&#xFF0C;&#x5373;&#x4F1A;&#x589E;&#x52A0;&#x4E0D;&#x540C;&#x6A21;&#x5757;&#x95F4;&#x7684;&#x8026;&#x5408;&#x5EA6;&#x3002;&#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x5927;&#x5BB6;&#x5F00;&#x59CB;&#x8003;&#x8651;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#xFF0C;&#x56E0;&#x4E3A;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#x80FD;&#x591F;&#x4FDD;&#x8BC1;&#x5728;&#x5168;&#x5C40;&#x5185;&#x6709;&#x4E00;&#x4E2A;&#x552F;&#x4E00;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x53EF;&#x4EE5;&#x6709;&#x6548;&#x5730;&#x964D;&#x4F4E;&#x6A21;&#x5757;&#x95F4;&#x7684;&#x76F4;&#x63A5;&#x5F15;&#x7528;&#x3002;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#x5C31;&#x50CF;&#x662F;&#x6211;&#x4EEC;&#x5728;&#x94F6;&#x884C;&#x5185;&#x529E;&#x7406;&#x4E86;&#x4E00;&#x4E2A;&#x552F;&#x4E00;&#x7684;&#x8D26;&#x6237;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5728;&#x4EA4;&#x6613;&#x7684;&#x65F6;&#x5019;&#x53EA;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x8D26;&#x6237;&#x6765;&#x8FDB;&#x884C;&#x63A7;&#x5236;&#x8D44;&#x91D1;&#x7684;&#x6D41;&#x5411;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#x786E;&#x4FDD;&#x4E86;&#x5404;&#x4E2A;&#x6A21;&#x5757;&#x95F4;&#x7684;&#x72EC;&#x7ACB;&#x6027;&#xFF0C;&#x53EF;&#x662F;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#x66F4;&#x591A;&#x7684;&#x662F;&#x4E00;&#x79CD;&#x4E3B;&#x52A8;&#x884C;&#x4E3A;&#xFF0C;&#x5373;&#x6211;&#x4EEC;&#x5728;&#x9700;&#x8981;&#x7684;&#x65F6;&#x5019;&#x4E3B;&#x52A8;&#x53BB;&#x8C03;&#x7528;&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#xFF0C;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#x5B58;&#x5728;&#x7684;&#x95EE;&#x9898;&#x662F;&#x65E0;&#x6CD5;&#x89E3;&#x51B3;&#x88AB;&#x8C03;&#x7528;&#x65B9;&#x7684;&#x53CD;&#x9988;&#x95EE;&#x9898;&#xFF0C;&#x9664;&#x975E;&#x88AB;&#x8C03;&#x7528;&#x65B9;&#x4E3B;&#x52A8;&#x5730;&#x53BB;&#x8C03;&#x7528;&#x8C03;&#x7528;&#x65B9;&#x7684;&#x6A21;&#x5757;&#x5B9E;&#x4F8B;&#x3002;&#x8BF4;&#x5230;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x597D;&#x50CF;&#x770B;&#x5230;&#x4E86;&#x4E00;&#x79CD;&#x65B0;&#x7684;&#x6A21;&#x5F0F;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x4E0B;&#x9762;&#x8981;&#x63D0;&#x5230;&#x7684;&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x3002;</p>
+<p>#&#x8BA2;&#x9605;&#x8005;&#x6A21;&#x5F0F;&#x548C;&#x4E8B;&#x4EF6;&#x673A;&#x5236;<br>&#x2003;&#x2003;&#x9996;&#x5148;&#x8FD9;&#x91CC;&#x8981;&#x63D0;&#x5230;&#x4E00;&#x79CD;&#x79F0;&#x4E3A;&#x201C;&#x8BA2;&#x9605;&#x8005;&#x6A21;&#x5F0F;&#x201D;&#x7684;&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;&#xFF0C;&#x8FD9;&#x79CD;&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;&#x5728;&#x300A;&#x5927;&#x8BDD;&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;&#x300B;&#x8FD9;&#x672C;&#x4E66;&#x4E2D;&#x79F0;&#x4E3A;&#x201C;&#x89C2;&#x5BDF;&#x8005;&#x6A21;&#x5F0F;&#x201D;&#x6216;&#x8005;&#x201C;&#x53D1;&#x5E03;-&#x8BA2;&#x9605;&#xFF08;Publish/Subscribe&#xFF09;&#x6A21;&#x5F0F;&#x201D;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x6682;&#x4E14;&#x53EB;&#x505A;&#x201C;&#x8BA2;&#x9605;&#x8005;&#x6A21;&#x5F0F;&#x201D;&#x5427;&#xFF01;&#x8BE5;&#x6A21;&#x5F0F;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x79CD;&#x4E00;&#x5BF9;&#x591A;&#x7684;&#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#xFF0C;&#x8BA9;&#x591A;&#x4E2A;&#x89C2;&#x5BDF;&#x8005;&#x5BF9;&#x8C61;&#x540C;&#x65F6;&#x76D1;&#x542C;&#x67D0;&#x4E00;&#x4E2A;&#x4E3B;&#x9898;&#x5BF9;&#x8C61;&#x3002;&#x8FD9;&#x4E2A;&#x5BF9;&#x8C61;&#x5728;&#x72B6;&#x6001;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x65F6;&#x4F1A;&#x901A;&#x77E5;&#x6240;&#x6709;&#x89C2;&#x5BDF;&#x8005;&#x5BF9;&#x8C61;&#xFF0C;&#x4F7F;&#x5B83;&#x4EEC;&#x80FD;&#x591F;&#x81EA;&#x52A8;&#x66F4;&#x65B0;&#x81EA;&#x5DF1;&#x3002;&#x9488;&#x5BF9;&#x8FD9;&#x4E2A;&#x6A21;&#x5F0F;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8003;&#x8651;&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x7684;&#x5B9E;&#x73B0;&#xFF0C;&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x5728;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#x4E2D;&#x5FC3;&#xFF08;Subject&#xFF09;&#x4FDD;&#x5B58;&#x6709;&#x5BF9;&#x6240;&#x6709;&#x4E8B;&#x4EF6;&#xFF08;Observer&#xFF09;&#x7684;&#x5F15;&#x7528;&#xFF0C;&#x4E8B;&#x4EF6;&#x4E2D;&#x5FC3;&#x8D1F;&#x8D23;&#x5BF9;&#x8FD9;&#x4E9B;&#x4E8B;&#x4EF6;&#x8FDB;&#x884C;&#x5206;&#x53D1;&#xFF0C;&#x8FD9;&#x6837;&#x6BCF;&#x4E2A;&#x4E8B;&#x4EF6;&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x66F4;&#x65B0;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x5B9E;&#x73B0;&#x4E86;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x3002;&#x4E0B;&#x9762;&#x7ED9;&#x51FA;&#x57FA;&#x672C;&#x7684;&#x4EE3;&#x7801;&#x5B9E;&#x73B0;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">UniEventDispatcher</span></span><br><span class="line">{</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5B9A;&#x4E49;&#x4E8B;&#x4EF6;&#x5206;&#x53D1;&#x59D4;&#x6258;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">OnNotification</span>(<span class="params">Notification notific</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span>&#x901A;&#x77E5;&#x4E2D;&#x5FC3; </span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">NotificationCenter</span></span><br><span class="line">    {</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x901A;&#x77E5;&#x4E2D;&#x5FC3;&#x5355;&#x4F8B;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> NotificationCenter instance=<span class="literal">null</span>;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> NotificationCenter <span class="title">Get</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span>(instance == <span class="literal">null</span>){</span><br><span class="line">                instance = <span class="keyword">new</span> NotificationCenter();</span><br><span class="line">                <span class="keyword">return</span> instance;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">return</span> instance;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5B58;&#x50A8;&#x4E8B;&#x4EF6;&#x7684;&#x5B57;&#x5178;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">private</span> Dictionary&lt;<span class="keyword">string</span>,OnNotification&gt; eventListeners </span><br><span class="line">            = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, OnNotification&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6CE8;&#x518C;&#x4E8B;&#x4EF6;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventKey&quot;&gt;</span>&#x4E8B;&#x4EF6;Key<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventListener&quot;&gt;</span>&#x4E8B;&#x4EF6;&#x76D1;&#x542C;&#x5668;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AddEventListener</span>(<span class="params"><span class="keyword">string</span> eventKey,OnNotification eventListener</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span>(!eventListeners.ContainsKey(eventKey)){</span><br><span class="line">                eventListeners.Add(eventKey,eventListener);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x79FB;&#x9664;&#x4E8B;&#x4EF6;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventKey&quot;&gt;</span>&#x4E8B;&#x4EF6;Key<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RemoveEventListener</span>(<span class="params"><span class="keyword">string</span> eventKey</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span>(!eventListeners.ContainsKey(eventKey))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">            eventListeners[eventKey] =<span class="literal">null</span>;</span><br><span class="line">            eventListeners.Remove(eventKey);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5206;&#x53D1;&#x4E8B;&#x4EF6;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventKey&quot;&gt;</span>&#x4E8B;&#x4EF6;Key<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;notific&quot;&gt;</span>&#x901A;&#x77E5;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">DispatchEvent</span>(<span class="params"><span class="keyword">string</span> eventKey,Notification notific</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span> (!eventListeners.ContainsKey(eventKey))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            eventListeners[eventKey](notific);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5206;&#x53D1;&#x4E8B;&#x4EF6;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventKey&quot;&gt;</span>&#x4E8B;&#x4EF6;Key<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;sender&quot;&gt;</span>&#x53D1;&#x9001;&#x8005;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;param&quot;&gt;</span>&#x901A;&#x77E5;&#x5185;&#x5BB9;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">DispatchEvent</span>(<span class="params"><span class="keyword">string</span> eventKey, GameObject sender, <span class="keyword">object</span> param</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span>(!eventListeners.ContainsKey(eventKey))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            eventListeners[eventKey](<span class="keyword">new</span> Notification(sender,param));</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5206;&#x53D1;&#x4E8B;&#x4EF6;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventKey&quot;&gt;</span>&#x4E8B;&#x4EF6;Key<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;param&quot;&gt;</span>&#x901A;&#x77E5;&#x5185;&#x5BB9;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">DispatchEvent</span>(<span class="params"><span class="keyword">string</span> eventKey,<span class="keyword">object</span> param</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span>(!eventListeners.ContainsKey(eventKey))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            eventListeners[eventKey](<span class="keyword">new</span> Notification(param));</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x662F;&#x5426;&#x5B58;&#x5728;&#x6307;&#x5B9A;&#x4E8B;&#x4EF6;&#x7684;&#x76D1;&#x542C;&#x5668;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Boolean <span class="title">HasEventListener</span>(<span class="params"><span class="keyword">string</span> eventKey</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">return</span> eventListeners.ContainsKey(eventKey);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x6CE8;&#x610F;&#x5230;&#x5728;&#x8FD9;&#x4E2A;&#x201C;&#x901A;&#x77E5;&#x4E2D;&#x5FC3;&#x201D;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x5B9E;&#x73B0;&#x4E86;&#x5355;&#x4F8B;&#x6A21;&#x5F0F;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;Get&#x65B9;&#x6CD5;&#x6765;&#x83B7;&#x53D6;&#x8BE5;&#x201C;&#x901A;&#x77E5;&#x4E2D;&#x5FC3;&#x201D;&#x7684;&#x552F;&#x4E00;&#x5B9E;&#x4F8B;&#xFF0C;&#x5176;&#x6B21;&#x8FD9;&#x91CC;&#x5229;&#x7528;&#x4E00;&#x4E2A;&#x5B57;&#x5178;&#x6765;&#x5B58;&#x50A8;&#x5BF9;&#x6240;&#x6709;&#x4E8B;&#x4EF6;&#x7684;&#x5F15;&#x7528;&#xFF0C;&#x8FD9;&#x6837;&#x4FDD;&#x8BC1;&#x5916;&#x90E8;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;AddEventListener&#x548C;RemoveEventListener&#x8FD9;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x6765;&#x8FDB;&#x884C;&#x4E8B;&#x4EF6;&#x7684;&#x6DFB;&#x52A0;&#x548C;&#x79FB;&#x9664;&#xFF0C;&#x5BF9;&#x4E8E;&#x6DFB;&#x52A0;&#x7684;&#x4E8B;&#x4EF6;&#x5F15;&#x7528;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;DispatchEvent&#x65B9;&#x6CD5;&#x6765;&#x5206;&#x53D1;&#x4E00;&#x4E2A;&#x4E8B;&#x4EF6;&#xFF0C;&#x4E8B;&#x4EF6;&#x7684;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x91C7;&#x7528;&#x59D4;&#x6258;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x6CE8;&#x610F;&#x5230;&#x8FD9;&#x4E2A;&#x59D4;&#x6258;&#x9700;&#x8981;&#x4E00;&#x4E2A;Notification&#x7C7B;&#x578B;&#xFF0C;&#x5BF9;&#x8BE5;&#x7C7B;&#x578B;&#x7B80;&#x5355;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">UniEventDispatcher</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Notification</span></span><br><span class="line">    {</span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x901A;&#x77E5;&#x53D1;&#x9001;&#x8005;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">public</span> GameObject sender;</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x901A;&#x77E5;&#x5185;&#x5BB9;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5907;&#x6CE8;&#xFF1A;&#x5728;&#x53D1;&#x9001;&#x6D88;&#x606F;&#x65F6;&#x9700;&#x8981;&#x88C5;&#x7BB1;&#x3001;&#x89E3;&#x6790;&#x6D88;&#x606F;&#x65F6;&#x9700;&#x8981;&#x62C6;&#x7BB1;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6240;&#x4EE5;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x7CDF;&#x7CD5;&#x7684;&#x8BBE;&#x8BA1;&#xFF0C;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x3002;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">object</span> param;</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6784;&#x9020;&#x51FD;&#x6570;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;sender&quot;&gt;</span>&#x901A;&#x77E5;&#x53D1;&#x9001;&#x8005;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;param&quot;&gt;</span>&#x901A;&#x77E5;&#x5185;&#x5BB9;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Notification</span>(<span class="params">GameObject sender, <span class="keyword">object</span> param</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">this</span>.sender = sender;</span><br><span class="line">            <span class="keyword">this</span>.param = param;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x6784;&#x9020;&#x51FD;&#x6570;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;param&quot;&gt;</span><span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Notification</span>(<span class="params"><span class="keyword">object</span> param</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">this</span>.sender = <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">this</span>.param = param;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> &#x5B9E;&#x73B0;ToString&#x65B9;&#x6CD5;</span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">        <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span><span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">string</span>.Format(<span class="string">&quot;sender={0},param={1}&quot;</span>, <span class="keyword">this</span>.sender, <span class="keyword">this</span>.param);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x5BF9;Notification&#x7684;&#x5B9A;&#x4E49;&#x9700;&#x8981;&#x63D0;&#x4F9B;&#x53D1;&#x9001;&#x8005;&#x548C;&#x53D1;&#x9001;&#x5185;&#x5BB9;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x4FDD;&#x8BC1;&#x6240;&#x6709;&#x7684;&#x901A;&#x77E5;&#x90FD;&#x6309;&#x7167;&#x8FD9;&#x6837;&#x7684;&#x683C;&#x5F0F;&#x8FDB;&#x884C;&#x5B9A;&#x4E49;&#xFF0C;&#x5982;&#x679C;&#x6709;Socket&#x5F00;&#x53D1;&#x7ECF;&#x9A8C;&#x7684;&#x670B;&#x53CB;&#x53EF;&#x80FD;&#x4F1A;&#x8054;&#x60F3;&#x5230;&#x901A;&#x8BAF;&#x534F;&#x8BAE;&#x7684;&#x5B9A;&#x4E49;&#xFF0C;&#x8FD9;&#x91CC;&#x662F;&#x6BD4;&#x8F83;&#x76F8;&#x4F3C;&#x5566;&#xFF0C;&#x54C8;&#x54C8;&#xFF01;</p>
+<p>#&#x4F7F;&#x7528;&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x7684;&#x4E00;&#x4E2A;&#x793A;&#x4F8B;<br>&#x2003;&#x2003;&#x8FD9;&#x91CC;&#x4EE5;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x793A;&#x4F8B;&#x6765;&#x9A8C;&#x8BC1;&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x7684;&#x53EF;&#x884C;&#x6027;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x573A;&#x666F;&#x4E2D;&#x6709;&#x4E00;&#x4E2A;&#x7403;&#x4F53;&#xFF0C;&#x9ED8;&#x8BA4;&#x8FD9;&#x4E2A;&#x7403;&#x4F53;&#x7684;&#x989C;&#x8272;&#x4E3A;&#x767D;&#x8272;&#xFF0C;&#x901A;&#x8FC7;&#x8C03;&#x6574;&#x754C;&#x9762;&#x4E2D;&#x7684;RGB&#x6570;&#x503C;&#xFF0C;&#x53EF;&#x4EE5;&#x6539;&#x53D8;&#x7403;&#x4F53;&#x7684;&#x989C;&#x8272;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x793A;&#x4F8B;&#x4E2D;UI&#x662F;&#x4E8B;&#x4EF6;&#x53D1;&#x9001;&#x8005;&#xFF0C;&#x8D1F;&#x8D23;UI&#x4E2D;Slider&#x63A7;&#x4EF6;&#x7684;&#x6570;&#x503C;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x65F6;&#x5411;&#x7403;&#x4F53;&#x53D1;&#x9001;&#x6D88;&#x606F;&#xFF0C;&#x4F20;&#x9012;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x662F;Color&#x7C7B;&#x578B;&#xFF1B;&#x7403;&#x4F53;&#x4E3A;&#x4E8B;&#x4EF6;&#x63A5;&#x6536;&#x8005;&#xFF0C;&#x8D1F;&#x8D23;&#x6CE8;&#x518C;&#x4E8B;&#x4EF6;&#x53CA;&#x63A5;&#x6536;&#x5230;&#x6D88;&#x606F;&#x540E;&#x7684;&#x5904;&#x7406;&#x3002;&#x56E0;&#x4E3A;&#x4EE3;&#x7801;&#x8F83;&#x4E3A;&#x7B80;&#x5355;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x91CC;&#x5199;&#x5728;&#x4E00;&#x4E2A;&#x811A;&#x672C;&#x4E2D;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> UniEventDispatcher;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Example</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> R&#x6570;&#x503C;&#x7684;Slider</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Slider sliderR;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> G&#x6570;&#x503C;&#x7684;Slider</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Slider sliderG;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> B&#x6570;&#x503C;&#x7684;Slider</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Slider sliderB;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span> (<span class="params"></span>) </span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x5728;&#x63A5;&#x6536;&#x8005;&#x4E2D;&#x6CE8;&#x518C;&#x4E8B;&#x4EF6;&#x53CA;&#x5176;&#x56DE;&#x8C03;&#x65B9;&#x6CD5;</span></span><br><span class="line">        NotificationCenter.Get().AddEventListener(<span class="string">&quot;ChangeColor&quot;</span>, ChangeColor);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x5728;&#x53D1;&#x9001;&#x8005;&#x4E2D;&#x5206;&#x53D1;&#x4E8B;&#x4EF6;&#xFF0C;&#x8FD9;&#x91CC;&#x4EE5;UI&#x903B;&#x8F91;&#x4E3A;&#x4F8B;</span></span><br><span class="line">        sliderR = GameObject.Find(<span class="string">&quot;Canvas/SliderR&quot;</span>).GetComponent&lt;Slider&gt;();</span><br><span class="line">        sliderG = GameObject.Find(<span class="string">&quot;Canvas/SliderG&quot;</span>).GetComponent&lt;Slider&gt;();</span><br><span class="line">        sliderB = GameObject.Find(<span class="string">&quot;Canvas/SliderB&quot;</span>).GetComponent&lt;Slider&gt;();</span><br><span class="line">        <span class="comment">//&#x6CE8;&#x518C;UI&#x4E8B;&#x4EF6;</span></span><br><span class="line">        sliderR.onValueChanged.AddListener(OnValueChanged);</span><br><span class="line">        sliderG.onValueChanged.AddListener(OnValueChanged);</span><br><span class="line">        sliderB.onValueChanged.AddListener(OnValueChanged);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnValueChanged</span>(<span class="params"><span class="keyword">float</span> <span class="keyword">value</span></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x83B7;&#x5F97;RGB&#x6570;&#x503C;</span></span><br><span class="line">        <span class="keyword">float</span> r = sliderR.<span class="keyword">value</span>;</span><br><span class="line">        <span class="keyword">float</span> g = sliderG.<span class="keyword">value</span>;</span><br><span class="line">        <span class="keyword">float</span> b = sliderB.<span class="keyword">value</span>;</span><br><span class="line">        <span class="comment">//&#x5206;&#x53D1;&#x4E8B;&#x4EF6;,&#x6CE8;&#x610F;&#x548C;&#x63A5;&#x6536;&#x8005;&#x534F;&#x8BAE;&#x4E00;&#x81F4;</span></span><br><span class="line">        NotificationCenter.Get().DispatchEvent(<span class="string">&quot;ChangeColor&quot;</span>, <span class="keyword">new</span> Color(r, g, b));</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6539;&#x53D8;&#x7269;&#x4F53;&#x6750;&#x8D28;&#x989C;&#x8272;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;notific&quot;&gt;</span><span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ChangeColor</span>(<span class="params">Notification notific</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        Debug.Log(notific.ToString());</span><br><span class="line">        <span class="comment">//&#x8BBE;&#x7F6E;&#x989C;&#x8272;</span></span><br><span class="line">        renderer.material.color = (Color)notific.param;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x8BE5;&#x793A;&#x4F8B;&#x8FD0;&#x884C;&#x6548;&#x679C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzix8enrpvg20d108n0xz.jpg" alt="&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x7684;&#x7B80;&#x5355;&#x793A;&#x4F8B;" title>
+                </div>
+                <div class="image-caption">&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x7684;&#x7B80;&#x5355;&#x793A;&#x4F8B;</div>
+            </figure>
+<p>#&#x5C0F;&#x7ED3;<br>&#x2003;&#x2003;&#x867D;&#x7136;&#x76EE;&#x524D;&#x8FD9;&#x4E2A;&#x4E8B;&#x4EF6;&#x673A;&#x5236;&#x5728;&#x5B9E;&#x73B0;&#x548C;&#x4F7F;&#x7528;&#x4E0A;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x662F;&#x4ECE;&#x6269;&#x5C55;&#x6027;&#x548C;&#x53EF;&#x4F18;&#x5316;&#x6027;&#x4E0A;&#x6765;&#x8003;&#x8651;&#xFF0C;&#x8FD9;&#x4E2A;&#x8BBE;&#x8BA1;&#x76EE;&#x524D;&#x5B58;&#x5728;&#x4EE5;&#x4E0B;&#x95EE;&#x9898;&#xFF1A;</p>
+<ul>
+<li>&#x5B57;&#x7B26;&#x578B;&#x7684;&#x952E;&#x540D;&#x4F7F;&#x7528;&#x8D77;&#x6765;&#x65B9;&#x4FBF;&#xFF0C;&#x53EF;&#x662F;&#x5BF9;&#x901A;&#x77E5;&#x8005;&#x548C;&#x63A5;&#x6536;&#x8005;&#x7531;1&#x4E2A;&#x4EE5;&#x4E0A;&#x7684;&#x4EBA;&#x529B;&#x6765;&#x7EF4;&#x62A4;&#x7684;&#x65F6;&#x5019;&#x53CC;&#x65B9;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x6C9F;&#x901A;&#x6765;&#x786E;&#x5B9A;&#x952E;&#x540D;&#xFF0C;&#x53EF;&#x4EE5;&#x8003;&#x8651;&#x4F7F;&#x7528;GameObject&#x6216;&#x8005;Transform&#x6765;&#x66FF;&#x4EE3;&#x73B0;&#x5728;&#x7684;&#x952E;&#x540D;&#x8BBE;&#x8BA1;&#xFF0C;&#x53EF;&#x662F;&#x8FD9;&#x79CD;&#x8BBE;&#x8BA1;&#x5E26;&#x6765;&#x7684;&#x65B0;&#x95EE;&#x9898;&#x662F;&#x4F1A;&#x589E;&#x52A0;&#x4E0D;&#x540C;&#x6A21;&#x5757;&#x95F4;&#x7684;GameObject&#x6216;&#x8005;Transform&#x7684;&#x76F8;&#x4E92;&#x5F15;&#x7528;&#x3002;</li>
+<li>&#x901A;&#x77E5;&#x8005;&#x548C;&#x63A5;&#x6536;&#x8005;&#x5728;&#x4F20;&#x9012;&#x53C2;&#x6570;&#x548C;&#x63A5;&#x53D7;&#x53C2;&#x6570;&#x7684;&#x65F6;&#x5019;&#x9700;&#x8981;&#x5206;&#x522B;&#x8FDB;&#x884C;&#x88C5;&#x7BB1;&#x548C;&#x62C6;&#x7BB1;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x5E76;&#x975E;&#x4E00;&#x4E2A;&#x4F18;&#x79C0;&#x7684;&#x8BBE;&#x8BA1;&#xFF0C;&#x540C;&#x65F6;&#x9700;&#x8981;&#x53CC;&#x65B9;&#x4FDD;&#x8BC1;&#x4F20;&#x9012;&#x7684;&#x53C2;&#x6570;&#x7C7B;&#x578B;&#x4E00;&#x81F4;&#x3002;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x662F;&#x9488;&#x5BF9;&#x4E0D;&#x540C;&#x7684;&#x7C7B;&#x578B;&#x5BF9;&#x901A;&#x77E5;&#x4E2D;&#x5FC3;&#x8FDB;&#x884C;&#x6D3E;&#x751F;&#x6216;&#x8005;&#x8003;&#x8651;&#x5BF9;&#x901A;&#x77E5;&#x4E2D;&#x5FC3;&#x63D0;&#x4F9B;&#x6CDB;&#x578B;&#x7EA6;&#x675F;&#xFF0C;&#x8FD9;&#x6837;&#x505A;&#x7684;&#x76EE;&#x7684;&#x662F;&#x4F7F;Notification&#x4E2D;&#x7684;&#x901A;&#x77E5;&#x5185;&#x5BB9;&#x53D8;&#x6210;&#x5177;&#x4F53;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x76EE;&#x524D;&#x9700;&#x8981;&#x8FDB;&#x884C;&#x88C5;&#x7BB1;&#x548C;&#x62C6;&#x7BB1;&#x800C;&#x5E26;&#x6765;&#x7684;&#x6027;&#x80FD;&#x95EE;&#x9898;&#x3002;</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/1444577573/">Redis缓存技术学习系列之发布订阅</a></li><li><a href="https://github.com/YifangDONG/2018/10/22/重叠构造函数模式的替代模式/">重叠构造函数模式的替代模式</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/632291273/" rel="external">在Unity3D中基于订阅者模式实现事件机制</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/632291273/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/632291273/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/事件/">事件</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息/">消息</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/632291273/&title=《在Unity3D中基于订阅者模式实现事件机制》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/632291273/&title=《在Unity3D中基于订阅者模式实现事件机制》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，欢迎大家关注我的博客，我是秦元培，我的博客地址是http://qinyuanpei.com。今天博主想和大家分享..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/632291273/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《在Unity3D中基于订阅者模式实现事件机制》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/632291273/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/632291273/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/1836680899/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">使用Mono让.NET程序跨平台运行</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3653662258/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">扩展Unity3D编辑器的脚本模板</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/632291273/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/632291273/&title=《在Unity3D中基于订阅者模式实现事件机制》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/632291273/&title=《在Unity3D中基于订阅者模式实现事件机制》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，欢迎大家关注我的博客，我是秦元培，我的博客地址是http://qinyuanpei.com。今天博主想和大家分享..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/632291273/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《在Unity3D中基于订阅者模式实现事件机制》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/632291273/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/632291273/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/632291273/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

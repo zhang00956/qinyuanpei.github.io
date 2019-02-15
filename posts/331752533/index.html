@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        教你一步步实现一个虚拟摇杆 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定尝试自己来实现一个虚拟摇杆，所以在今天的文章中我们的目标是使用uGUI来制作一个可以在移动平台稳定运行的虚拟摇杆(请不要问我为什么不使用NGUI来实现，你说我做个虚拟摇杆有必要在项目里导入那么多的资源嘛23333)。关于使用第三方插件来实现虚拟摇">
+<meta name="keywords" content="游戏开发,uGUI,虚拟摇杆">
+<meta property="og:type" content="article">
+<meta property="og:title" content="教你一步步实现一个虚拟摇杆">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/331752533/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定尝试自己来实现一个虚拟摇杆，所以在今天的文章中我们的目标是使用uGUI来制作一个可以在移动平台稳定运行的虚拟摇杆(请不要问我为什么不使用NGUI来实现，你说我做个虚拟摇杆有必要在项目里导入那么多的资源嘛23333)。关于使用第三方插件来实现虚拟摇">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixbnf1fsg20nm0d8avw.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix8zemu3g20nf0dbaky.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.524Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="教你一步步实现一个虚拟摇杆">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定尝试自己来实现一个虚拟摇杆，所以在今天的文章中我们的目标是使用uGUI来制作一个可以在移动平台稳定运行的虚拟摇杆(请不要问我为什么不使用NGUI来实现，你说我做个虚拟摇杆有必要在项目里导入那么多的资源嘛23333)。关于使用第三方插件来实现虚拟摇">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixbnf1fsg20nm0d8avw.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">教你一步步实现一个虚拟摇杆</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">教你一步步实现一个虚拟摇杆</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-10-30T09:44:18.000Z" itemprop="datePublished" class="page-time">
+  2015-10-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-教你一步步实现一个虚拟摇杆" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">教你一步步实现一个虚拟摇杆</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-10-30 09:44:18" datetime="2015-10-30T09:44:18.000Z" itemprop="datePublished">2015-10-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        14 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#xFF0C;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;&#x79E6;&#x5143;&#x57F9;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x6700;&#x8FD1;&#x56E0;&#x4E3A;&#x9879;&#x76EE;&#x9700;&#x8981;&#x51B3;&#x5B9A;&#x5C1D;&#x8BD5;&#x81EA;&#x5DF1;&#x6765;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x865A;&#x62DF;&#x6447;&#x6746;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x4ECA;&#x5929;&#x7684;&#x6587;&#x7AE0;&#x4E2D;&#x6211;&#x4EEC;&#x7684;&#x76EE;&#x6807;&#x662F;&#x4F7F;&#x7528;uGUI&#x6765;&#x5236;&#x4F5C;&#x4E00;&#x4E2A;&#x53EF;&#x4EE5;&#x5728;&#x79FB;&#x52A8;&#x5E73;&#x53F0;&#x7A33;&#x5B9A;&#x8FD0;&#x884C;&#x7684;&#x865A;&#x62DF;&#x6447;&#x6746;(&#x8BF7;&#x4E0D;&#x8981;&#x95EE;&#x6211;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x4F7F;&#x7528;NGUI&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x4F60;&#x8BF4;&#x6211;&#x505A;&#x4E2A;&#x865A;&#x62DF;&#x6447;&#x6746;&#x6709;&#x5FC5;&#x8981;&#x5728;&#x9879;&#x76EE;&#x91CC;&#x5BFC;&#x5165;&#x90A3;&#x4E48;&#x591A;&#x7684;&#x8D44;&#x6E90;&#x561B;23333)&#x3002;&#x5173;&#x4E8E;&#x4F7F;&#x7528;&#x7B2C;&#x4E09;&#x65B9;&#x63D2;&#x4EF6;&#x6765;&#x5B9E;&#x73B0;&#x865A;&#x62DF;&#x6447;&#x6746;&#xFF0C;&#x8BF7;&#x5927;&#x5BB6;&#x53C2;&#x7167;&#x6211;&#x4EE5;&#x524D;&#x5199;&#x7684;&#x6587;&#x7AE0;<a href="http://blog.csdn.net/qinyuanpei/article/details/26204177" target="_blank" rel="noopener">Unity3D&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x4E4B;&#x4F7F;&#x7528;EasyTouch&#x865A;&#x62DF;&#x6447;&#x6746;&#x63A7;&#x5236;&#x4EBA;&#x7269;&#x79FB;&#x52A8;</a>&#xFF0C;&#x5728;&#x8FD9;&#x91CC;&#x5C31;&#x4E0D;&#x518D;&#x8D58;&#x8FF0;&#x4E86;&#x3002;</p>
+<a id="more"></a>
+<p>&#x2003;&#x2003;&#x865A;&#x62DF;&#x6447;&#x6746;&#x8FD9;&#x79CD;&#x8F93;&#x5165;&#x65B9;&#x5F0F;&#x76F8;&#x4FE1;&#x5927;&#x5BB6;&#x5728;&#x624B;&#x673A;&#x6E38;&#x620F;&#x5E73;&#x53F0;&#x4E0A;&#x5DF2;&#x7ECF;&#x76F8;&#x5F53;&#x7684;&#x719F;&#x6089;&#x4E86;&#xFF0C;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x6765;&#x7B80;&#x5355;&#x4E86;&#x89E3;&#x4E0B;&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x8BBE;&#x8BA1;&#x539F;&#x7406;&#x3002;&#x865A;&#x62DF;&#x6447;&#x6746;&#x6709;&#x4E00;&#x5F20;&#x56FA;&#x5B9A;&#x7684;2D&#x8D34;&#x56FE;(&#x80CC;&#x666F;&#x5C42;)&#x548C;&#x4E00;&#x5F20;&#x53EF;&#x62D6;&#x52A8;&#x7684;2D&#x8D34;&#x56FE;(&#x63A7;&#x5236;&#x5C42;)&#x6784;&#x6210;&#xFF0C;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#x63A7;&#x5236;&#x5C42;&#x5728;&#x80CC;&#x666F;&#x5C42;&#x7684;&#x4E2D;&#x5FC3;&#xFF0C;&#x6211;&#x4EEC;&#x79F0;&#x8FD9;&#x4E2A;&#x4F4D;&#x7F6E;&#x4E3A;&#x521D;&#x59CB;&#x4F4D;&#x7F6E;&#xFF0C;&#x5F53;&#x79FB;&#x52A8;&#x63A7;&#x5236;&#x5C42;&#x540E;&#x79FB;&#x52A8;&#x5C42;&#x7684;&#x4F4D;&#x7F6E;&#x4F1A;&#x53D1;&#x751F;&#x53D8;&#x5316;&#xFF0C;&#x6B64;&#x65F6;&#x63A7;&#x5236;&#x5C42;&#x7684;&#x5F53;&#x524D;&#x4F4D;&#x7F6E;&#x548C;&#x521D;&#x59CB;&#x4F4D;&#x7F6E;&#x4E24;&#x70B9;&#x95F4;&#x53EF;&#x4EE5;&#x8BA1;&#x7B97;&#x51FA;&#x4E00;&#x4E2A;2D&#x5411;&#x91CF;&#xFF0C;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x5411;&#x91CF;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x5224;&#x65AD;&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x79FB;&#x52A8;&#x65B9;&#x5411;&#x3002;&#x5728;&#x7ECF;&#x5178;&#x7684;&#x516B;&#x65B9;&#x5411;&#x6447;&#x6746;&#x5BFC;&#x822A;&#x4E2D;&#x6447;&#x6746;&#x4E2D;&#x53EF;&#x79FB;&#x52A8;&#x65B9;&#x5411;&#x88AB;&#x5206;&#x6210;&#x4E86;&#x4E0A;&#x3001;&#x5DE6;&#x4E0A;&#x3001;&#x53F3;&#x4E0A;&#x3001;&#x4E0B;&#x3001;&#x5DE6;&#x4E0B;&#x3001;&#x53F3;&#x4E0B;&#x3001;&#x5DE6;&#x3001;&#x53F3;&#x5171;8&#x4E2A;&#x65B9;&#x5411;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x6839;&#x636E;&#x4E09;&#x89D2;&#x51FD;&#x6570;&#x53EF;&#x4EE5;&#x975E;&#x5E38;&#x5BB9;&#x6613;&#x5730;&#x8BA1;&#x7B97;&#x51FA;&#x8FD9;&#x4E2A;2D&#x5411;&#x91CF;&#x7684;&#x89D2;&#x5EA6;&#x5E76;&#x7531;&#x6B64;&#x5224;&#x5B9A;&#x6447;&#x6746;&#x662F;&#x5728;&#x5411;&#x7740;&#x8FD9;8&#x4E2A;&#x65B9;&#x5411;&#x4E2D;&#x7684;&#x54EA;&#x4E00;&#x4E2A;&#x65B9;&#x5411;&#x79FB;&#x52A8;&#x3002;&#x5728;&#x4ECA;&#x5929;&#x7684;&#x6587;&#x7AE0;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x4E0D;&#x9700;&#x8981;&#x8003;&#x8651;&#x8FD9;8&#x4E2A;&#x65B9;&#x5411;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5411;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;&#x65B9;&#x5411;&#x8FDB;&#x884C;&#x79FB;&#x52A8;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x9996;&#x5148;&#x5728;&#x573A;&#x666F;&#x4E2D;&#x521B;&#x5EFA;&#x4E24;&#x4E2A;Image&#x7EC4;&#x4EF6;&#x548C;&#x4E00;&#x4E2A;&#x7A7A;&#x7684;&#x6E38;&#x620F;&#x4F53;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x8FD9;&#x4E24;&#x4E2A;Image&#x7EC4;&#x4EF6;&#x62D6;&#x62FD;&#x5230;&#x8FD9;&#x4E2A;&#x7A7A;&#x7684;&#x6E38;&#x620F;&#x4F53;&#x4E0B;&#x4F7F;&#x5B83;&#x4EEC;&#x79F0;&#x4E3A;&#x5176;&#x5B50;&#x8282;&#x70B9;&#x3002;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#x8FD9;&#x4E24;&#x4E2A;Image&#x7684;&#x5C42;&#x7EA7;&#x5173;&#x7CFB;&#x3002;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x6765;&#x7F16;&#x5199;&#x811A;&#x672C;&#xFF0C;&#x8FD9;&#x4E2A;&#x811A;&#x672C;&#x5C06;&#x88AB;&#x6DFB;&#x52A0;&#x5230;&#x63A7;&#x5236;&#x5C42;&#x7269;&#x4F53;&#x4E0A;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * uGUI&#x865A;&#x62DF;&#x6447;&#x6746;</span></span><br><span class="line"><span class="comment"> * &#x4F5C;&#x8005;&#xFF1A;&#x79E6;&#x5143;&#x57F9;</span></span><br><span class="line"><span class="comment"> * &#x535A;&#x5BA2;&#xFF1A;http://qinyuanpei.com</span></span><br><span class="line"><span class="comment"> * &#x65F6;&#x95F4;&#xFF1A;2015&#x5E74;10&#x6708;24&#x65E5;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">JoyStick</span> : <span class="title">MonoBehaviour</span>,<span class="title">IPointerDownHandler</span>, <span class="title">IPointerUpHandler</span>, <span class="title">IDragHandler</span></span><br><span class="line">{</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6447;&#x6746;&#x6700;&#x5927;&#x534A;&#x5F84;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x4EE5;&#x50CF;&#x7D20;&#x4E3A;&#x5355;&#x4F4D;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">float</span> JoyStickRadius = <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6447;&#x6746;&#x91CD;&#x7F6E;&#x6240;&#x8BC9;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">float</span> JoyStickResetSpeed = <span class="number">5.0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5F53;&#x524D;&#x7269;&#x4F53;&#x7684;Transform&#x7EC4;&#x4EF6;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> RectTransform selfTransform;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x662F;&#x5426;&#x89E6;&#x6478;&#x4E86;&#x865A;&#x62DF;&#x6447;&#x6746;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">bool</span> isTouched = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x9ED8;&#x8BA4;&#x4F4D;&#x7F6E;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Vector2 originPosition;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x79FB;&#x52A8;&#x65B9;&#x5411;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> Vector2 touchedAxis;</span><br><span class="line">    <span class="keyword">public</span> Vector2 TouchedAxis</span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">get</span></span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">if</span>(touchedAxis.magnitude &lt; JoyStickRadius)</span><br><span class="line">                <span class="keyword">return</span> touchedAxis.normalized / JoyStickRadius;</span><br><span class="line">            <span class="keyword">return</span> touchedAxis.normalized;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> &#x5B9A;&#x4E49;&#x89E6;&#x6478;&#x5F00;&#x59CB;&#x4E8B;&#x4EF6;&#x59D4;&#x6258; </span></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">JoyStickTouchBegin</span>(<span class="params">Vector2 vec</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5B9A;&#x4E49;&#x89E6;&#x6478;&#x8FC7;&#x7A0B;&#x4E8B;&#x4EF6;&#x59D4;&#x6258; </span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;vec&quot;&gt;</span>&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x79FB;&#x52A8;&#x65B9;&#x5411;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">JoyStickTouchMove</span>(<span class="params">Vector2 vec</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5B9A;&#x4E49;&#x89E6;&#x6478;&#x7ED3;&#x675F;&#x4E8B;&#x4EF6;&#x59D4;&#x6258;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">JoyStickTouchEnd</span>(<span class="params"></span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6CE8;&#x518C;&#x89E6;&#x6478;&#x5F00;&#x59CB;&#x4E8B;&#x4EF6;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">event</span> JoyStickTouchBegin OnJoyStickTouchBegin;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6CE8;&#x518C;&#x89E6;&#x6478;&#x8FC7;&#x7A0B;&#x4E8B;&#x4EF6;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">event</span> JoyStickTouchMove OnJoyStickTouchMove;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6CE8;&#x518C;&#x89E6;&#x6478;&#x7ED3;&#x675F;&#x4E8B;&#x4EF6;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">event</span> JoyStickTouchEnd OnJoyStickTouchEnd;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span> (<span class="params"></span>) </span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x521D;&#x59CB;&#x5316;&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x9ED8;&#x8BA4;&#x65B9;&#x5411;</span></span><br><span class="line">        selfTransform = <span class="keyword">this</span>.GetComponent&lt;RectTransform&gt;();</span><br><span class="line">        originPosition = selfTransform.anchoredPosition;</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnPointerDown</span>(<span class="params">PointerEventData eventData</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        isTouched = <span class="literal">true</span>;</span><br><span class="line">		touchedAxis = GetJoyStickAxis(eventData);</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchBegin != <span class="literal">null</span>)</span><br><span class="line">			<span class="keyword">this</span>.OnJoyStickTouchBegin(TouchedAxis);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnPointerUp</span>(<span class="params">PointerEventData eventData</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        isTouched = <span class="literal">false</span>;</span><br><span class="line">		selfTransform.anchoredPosition = originPosition;</span><br><span class="line">		touchedAxis = Vector2.zero;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchEnd != <span class="literal">null</span>)</span><br><span class="line">			<span class="keyword">this</span>.OnJoyStickTouchEnd();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnDrag</span>(<span class="params">PointerEventData eventData</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">		touchedAxis = GetJoyStickAxis(eventData);</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchMove != <span class="literal">null</span>)</span><br><span class="line">			<span class="keyword">this</span>.OnJoyStickTouchMove(TouchedAxis);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x5F53;&#x865A;&#x62DF;&#x6447;&#x6746;&#x79FB;&#x52A8;&#x5230;&#x6700;&#x5927;&#x534A;&#x5F84;&#x65F6;&#x6447;&#x6746;&#x65E0;&#x6CD5;&#x62D6;&#x52A8;</span></span><br><span class="line">        <span class="comment">//&#x4E3A;&#x4E86;&#x786E;&#x4FDD;&#x88AB;&#x63A7;&#x5236;&#x7269;&#x4F53;&#x53EF;&#x4EE5;&#x7EE7;&#x7EED;&#x79FB;&#x52A8;</span></span><br><span class="line">        <span class="comment">//&#x5728;&#x8FD9;&#x91CC;&#x624B;&#x52A8;&#x89E6;&#x53D1;OnJoyStickTouchMove&#x4E8B;&#x4EF6;</span></span><br><span class="line">        <span class="keyword">if</span>(isTouched &amp;&amp; touchedAxis.magnitude&gt;=JoyStickRadius)</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.OnJoyStickTouchMove != <span class="literal">null</span>)</span><br><span class="line">                <span class="keyword">this</span>.OnJoyStickTouchMove(TouchedAxis);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x677E;&#x5F00;&#x865A;&#x62DF;&#x6447;&#x6746;&#x540E;&#x8BA9;&#x865A;&#x62DF;&#x6447;&#x6746;&#x56DE;&#x5230;&#x9ED8;&#x8BA4;&#x4F4D;&#x7F6E;</span></span><br><span class="line">        <span class="keyword">if</span>(selfTransform.anchoredPosition.magnitude &gt; originPosition.magnitude)</span><br><span class="line">            selfTransform.anchoredPosition -= TouchedAxis * Time.deltaTime * JoyStickResetSpeed;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> &#x8FD4;&#x56DE;&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x504F;&#x79FB;&#x91CF;</span></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span>The joy stick axis.<span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line">	<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;eventData&quot;&gt;</span>Event data.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> Vector2 <span class="title">GetJoyStickAxis</span>(<span class="params">PointerEventData eventData</span>)</span></span><br><span class="line"><span class="function"></span>	{</span><br><span class="line">		<span class="comment">//&#x83B7;&#x53D6;&#x624B;&#x6307;&#x4F4D;&#x7F6E;&#x7684;&#x4E16;&#x754C;&#x5750;&#x6807;</span></span><br><span class="line">		Vector3 worldPosition;</span><br><span class="line">		<span class="keyword">if</span> (RectTransformUtility.ScreenPointToWorldPointInRectangle (selfTransform,</span><br><span class="line">		         eventData.position, eventData.pressEventCamera, <span class="keyword">out</span> worldPosition))</span><br><span class="line">			selfTransform.position = worldPosition;</span><br><span class="line">		<span class="comment">//&#x83B7;&#x53D6;&#x6447;&#x6746;&#x7684;&#x504F;&#x79FB;&#x91CF;</span></span><br><span class="line">		Vector2 touchAxis = selfTransform.anchoredPosition-originPosition;</span><br><span class="line">		<span class="comment">//&#x6447;&#x6746;&#x504F;&#x79FB;&#x91CF;&#x9650;&#x5236;</span></span><br><span class="line">		<span class="keyword">if</span>(touchAxis.magnitude &gt;= JoyStickRadius) </span><br><span class="line">		{</span><br><span class="line">			touchAxis = touchAxis.normalized * JoyStickRadius;</span><br><span class="line">			selfTransform.anchoredPosition = touchAxis;</span><br><span class="line">		}</span><br><span class="line">		<span class="keyword">return</span> touchAxis;</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x5728;&#x8FD9;&#x6BB5;&#x811A;&#x672C;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x5B9E;&#x73B0;&#x4E86;OnPointerDown&#x3001;OnPointerUp&#x548C;OnDrag&#x4E09;&#x4E2A;uGUI&#x4E8B;&#x4EF6;&#x63A5;&#x53E3;&#xFF0C;&#x7136;&#x540E;&#x6CE8;&#x518C;&#x4E86;&#x76F8;&#x5173;&#x7684;&#x4E8B;&#x4EF6;&#x59D4;&#x6258;&#xFF0C;&#x8FD9;&#x91CC;&#x501F;&#x9274;&#x4E86;EasyTouch&#x7684;&#x8BBE;&#x8BA1;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x5F97;&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x903B;&#x8F91;&#x548C;&#x89D2;&#x8272;&#x63A7;&#x5236;&#x903B;&#x8F91;&#x76F8;&#x4E92;&#x5206;&#x79BB;&#x3002;&#x8FD9;&#x91CC;&#x7684;&#x6838;&#x5FC3;&#x65B9;&#x6CD5;&#x662F;GetJoyStickAxis()&#x65B9;&#x6CD5;&#xFF0C;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;&#x4E00;&#x4E2A;Vector2&#x7C7B;&#x578B;&#x7684;&#x503C;&#xFF0C;&#x5B83;&#x8868;&#x793A;&#x7684;&#x662F;&#x672A;&#x6807;&#x51C6;&#x5316;&#x8FC7;&#x7684;&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x504F;&#x79FB;&#x91CF;&#x3002;&#x8FD9;&#x91CC;&#x7684;RectTransformUtility.ScreenPointToWorldPointInRectangle()&#x65B9;&#x6CD5;&#x8868;&#x793A;&#x5C06;&#x4E00;&#x4E2A;&#x5C4F;&#x5E55;&#x5750;&#x6807;&#x8F6C;&#x5316;&#x4E3A;&#x5BF9;&#x5E94;RectTransform&#x7684;&#x4E16;&#x754C;&#x5750;&#x6807;&#xFF0C;RectTransform&#x7684;anchoredPosition&#x5C5E;&#x6027;&#x8868;&#x793A;&#x7684;&#x662F;&#x5F53;&#x524D;&#x5143;&#x7D20;&#x5728;&#x573A;&#x666F;&#x4E2D;&#x7684;&#x5C4F;&#x5E55;&#x5750;&#x6807;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5C4F;&#x5E55;&#x5750;&#x6807;&#x662F;&#x4EE5;&#x50CF;&#x7D20;&#x4E3A;&#x5355;&#x4F4D;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x5C4F;&#x5E55;&#x5750;&#x6807;&#x53EF;&#x4EE5;&#x8BA1;&#x7B97;&#x51FA;&#x865A;&#x62DF;&#x6447;&#x6746;&#x5728;&#x6C34;&#x5E73;&#x65B9;&#x5411;&#x548C;&#x5782;&#x76F4;&#x65B9;&#x5411;&#x4E0A;&#x79FB;&#x52A8;&#x4E86;&#x591A;&#x5C11;&#x4E2A;&#x50CF;&#x7D20;&#xFF0C;&#x6211;&#x4EEC;&#x4EE5;&#x6B64;&#x6765;&#x4F5C;&#x4E3A;&#x865A;&#x62DF;&#x6447;&#x6746;&#x7684;&#x504F;&#x79FB;&#x91CF;&#x8861;&#x91CF;&#x6307;&#x6807;&#x3002;TouchedAxis&#x662F;&#x7ECF;&#x8FC7;&#x6807;&#x51C6;&#x5316;&#x4EE5;&#x540E;&#x7684;&#x504F;&#x79FB;&#x91CF;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x628A;&#x8FD9;&#x4E2A;&#x503C;&#x4F20;&#x9012;&#x5230;&#x4E8B;&#x4EF6;&#x59D4;&#x6258;&#x4E2D;&#x4EE5;&#x63D0;&#x4F9B;&#x7ED9;&#x5916;&#x90E8;&#x6765;&#x8C03;&#x7528;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x8981;&#x8BF4;&#x7684;&#x5C31;&#x8FD9;&#x4E9B;&#x4E86;&#xFF0C;&#x6CA1;&#x6709;&#x8BF4;&#x5230;&#x7684;&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x770B;&#x770B;&#x4EE3;&#x7801;&#x91CC;&#x7684;&#x6CE8;&#x91CA;&#x6216;&#x8005;&#x662F;&#x5728;&#x535A;&#x5BA2;&#x4E2D;&#x7ED9;&#x6211;&#x7559;&#x8A00;&#xFF0C;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x5566;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x63A5;&#x4E0B;&#x6765;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x573A;&#x666F;&#x4E2D;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x89D2;&#x8272;&#x6A21;&#x578B;&#x6765;&#x6D4B;&#x8BD5;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x7684;&#x865A;&#x62DF;&#x6447;&#x6746;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;JoyStick&#x4E2D;&#x6211;&#x4EEC;&#x5DF2;&#x7ECF;&#x5B9A;&#x4E49;&#x4E86;&#x4E8B;&#x4EF6;&#x59D4;&#x6258;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x8FD9;&#x91CC;&#x5C31;&#x662F;&#x7B80;&#x5355;&#x7684;&#x8C03;&#x7528;&#x5566;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x4E00;&#x8D77;&#x6765;&#x770B;&#x770B;&#x4EE3;&#x7801;&#x5427;&#xFF01;</p>
+<figure class="highlight cpp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Joystick3D.cs</span></span><br><span class="line"><span class="comment"> * 3D&#x6A21;&#x5F0F;&#x4E0B;&#x7684;&#x865A;&#x62DF;&#x6447;&#x6746;&#x6D4B;&#x8BD5;</span></span><br><span class="line"><span class="comment"> * &#x4F5C;&#x8005;&#xFF1A;&#x79E6;&#x5143;&#x57F9;</span></span><br><span class="line"><span class="comment"> * &#x535A;&#x5BA2;&#xFF1A;http://qinyuanpei.com</span></span><br><span class="line"><span class="comment"> * &#x65F6;&#x95F4;&#xFF1A;2015&#x5E74;10&#x6708;30&#x65E5;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JoyStick3D</span> :</span> MonoBehaviour </span><br><span class="line">{</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> JoyStick js;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span> <span class="params">()</span> </span></span><br><span class="line"><span class="function">	</span>{</span><br><span class="line">		js = GameObject.FindObjectOfType&lt;JoyStick&gt; ();</span><br><span class="line">		js.OnJoyStickTouchBegin += OnJoyStickBegin;</span><br><span class="line">		js.OnJoyStickTouchMove += OnJoyStickMove;</span><br><span class="line">		js.OnJoyStickTouchEnd += OnJoyStickEnd;</span><br><span class="line">	}</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">OnJoyStickBegin</span><span class="params">(Vector2 vec)</span></span></span><br><span class="line"><span class="function">	</span>{</span><br><span class="line">        Debug.Log(<span class="string">&quot;&#x5F00;&#x59CB;&#x89E6;&#x6478;&#x865A;&#x62DF;&#x6447;&#x6746;&quot;</span>);</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">OnJoyStickMove</span> <span class="params">(Vector2 vec)</span></span></span><br><span class="line"><span class="function">	</span>{</span><br><span class="line">        Debug.Log(<span class="string">&quot;&#x6B63;&#x5728;&#x79FB;&#x52A8;&#x865A;&#x62DF;&#x6447;&#x6746;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x8BBE;&#x7F6E;&#x89D2;&#x8272;&#x671D;&#x5411;</span></span><br><span class="line">		Quaternion q = Quaternion.LookRotation (<span class="keyword">new</span> Vector3 (vec.x, <span class="number">0</span>, vec.y));</span><br><span class="line">		transform.rotation = q;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x79FB;&#x52A8;&#x89D2;&#x8272;&#x5E76;&#x64AD;&#x653E;&#x5954;&#x8DD1;&#x52A8;&#x753B;</span></span><br><span class="line">		transform.Translate(Vector3.forward * <span class="number">75f</span> * Time.deltaTime);</span><br><span class="line">		animation.CrossFade(<span class="string">&quot;Run&quot;</span>);</span><br><span class="line">	}</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">OnJoyStickEnd</span> <span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>{</span><br><span class="line">        Debug.Log(<span class="string">&quot;&#x89E6;&#x6478;&#x79FB;&#x52A8;&#x6447;&#x6746;&#x7ED3;&#x675F;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//&#x64AD;&#x653E;&#x9ED8;&#x8BA4;&#x5F85;&#x673A;&#x52A8;&#x753B;</span></span><br><span class="line">		animation.CrossFade(<span class="string">&quot;idle&quot;</span>);</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>{</span><br><span class="line">        GUI.Label(<span class="keyword">new</span> Rect(<span class="number">30</span>,<span class="number">30</span>,<span class="number">200</span>,<span class="number">30</span>),<span class="string">&quot;3D&#x6A21;&#x5F0F;&#x4E0B;&#x7684;&#x865A;&#x62DF;&#x6447;&#x6746;&#x6D4B;&#x8BD5;&quot;</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x6700;&#x7EC8;&#x7A0B;&#x5E8F;&#x7684;&#x8FD0;&#x884C;&#x6548;&#x679C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF0C;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x7684;&#x8FD9;&#x4E2A;&#x865A;&#x62DF;&#x6447;&#x6746;&#x53EF;&#x4EE5;&#x5728;&#x624B;&#x673A;&#x4E0A;&#x5B8C;&#x7F8E;&#x7684;&#x8FD0;&#x884C;&#xFF0C;&#x6B22;&#x996E;&#x5927;&#x5BB6;&#x6765;&#x4E00;&#x8D77;&#x6D4B;&#x8BD5;&#x548C;&#x5410;&#x69FD;&#xFF01;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzixbnf1fsg20nm0d8avw.jpg" alt="2D&#x6A21;&#x5F0F;&#x6F14;&#x793A;" title>
+                </div>
+                <div class="image-caption">2D&#x6A21;&#x5F0F;&#x6F14;&#x793A;</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzix8zemu3g20nf0dbaky.jpg" alt="3D&#x6A21;&#x5F0F;&#x6F14;&#x793A;" title>
+                </div>
+                <div class="image-caption">3D&#x6A21;&#x5F0F;&#x6F14;&#x793A;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x5566;&#xFF01;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x7EE7;&#x7EED;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x559C;&#x6B22;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/821259985/">在Unity3D中加载外部图片的两种方法</a></li><li><a href="https://qinyuanpei.github.io/posts/2799263488/">Unity3D游戏开发之反编译AssetBundle提取游戏资源</a></li><li><a href="https://qinyuanpei.github.io/posts/719322223/">Unity3D游戏开发之路：一周工作总结</a></li><li><a href="https://blog.yuanpei.me/posts/821259985/">在Unity3D中加载外部图片的两种方法</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/331752533/" rel="external">教你一步步实现一个虚拟摇杆</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/331752533/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/331752533/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/uGUI/">uGUI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏开发/">游戏开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟摇杆/">虚拟摇杆</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/331752533/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《教你一步步实现一个虚拟摇杆》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/331752533/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/331752533/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3120185261/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">EasyAR尝鲜系列教程之Hello EasyAR</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3019914405/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Unity3D游戏开发之Unity3D场景编辑器扩展开发</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/331752533/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/331752533/&title=《教你一步步实现一个虚拟摇杆》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目需要决定..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/331752533/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《教你一步步实现一个虚拟摇杆》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/331752533/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/331752533/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/331752533/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

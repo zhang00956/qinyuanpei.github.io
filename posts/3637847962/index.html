@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        使用C#开发HTTP服务器系列之构建RESTful API - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。到目前为止，“使用C#开发HTTP服务器”这个系列系列文章目前已经接近尾声了，虽然我们在服务器功能的完整性(如支持并发、缓存、异步、Htts等)上没有再继续深入下去，可是我们现在已经具备了一个基本的服务器框架啦，所以更多深层次的问题就需要大家根据自己的需要来扩展了，因">
+<meta name="keywords" content="HTTP,服务器,C#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用C#开发HTTP服务器系列之构建RESTful API">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/3637847962/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。到目前为止，“使用C#开发HTTP服务器”这个系列系列文章目前已经接近尾声了，虽然我们在服务器功能的完整性(如支持并发、缓存、异步、Htts等)上没有再继续深入下去，可是我们现在已经具备了一个基本的服务器框架啦，所以更多深层次的问题就需要大家根据自己的需要来扩展了，因">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用C#开发HTTP服务器系列之构建RESTful API">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。到目前为止，“使用C#开发HTTP服务器”这个系列系列文章目前已经接近尾声了，虽然我们在服务器功能的完整性(如支持并发、缓存、异步、Htts等)上没有再继续深入下去，可是我们现在已经具备了一个基本的服务器框架啦，所以更多深层次的问题就需要大家根据自己的需要来扩展了，因">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用C#开发HTTP服务器系列之构建RESTful API</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用C#开发HTTP服务器系列之构建RESTful API</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-06-11T15:01:35.000Z" itemprop="datePublished" class="page-time">
+  2016-06-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#什么是RESTful-API"><span class="post-toc-number">1.</span> <span class="post-toc-text">什么是RESTful API</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#从WebService看REST"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">从WebService看REST</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#从WCF看REST"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">从WCF看REST</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#让REST理解起来简单点"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">让REST理解起来简单点</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#REST的约束条件和原则"><span class="post-toc-number">2.</span> <span class="post-toc-text">REST的约束条件和原则</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#资源-Resources"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">资源(Resources)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#表现形式-Representational"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">表现形式(Representational)</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#如何构建REST风格的API"><span class="post-toc-number">3.</span> <span class="post-toc-text">如何构建REST风格的API</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">4.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-使用C#开发HTTP服务器系列之构建RESTful API" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用C#开发HTTP服务器系列之构建RESTful API</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-06-11 15:01:35" datetime="2016-06-11T15:01:35.000Z" itemprop="datePublished">2016-06-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        28 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;&#x79E6;&#x5143;&#x57F9;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x5230;&#x76EE;&#x524D;&#x4E3A;&#x6B62;&#xFF0C;&#x201C;&#x4F7F;&#x7528;C#&#x5F00;&#x53D1;HTTP&#x670D;&#x52A1;&#x5668;&#x201D;&#x8FD9;&#x4E2A;&#x7CFB;&#x5217;&#x7CFB;&#x5217;&#x6587;&#x7AE0;&#x76EE;&#x524D;&#x5DF2;&#x7ECF;&#x63A5;&#x8FD1;&#x5C3E;&#x58F0;&#x4E86;&#xFF0C;&#x867D;&#x7136;&#x6211;&#x4EEC;&#x5728;&#x670D;&#x52A1;&#x5668;&#x529F;&#x80FD;&#x7684;&#x5B8C;&#x6574;&#x6027;(&#x5982;&#x652F;&#x6301;&#x5E76;&#x53D1;&#x3001;&#x7F13;&#x5B58;&#x3001;&#x5F02;&#x6B65;&#x3001;Htts&#x7B49;)&#x4E0A;&#x6CA1;&#x6709;&#x518D;&#x7EE7;&#x7EED;&#x6DF1;&#x5165;&#x4E0B;&#x53BB;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x4EEC;&#x73B0;&#x5728;&#x5DF2;&#x7ECF;&#x5177;&#x5907;&#x4E86;&#x4E00;&#x4E2A;&#x57FA;&#x672C;&#x7684;&#x670D;&#x52A1;&#x5668;&#x6846;&#x67B6;&#x5566;&#xFF0C;&#x6240;&#x4EE5;&#x66F4;&#x591A;&#x6DF1;&#x5C42;&#x6B21;&#x7684;&#x95EE;&#x9898;&#x5C31;&#x9700;&#x8981;&#x5927;&#x5BB6;&#x6839;&#x636E;&#x81EA;&#x5DF1;&#x7684;&#x9700;&#x8981;&#x6765;&#x6269;&#x5C55;&#x4E86;&#xFF0C;&#x56E0;&#x4E3A;&#x5199;&#x535A;&#x5BA2;&#x66F4;&#x591A;&#x7684;&#x662F;&#x4E00;&#x79CD;&#x201C;&#x8BB0;&#x5F55;-&#x8F93;&#x51FA;-&#x53CD;&#x9988;&#x201D;&#x7684;&#x4E00;&#x4E2A;&#x8FC7;&#x7A0B;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x66F4;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x5728;&#x770B;&#x5B8C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x540E;&#x80FD;&#x5BF9;&#x6211;&#x6709;&#x6240;&#x53CD;&#x9988;&#xFF0C;&#x56E0;&#x4E3A;&#x6284;&#x535A;&#x5BA2;&#x4E0A;&#x7684;&#x4EE3;&#x7801;&#x5B9E;&#x5728;&#x662F;&#x592A;&#x65E0;&#x804A;&#x5566;&#xFF01;&#x597D;&#x4E86;&#xFF0C;&#x4FDD;&#x6301;&#x6109;&#x60A6;&#x7684;&#x5FC3;&#x60C5;&#x6211;&#x4EEC;&#x4E0B;&#x9762;&#x6765;&#x5F15;&#x51FA;&#x4ECA;&#x5929;&#x7684;&#x8BDD;&#x9898;&#xFF1A;&#x6784;&#x5EFA;RESTful API&#x3002;RESTful API&#xFF0C;&#x8FD9;&#x4E2A;&#x6982;&#x5FF5;&#x6216;&#x8BB8;&#x4F60;&#x66FE;&#x7ECF;&#x542C;&#x8BF4;&#x8FC7;&#xFF0C;&#x53EF;&#x80FD;&#x5B83;&#x548C;&#x6211;&#x4EEC;&#x6240;&#x719F;&#x6089;&#x7684;&#x5404;&#x79CD;Web&#x606F;&#x606F;&#x76F8;&#x5173;&#xFF0C;&#x751A;&#x81F3;&#x5728;&#x67D0;&#x79CD;&#x610F;&#x4E49;&#x4E0A;&#x6765;&#x8BB2;&#x5B83;&#x5E76;&#x4E0D;&#x662F;&#x4E00;&#x79CD;&#x65B0;&#x7684;&#x6280;&#x672F;&#xFF0C;&#x800C;&#x8FD9;&#x4E00;&#x5207;&#x7684;&#x4E00;&#x5207;&#x5F52;&#x6839;&#x5230;&#x5E95;&#x90FD;&#x662F;&#x5728;&#x95EE;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x5373;&#x7F51;&#x7AD9;&#x771F;&#x7684;&#x662F;Web&#x7684;&#x552F;&#x4E00;&#x5F62;&#x6001;&#x5417;&#xFF1F;</p>
+<a id="more"></a>
+<h1 id="&#x4EC0;&#x4E48;&#x662F;RESTful-API"><a href="#&#x4EC0;&#x4E48;&#x662F;RESTful-API" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;RESTful API"></a>&#x4EC0;&#x4E48;&#x662F;RESTful API</h1><p>&#x2003;&#x2003;&#x4EC0;&#x4E48;&#x662F;RESTful API?&#x9996;&#x5148;&#xFF0C;REST&#x5373;REpresentational State Transfer&#xFF0C;&#x901A;&#x5E38;&#x88AB;&#x7FFB;&#x8BD1;&#x4E3A;&#x201C;&#x8868;&#x8FF0;&#x6027;&#x72B6;&#x6001;&#x4F20;&#x8F93;&#x201D;&#x6216;&#x8005;&#x201C;&#x8868;&#x8FF0;&#x6027;&#x72B6;&#x6001;&#x8F6C;&#x79FB;&#x201D;&#xFF0C;&#x5B83;&#x6700;&#x65E9;&#x51FA;&#x81EA;Roy Fielding&#x7684;&#x300A;Archltectural Styles and the Design of Network-based Software Arcltechures&#x300B;&#x8FD9;&#x7BC7;&#x8BBA;&#x6587;&#xFF0C;&#x4F5C;&#x8005;&#x66FE;&#x7ECF;&#x53C2;&#x4E0E;HTTP&#x534F;&#x8BAE;&#x548C;Apache Web Server&#x7684;&#x8BBE;&#x8BA1;&#xFF0C;&#x6240;&#x4EE5;REST&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x4E00;&#x4E2A;&#x548C;HTTP&#x534F;&#x8BAE;&#x8054;&#x7CFB;&#x975E;&#x5E38;&#x7D27;&#x5BC6;&#x7684;&#x4E00;&#x79CD;&#x8BBE;&#x8BA1;&#x601D;&#x60F3;&#x3002;&#x800C;&#x4ECE;&#x8FD9;&#x4E2A;&#x9898;&#x76EE;&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x627E;&#x5230;&#x4E09;&#x4E2A;&#x5173;&#x952E;&#x8BCD;&#xFF1A;</p>
+<ul>
+<li>&#x67B6;&#x6784;&#x6837;&#x5F0F;&#x2014;&#x2014;(Archltectural Styles)</li>
+<li>&#x8F6F;&#x4EF6;&#x67B6;&#x6784;&#x2014;&#x2014;(Software Arcltechures)</li>
+<li>&#x7F51;&#x7EDC;&#x4E3A;&#x57FA;&#x7840;&#x2014;&#x2014;(Network-based)</li>
+</ul>
+<p>&#x6240;&#x4EE5;&#x4ECE;&#x6211;&#x4E2A;&#x4EBA;&#x89D2;&#x5EA6;&#x6765;&#x7406;&#x89E3;REST&#xFF0C;&#x6211;&#x66F4;&#x503E;&#x5411;&#x4E8E;&#x5C06;REST&#x7406;&#x89E3;&#x4E3A;&#x4E00;&#x79CD;&#x4EE5;&#x7F51;&#x7EDC;&#x4E3A;&#x57FA;&#x7840;&#x7684;&#x8BBE;&#x8BA1;&#x98CE;&#x683C;&#xFF0C;&#x56E0;&#x6B64;REST&#x4ECE;&#x672C;&#x8D28;&#x4E0A;&#x6765;&#x8BB2;&#x89E3;&#x51B3;&#x7684;&#x662F;&#x5982;&#x4F55;&#x6B63;&#x786E;&#x5730;&#x4F7F;&#x7528;Web&#x6807;&#x51C6;&#x7684;&#x95EE;&#x9898;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x4EE5;&#x56FD;&#x5185;&#x4E3A;&#x4F8B;&#xFF0C;&#x5F53;Google&#x7684;Chrome&#x6D4F;&#x89C8;&#x5668;&#x9009;&#x62E9;&#x4EE5;Chormium&#x8FD9;&#x79CD;&#x5F62;&#x5F0F;&#x5F00;&#x6E90;&#x4EE5;&#x540E;&#xFF0C;&#x56FD;&#x5185;&#x5382;&#x5546;&#x7EB7;&#x7EB7;&#x8868;&#x793A;&#x8DDF;&#x8FDB;&#x4EE5;&#x53CC;&#x6838;&#x4E3A;&#x4E3B;&#x8981;&#x7279;&#x70B9;&#x8FDB;&#x884C;&#x4E86;&#x65B0;&#x4E00;&#x8F6E;&#x7684;&#x4E92;&#x8054;&#x7F51;&#x5165;&#x53E3;&#x4E89;&#x593A;&#x6218;&#xFF0C;&#x867D;&#x7136;&#x4ECE;&#x6280;&#x672F;&#x89D2;&#x5EA6;&#x6765;&#x8BB2;&#x8FD9;&#x8BA9;Chorme&#x6D4F;&#x89C8;&#x5668;&#x66F4;&#x52A0;&#x6D41;&#x884C;&#xFF0C;&#x53EF;&#x6211;&#x4EEC;&#x66F4;&#x5E94;&#x8BE5;&#x6CE8;&#x610F;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x5382;&#x5546;&#x7EB7;&#x7EB7;&#x5EFA;&#x7ACB;&#x8D77;&#x81EA;&#x5DF1;&#x7684;&#x62A4;&#x57CE;&#x6CB3;&#xFF0C;&#x4EE5;&#x727A;&#x7272;Web&#x7684;&#x7EDF;&#x4E00;&#x6027;&#x548C;&#x6807;&#x51C6;&#x6027;&#x6765;&#x6EE1;&#x8DB3;&#x5176;&#x5546;&#x4E1A;&#x7ADE;&#x4E89;&#x7684;&#x9700;&#x8981;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x770B;&#x5230;&#x4E86;&#x5373;&#x4F7F;&#x5728;HTML5&#x5B9A;&#x7A3F;&#x4EE5;&#x540E;&#xFF0C;&#x5728;&#x4E0D;&#x540C;&#x6D4F;&#x89C8;&#x5668;&#x5BF9;HTML5&#x7684;&#x652F;&#x6301;&#x533A;&#x522B;&#x4F9D;&#x7136;&#x975E;&#x5E38;&#x5927;&#x3002;&#x5FAE;&#x4FE1;&#x5E26;&#x52A8;&#x4E86;&#x5927;&#x91CF;&#x53EF;&#x4EE5;&#x5728;&#x670B;&#x53CB;&#x5708;&#x5185;&#x6D41;&#x4F20;&#x7684;&#x201C;H5&#x201D;&#x5A92;&#x4ECB;&#xFF0C;&#x53EF;&#x662F;&#x8FD9;&#x4E2A;&#x4E1C;&#x897F;&#x4ECE;&#x6765;&#x5C31;&#x4E0D;&#x662F;HTML5&#xFF0C;&#x800C;&#x5FAE;&#x4FE1;&#x5185;&#x7F6E;&#x7684;QQ&#x6D4F;&#x89C8;&#x5668;&#x5185;&#x6838;&#x66F4;&#x662F;&#x4EE5;&#x5404;&#x79CD;&#x4E0D;&#x517C;&#x5BB9;&#x8BA9;&#x5F00;&#x53D1;&#x8005;&#x4E3A;&#x6B64;&#x6B9A;&#x7CBE;&#x7AED;&#x8651;&#xFF0C;&#x6240;&#x4EE5;&#x4F60;&#x95EE;&#x6211;REST&#x662F;&#x4EC0;&#x4E48;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4F1A;&#x56DE;&#x7B54;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x98CE;&#x683C;&#x4E0A;&#x7EDF;&#x4E00;&#x7684;Web API&#xFF0C;&#x800C;&#x6839;&#x636E;&#x767E;&#x79D1;&#x4E2D;&#x7684;&#x63CF;&#x8FF0;REST&#x901A;&#x5E38;&#x88AB;&#x8FD9;&#x6837;&#x5B9A;&#x4E49;&#xFF1A;</p>
+<ul>
+<li>REST&#x662F;&#x4E00;&#x7EC4;&#x67B6;&#x6784;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#x548C;&#x539F;&#x5219;&#xFF0C;&#x800C;&#x6EE1;&#x8DB3;&#x8FD9;&#x4E9B;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#x548C;&#x539F;&#x5219;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5C31;&#x662F;RESTful&#x3002;</li>
+<li>REST&#x7684;&#x76EE;&#x6807;&#x662F;&#x6784;&#x5EFA;&#x53EF;&#x6269;&#x5C55;&#x7684;Web Service&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x66F4;&#x7B80;&#x5355;&#x7684;SOAP&#x534F;&#x8BAE;&#x4EE5;&#x53CA;&#x4EE5;WSDL&#x4E3A;&#x57FA;&#x7840;&#x7684;WebService&#x7684;&#x66FF;&#x4EE3;&#x3002;</li>
+<li>REST&#x91C7;&#x7528;&#x7684;&#x662F;HTTP&#x534F;&#x8BAE;&#x5E76;&#x901A;&#x8FC7;HTTP&#x4E2D;&#x7684;GET&#x3001;POST&#x3001;PUT&#x3001;DELETE&#x7B49;&#x52A8;&#x8BCD;&#x6536;&#x53D1;&#x6570;&#x636E;&#x3002;</li>
+<li>REST&#x5E0C;&#x671B;&#x901A;&#x8FC7;HTTP&#x6765;&#x5B8C;&#x6210;&#x5BF9;&#x6570;&#x636E;&#x7684;&#x5143;&#x64CD;&#x4F5C;&#xFF0C;&#x5373;&#x4F20;&#x7EDF;&#x7684;CRUD(Create&#x3001;Read&#x3001;Update&#x3001;Delete)&#x5206;&#x522B;&#x5BF9;&#x5E94;GET&#x3001;POST&#x3001;PUT&#x3001;DELETE&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x7EDF;&#x4E00;&#x4E86;&#x6570;&#x636E;&#x64CD;&#x4F5C;&#x7684;&#x63A5;&#x53E3;&#xFF0C;&#x5B9E;&#x73B0;&#x5728;&#x4E0D;&#x540C;&#x5E73;&#x53F0;&#x4E0A;&#x63D0;&#x4F9B;&#x4E00;&#x5957;&#x76F8;&#x540C;&#x7684;&#x670D;&#x52A1;&#x3002;</li>
+<li>REST&#x662F;&#x4E00;&#x79CD;&#x9762;&#x5411;&#x670D;&#x52A1;&#x7684;&#x3001;&#x5206;&#x5E03;&#x5F0F;&#x7684;API&#x8BBE;&#x8BA1;&#x98CE;&#x683C;&#x3002;</li>
+</ul>
+<h2 id="&#x4ECE;WebService&#x770B;REST"><a href="#&#x4ECE;WebService&#x770B;REST" class="headerlink" title="&#x4ECE;WebService&#x770B;REST"></a>&#x4ECE;WebService&#x770B;REST</h2><p>&#x2003;&#x2003;&#x5728;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x63D0;&#x5230;&#x4E86;SOAP&#x3001;WSDL&#x3001;RPC&#x7B49;&#x6982;&#x5FF5;&#xFF0C;&#x8FD9;&#x662F;&#x56E0;&#x4E3A;&#x4ECE;&#x67D0;&#x79CD;&#x610F;&#x4E49;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;REST&#x662F;&#x8FD9;&#x4E9B;&#x6982;&#x5FF5;&#x7684;&#x4E00;&#x79CD;&#x5EF6;&#x4F38;&#x3002;&#x4EE5;&#x6211;&#x4EEC;&#x719F;&#x6089;&#x7684;WebService&#x4E3A;&#x4F8B;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x4ECE;&#x7F51;&#x7EDC;&#x4E0A;&#x83B7;&#x53D6;&#x5929;&#x6C14;&#x9884;&#x62A5;&#x4FE1;&#x606F;&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x91C7;&#x53D6;&#x4E24;&#x79CD;&#x601D;&#x8DEF;&#xFF0C;&#x7B2C;&#x4E00;&#x79CD;&#x662F;&#x901A;&#x8FC7;&#x6293;&#x5305;&#x5206;&#x6790;&#x76F8;&#x5173;&#x5929;&#x6C14;&#x9884;&#x62A5;&#x7F51;&#x7AD9;&#x6765;&#x83B7;&#x53D6;&#x4FE1;&#x606F;&#xFF0C;&#x7B2C;&#x4E8C;&#x79CD;&#x662F;&#x901A;&#x8FC7;&#x8C03;&#x7528;&#x4E92;&#x8054;&#x7F51;&#x4E0A;&#x63D0;&#x4F9B;&#x7684;WebService&#x6765;&#x83B7;&#x5F97;&#x4FE1;&#x606F;&#x3002;&#x867D;&#x7136;&#x8FD9;&#x4E24;&#x79CD;&#x65B9;&#x6CD5;&#x5728;&#x6280;&#x672F;&#x4E0A;&#x5177;&#x6709;&#x76F8;&#x4F3C;&#x6027;&#x548C;&#x53EF;&#x884C;&#x6027;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x89C9;&#x5F97;&#x5BF9;&#x5F00;&#x53D1;&#x8005;&#x6765;&#x8BB2;&#xFF0C;&#x9664;&#x4E86;&#x6280;&#x672F;&#x5C42;&#x9762;&#x7684;&#x7A81;&#x7834;&#x4EE5;&#x5916;&#x5728;&#x9053;&#x5FB7;&#x5C42;&#x9762;&#x7684;&#x575A;&#x5B88;&#x66F4;&#x4E3A;&#x91CD;&#x8981;&#xFF0C;&#x6211;&#x4EEC;&#x8BF4;&#x201D;&#x4EBA;&#x65E0;&#x5FB7;&#x4E0D;&#x7ACB;&#xFF0C;&#x56FD;&#x65E0;&#x5FB7;&#x4E0D;&#x5174;&#x201D;&#x6B63;&#x662F;&#x5982;&#x6B64;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5F3A;&#x70C8;&#x63A8;&#x8350;&#x7B2C;&#x4E8C;&#x79CD;&#x601D;&#x8DEF;&#x3002;WebService&#x80FD;&#x591F;&#x8BA9;&#x6211;&#x4EEC;&#x50CF;&#x8C03;&#x7528;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x4E00;&#x6837;&#x83B7;&#x53D6;&#x4FE1;&#x606F;&#xFF0C;&#x90A3;&#x4E48;&#x5BF9;&#x6211;&#x4EEC;&#x6765;&#x8BB2;WebService&#x5230;&#x5E95;&#x662F;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;</p>
+<p>&#x2003;&#x2003;WebService&#x9996;&#x5148;&#x662F;&#x4E00;&#x79CD;&#x670D;&#x52A1;&#xFF0C;&#x5B83;&#x4E0D;&#x9700;&#x8981;&#x5BA2;&#x6237;&#x7AEF;&#x63D0;&#x4F9B;&#x989D;&#x5916;&#x7684;&#x8F6F;&#x4EF6;&#x652F;&#x6301;&#xFF0C;&#x53EA;&#x8981;&#x5BA2;&#x6237;&#x7AEF;&#x652F;&#x6301;HTTP&#x534F;&#x8BAE;&#x548C;XML&#x8FD9;&#x6837;&#x4E24;&#x4E2A;&#x7279;&#x6027;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;&#x800C;&#x5BF9;WebService&#x81EA;&#x8EAB;&#x6765;&#x8BB2;&#xFF0C;&#x5B83;&#x672C;&#x8EAB;&#x5C31;&#x662F;&#x4E00;&#x79CD;&#x81EA;&#x6211;&#x63CF;&#x8FF0;&#x578B;&#x7684;&#x8BBE;&#x8BA1;&#xFF0C;&#x6240;&#x4EE5;&#x670D;&#x52A1;&#x7AEF;&#x548C;&#x5BA2;&#x6237;&#x7AEF;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5B83;&#x6765;&#x4E86;&#x89E3;&#x54CD;&#x5E94;&#x548C;&#x8BF7;&#x6C42;&#x7684;&#x5185;&#x5BB9;&#x53CA;&#x683C;&#x5F0F;&#xFF0C;&#x56E0;&#x4E3A;XML&#x662F;&#x4E00;&#x79CD;&#x5E73;&#x53F0;&#x65E0;&#x5173;&#x3001;&#x8BED;&#x8A00;&#x65E0;&#x5173;&#x7684;&#x6587;&#x6863;&#x7ED3;&#x6784;&#xFF0C;&#x6240;&#x4EE5;WebService&#x662F;&#x4E00;&#x79CD;&#x53EF;&#x4EE5;&#x8DE8;&#x5E73;&#x53F0;&#x7684;Web API&#x3002;WebService&#x80FD;&#x591F;&#x8BA9;&#x5BA2;&#x6237;&#x7AEF;&#x50CF;&#x8C03;&#x7528;&#x672C;&#x5730;&#x4EE3;&#x7801;&#x4E00;&#x6837;&#x8C03;&#x7528;&#x670D;&#x52A1;&#x7AEF;&#x4EE3;&#x7801;&#xFF0C;&#x6240;&#x4EE5;WebService&#x662F;&#x4E00;&#x79CD;&#x5206;&#x5E03;&#x5F0F;&#x8BA1;&#x7B97;&#x7684;Web&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7EC4;&#x4EF6;&#x3002;&#x6211;&#x4EEC;&#x5BF9;WebService&#x4E0B;&#x4E86;&#x5982;&#x6B64;&#x591A;&#x7684;&#x5B9A;&#x4E49;&#xFF0C;&#x5176;&#x5B9E;&#x6838;&#x5FC3;&#x662F;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;&#x6838;&#x5FC3;&#x662F;WebService&#x662F;&#x4E00;&#x79CD;&#x57FA;&#x4E8E;HTTP&#x534F;&#x8BAE;&#x548C;XML&#x7684;Web API&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x518D;&#x6765;&#x8BF4;&#x8BF4;&#x4EC0;&#x4E48;&#x662F;SOAP&#x548C;WSDL&#x3002;&#x4E8B;&#x5B9E;&#x4E0A;&#xFF0C;&#x8FD9;&#x4E9B;&#x6982;&#x5FF5;&#x542C;&#x8D77;&#x6765;&#x90FD;&#x975E;&#x5E38;&#x5730;&#x5B66;&#x672F;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x4FDD;&#x8BC1;&#x8FD9;&#x5BF9;&#x6211;&#x4EEC;&#x7406;&#x89E3;REST&#x4F1A;&#x6709;&#x6240;&#x5E2E;&#x52A9;&#x3002;&#x9996;&#x5148;&#xFF0C;SOAP&#x5373;&#x7B80;&#x5355;&#x8BBF;&#x95EE;&#x5BF9;&#x8C61;&#x534F;&#x8BAE;(Simple Object Access Protocol)&#xFF0C;&#x542C;&#x8D77;&#x6765;&#x611F;&#x89C9;&#x975E;&#x5E38;&#x9AD8;&#x5927;&#x4E0A;&#x5417;&#xFF1F;&#x7136;&#x800C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x201C;&#x552F;&#x4E00;&#x6CA1;&#x6709;&#x53D1;&#x660E;&#x4EFB;&#x4F55;&#x65B0;&#x6280;&#x672F;&#x7684;&#x6280;&#x672F;&#x201D;&#x3002;&#x56E0;&#x4E3A;&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x8BBF;&#x95EE;Web&#x670D;&#x52A1;&#x7684;&#x534F;&#x8BAE;&#xFF0C;&#x5982;&#x540C;HTTP&#x534F;&#x8BAE;&#x5B9A;&#x4E49;&#x4E86;&#x8BBF;&#x95EE;Web&#x7684;&#x534F;&#x8BAE;&#x4E00;&#x6837;&#xFF0C;SOAP&#x5728;HTTP&#x534F;&#x8BAE;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#xFF0C;&#x91C7;&#x7528;XML&#x5B9A;&#x4E49;&#x4E86;&#x6D88;&#x606F;&#x534F;&#x8BAE;&#xFF0C;&#x6240;&#x4EE5;SOAP&#x672C;&#x8D28;&#x4E0A;&#x662F;&#x4F7F;&#x7528;XML&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#x7684;HTTP&#x534F;&#x8BAE;&#xFF0C;&#x8FD9;&#x6837;&#x542C;&#x8D77;&#x6765;&#x662F;&#x4E0D;&#x662F;&#x975E;&#x5E38;&#x719F;&#x6089;&#x5566;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x719F;&#x6089;&#x7684;AJAX&#x540C;&#x6837;&#x662F;&#x91C7;&#x7528;XML&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#xFF0C;&#x6240;&#x4E0D;&#x540C;&#x7684;&#x662F;AJAX&#x662F;&#x8FD0;&#x884C;&#x5728;&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x7684;&#x4E14;&#x5176;&#x4E3B;&#x8981;&#x76EE;&#x7684;&#x662F;&#x5B9E;&#x73B0;&#x9875;&#x9762;&#x7684;&#x65E0;&#x5237;&#x65B0;&#x66F4;&#x65B0;&#x3002;&#x9700;&#x8981;&#x8BF4;&#x660E;&#x7684;&#x662F;&#xFF0C;&#x867D;&#x7136;SOAP&#x7684;&#x57FA;&#x7840;HTTP&#x534F;&#x8BAE;&#x662F;&#x57FA;&#x4E8E;TCP/IP&#x534F;&#x8BAE;&#x7684;&#xFF0C;&#x53EF;&#x662F;SOAP&#x662F;&#x5177;&#x6709;&#x7A7F;&#x900F;&#x9632;&#x706B;&#x5899;&#x7684;&#x80FD;&#x529B;&#x7684;&#xFF0C;&#x5BF9;&#x6B64;&#x6709;&#x5174;&#x8DA3;&#x7684;&#x670B;&#x53CB;&#x53EF;&#x4EE5;&#x81EA;&#x884C;&#x4E86;&#x89E3;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x56E0;&#x4E3A;&#x7BC7;&#x5E45;&#x6709;&#x9650;&#x6240;&#x4EE5;&#x5C31;&#x4E0D;&#x505A;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#x5566;&#xFF01;</p>
+<p>&#x2003;&#x2003;&#x63A5;&#x4E0B;&#x6765;&#xFF0C;WSDL&#x5373;Web&#x670D;&#x52A1;&#x63CF;&#x8FF0;&#x8BED;&#x8A00;(Web Service Description Language)&#xFF0C;&#x6211;&#x5BF9;&#x5B83;&#x7684;&#x7406;&#x89E3;&#x662F;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;WebService&#x7684;&#x6587;&#x6863;&#xFF0C;&#x56E0;&#x4E3A;&#x4ECE;&#x5B9A;&#x4E49;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x57FA;&#x4E8E;XML&#x7684;&#x7528;&#x4E8E;&#x63CF;&#x8FF0;Web&#x670D;&#x52A1;&#x4EE5;&#x53CA;&#x5982;&#x4F55;&#x8BBF;&#x95EE;Web&#x670D;&#x52A1;&#x7684;&#x8BED;&#x8A00;&#xFF0C;Web&#x670D;&#x52A1;&#x63D0;&#x4F9B;&#x8005;&#x901A;&#x8FC7;&#x5B83;&#x53EF;&#x4EE5;&#x544A;&#x77E5;&#x4F7F;&#x7528;&#x8005;&#x5F53;&#x524D;Web&#x670D;&#x52A1;&#x8BBF;&#x95EE;&#x7684;&#x89C4;&#x8303;&#x548C;&#x8BF4;&#x660E;&#xFF0C;&#x800C;Web&#x4F7F;&#x7528;&#x8005;&#x901A;&#x8FC7;&#x5B83;&#x53EF;&#x4EE5;&#x5728;&#x6EE1;&#x8DB3;&#x5E73;&#x53F0;&#x65E0;&#x5173;&#x6027;&#x548C;&#x8BED;&#x8A00;&#x65E0;&#x5173;&#x6027;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x5FEB;&#x901F;&#x8FDB;&#x884C;&#x5F00;&#x53D1;&#xFF0C;&#x6240;&#x4EE5;&#x7EFC;&#x5408;&#x4E0B;&#x6765;&#x770B;&#xFF0C;WebService&#x548C;REST&#x90FD;&#x80FD;&#x4E3A;&#x6211;&#x4EEC;&#x63D0;&#x4F9B;&#x7C7B;&#x4F3C;&#x5730;&#x670D;&#x52A1;&#x9700;&#x6C42;&#xFF0C;&#x5173;&#x4E8E;&#x4E24;&#x8005;&#x6216;&#x8005;&#x8BF4;REST&#x80FD;&#x4E3A;&#x6211;&#x4EEC;&#x5E26;&#x6765;&#x54EA;&#x4E9B;&#x4E0D;&#x4E00;&#x6837;&#x7684;&#x4F53;&#x9A8C;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x5728;&#x672C;&#x6587;&#x7684;&#x7B2C;&#x4E8C;&#x90E8;&#x5206;&#x8BF4;&#x660E;&#x3002;</p>
+<h2 id="&#x4ECE;WCF&#x770B;REST"><a href="#&#x4ECE;WCF&#x770B;REST" class="headerlink" title="&#x4ECE;WCF&#x770B;REST"></a>&#x4ECE;WCF&#x770B;REST</h2><p>&#x2003;&#x2003;&#x6211;&#x89C9;&#x5F97;&#x5BF9;&#x6280;&#x672F;&#x800C;&#x8A00;&#xFF0C;&#x6211;&#x4EEC;&#x6BCF;&#x4E2A;&#x4EBA;&#x90FD;&#x5E94;&#x8BE5;&#x8BD5;&#x56FE;&#x53BB;&#x53D1;&#x73B0;&#x6280;&#x672F;&#x80CC;&#x540E;&#x771F;&#x6B63;&#x7F8E;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x5C31;&#x50CF;&#x6211;&#x4EEC;&#x5728;&#x4E86;&#x89E3;&#x4E86;WebService&#xFF0C;&#x5E76;&#x53D1;&#x73B0;&#x5B83;&#x548C;REST&#x4ECE;&#x672C;&#x8D28;&#x4E0A;&#x6765;&#x8BB2;&#x90FD;&#x662F;&#x4E00;&#x4E2A;&#x4E1C;&#x897F;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x5E94;&#x8BE5;&#x76F4;&#x63A5;&#x53BB;&#x4E86;&#x89E3;REST&#x7ED9;&#x6211;&#x4EEC;&#x5E26;&#x6765;&#x4E86;&#x54EA;&#x4E9B;&#x4E0D;&#x4E00;&#x6837;&#x7684;&#x4E1C;&#x897F;&#x3002;&#x53EF;&#x662F;&#x4E8B;&#x5B9E;&#x4E0A;&#x56E0;&#x4E3A;&#x5F00;&#x53D1;&#x8005;&#x4F7F;&#x7528;&#x7684;&#x5E73;&#x53F0;&#x548C;&#x8BED;&#x8A00;&#x7684;&#x591A;&#x6837;&#x6027;&#xFF0C;&#x8BA9;&#x5F00;&#x53D1;&#x8005;&#x518D;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E2D;&#x4E0D;&#x5F97;&#x4E0D;&#x53BB;&#x5BF9;&#x5E73;&#x53F0;&#x6216;&#x8005;&#x8BED;&#x8A00;&#x9020;&#x6210;&#x4F9D;&#x8D56;&#xFF0C;&#x800C;&#x5F53;&#x6BCF;&#x4E2A;&#x5382;&#x5546;&#x90FD;&#x8BD5;&#x56FE;&#x5EFA;&#x7ACB;&#x4E00;&#x5957;&#x81EA;&#x5DF1;&#x7684;&#x6807;&#x51C6;&#x6216;&#x8005;&#x6846;&#x67B6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5B83;&#x5BF9;&#x5F00;&#x53D1;&#x8005;&#x9020;&#x6210;&#x7684;&#x8FD9;&#x79CD;&#x4F9D;&#x8D56;&#x611F;&#x5C31;&#x8D8A;&#x53D1;&#x5730;&#x5F3A;&#x70C8;&#x3002;&#x867D;&#x7136;&#x6211;&#x76EE;&#x524D;&#x7684;&#x5DE5;&#x4F5C;&#x662F;&#x505A;.NET&#x5F00;&#x53D1;&#xFF0C;&#x53EF;&#x662F;&#x4E8B;&#x5B9E;&#x4E0A;&#x6211;&#x6700;&#x559C;&#x6B22;&#x7684;&#x53EA;&#x6709;&#x5FAE;&#x8F6F;&#x7684;C#&#x8BED;&#x8A00;&#x800C;&#x5DF2;&#x3002;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;&#x4E0B;WCF&#xFF0C;WCF&#x5373;Windows Communication Foundation&#x662F;&#x7531;&#x5FAE;&#x8F6F;&#x53D1;&#x5C55;&#x7684;&#x4E00;&#x7EC4;&#x6570;&#x636E;&#x901A;&#x4FE1;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x63A5;&#x53E3;&#xFF0C;&#x5B83;&#x662F;.NET&#x6846;&#x67B6;&#x7684;&#x4E00;&#x90E8;&#x5206;&#xFF0C;&#x4ECE;.NET Framework 3.0&#x5F00;&#x59CB;&#x5F15;&#x5165;&#xFF0C;&#x5176;&#x8BBE;&#x8BA1;&#x76EE;&#x6807;&#x662F;&#x6574;&#x5408;&#x4E0D;&#x540C;&#x8FDB;&#x7A0B;&#x7684;&#x901A;&#x4FE1;&#x3001;&#x4E0D;&#x540C;&#x7CFB;&#x7EDF;&#x95F4;&#x7684;&#x901A;&#x4FE1;&#x3001;C/S&#x67B6;&#x6784;&#x901A;&#x4FE1;&#x7B49;&#x7B49;&#x901A;&#x4FE1;&#x76EE;&#x6807;&#xFF0C;&#x6240;&#x4EE5;&#x5BF9;.NET&#x5F00;&#x53D1;&#x8005;&#x800C;&#x8A00;&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x201C;&#x5168;&#x5BB6;&#x6876;&#x201D;&#x822C;&#x7684;&#x5B58;&#x5728;&#xFF0C;&#x6211;&#x4EEC;&#x5230;&#x5E95;&#x9700;&#x8981;&#x201C;&#x5C0F;&#x800C;&#x7F8E;&#x201D;&#x8FD8;&#x662F;&#x201C;&#x5927;&#x800C;&#x5168;&#x201D;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x56DE;&#x5230;&#x6211;&#x4EEC;&#x5173;&#x6CE8;&#x672C;&#x8EAB;&#xFF0C;WCF&#x6574;&#x5408;&#x4E86;Web&#x670D;&#x52A1;&#x3001;.NET Remoting&#x3001;&#x6D88;&#x606F;&#x961F;&#x5217;&#x548C;Enterprise Services&#x7684;&#x529F;&#x80FD;&#x5E76;&#x5C06;&#x5176;&#x6574;&#x5408;&#x5728;Visual Studio&#x4E2D;&#xFF0C;&#x663E;&#x7136;&#x5BF9;&#x6211;&#x4EEC;&#x800C;&#x8A00;&#xFF0C;&#x6211;&#x4EEC;&#x5173;&#x6CE8;&#x7684;&#x6838;&#x5FC3;&#x4F9D;&#x7136;&#x5728;Web&#x670D;&#x52A1;&#x3002;&#x9996;&#x5148;&#xFF0C;&#x6211;&#x4EEC;&#x8981;&#x660E;&#x786E;&#x7684;&#x662F;WebService&#x8FD9;&#x4E2A;&#x662F;&#x884C;&#x4E1A;&#x6807;&#x51C6;&#xFF0C;&#x5373;WebService&#x89C4;&#x8303;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x548C;&#x5E73;&#x53F0;&#x3001;&#x548C;&#x8BED;&#x8A00;&#x65E0;&#x5173;&#x7684;&#x6807;&#x51C6;&#xFF0C;&#x800C;&#x5FAE;&#x8F6F;&#x7684;ASP.NET WebService&#x662F;ASP.NET&#x6846;&#x67B6;&#x7684;&#x7EC4;&#x6210;&#x90E8;&#x5206;&#xFF0C;&#x6211;&#x4E0D;&#x559C;&#x6B22;ASP.NET&#x7684;&#x4E00;&#x4E2A;&#x539F;&#x56E0;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x5E38;&#x5E38;&#x8BA4;&#x4E3A;&#x7F51;&#x7AD9;&#x662F;Web&#x6280;&#x672F;&#x7684;&#x6838;&#x5FC3;&#x800C;Web&#x670D;&#x52A1;&#x4E0D;&#x662F;&#xFF0C;&#x66F4;&#x79BB;&#x8C31;&#x7684;&#x662F;&#x6211;&#x4EEC;&#x8BA4;&#x4E3A;&#x5F00;&#x53D1;&#x4E00;&#x4E2A;Web&#x670D;&#x52A1;&#x5668;&#x6216;&#x8005;&#x4E00;&#x4E2A;WebService&#x4E00;&#x5B9A;&#x8981;&#x91C7;&#x7528;XXX&#x6846;&#x67B6;&#xFF0C;&#x867D;&#x7136;&#x4F7F;&#x7528;Web&#x6846;&#x67B6;&#x3001;&#x5199;&#x4E1A;&#x52A1;&#x4EE3;&#x7801;&#x90FD;&#x662F;&#x6280;&#x672F;&#x80FD;&#x529B;&#x7684;&#x4E00;&#x79CD;&#x4F53;&#x73B0;&#xFF0C;&#x53EF;&#x662F;&#x4E0D;&#x6C42;&#x751A;&#x89E3;&#x771F;&#x7684;&#x65E0;&#x6CD5;&#x8BA9;&#x6211;&#x5B89;&#x5FC3;&#x3002;&#x90A3;&#x4E48;WCF&#x5462;&#xFF1F;&#x5176;&#x5B9E;WCF&#x672C;&#x8D28;&#x4E0A;&#x662F;&#x5C06;ASP.NET WebService&#x548C;&#x5FAE;&#x8F6F;&#x7684;&#x76F8;&#x5173;&#x6280;&#x672F;&#x5982;Enterprise Services(COM+)&#x3001;.NET Remoting&#x3001;MSMQ&#x6D88;&#x606F;&#x961F;&#x5217;&#x7B49;&#x8FDB;&#x884C;&#x4E86;&#x6574;&#x5408;&#xFF0C;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x6574;&#x5408;&#x5728;&#x4E00;&#x8D77;&#x5462;&#xFF1F;&#x56E0;&#x4E3A;&#x4ECE;&#x5B8F;&#x89C2;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x8DE8;&#x8FDB;&#x7A0B;&#x3001;&#x8DE8;&#x673A;&#x5668;&#x3001;&#x8DE8;&#x7F51;&#x7EDC;&#x90FD;&#x5C5E;&#x4E8E;&#x901A;&#x4FE1;&#x7684;&#x8303;&#x7574;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x73B0;&#x5728;&#x56DE;&#x8FC7;&#x5934;&#x6765;&#x770B;&#xFF0C;&#x8FD9;&#x4E9B;&#x4E1C;&#x897F;&#x73A9;&#x6765;&#x73A9;&#x53BB;&#x6709;&#x4EC0;&#x4E48;&#x7A00;&#x5947;&#xFF0C;&#x5F52;&#x6839;&#x5230;&#x5E95;&#x8FD8;&#x4E0D;&#x662F;HTTP&#x534F;&#x8BAE;&#x554A;&#xFF0C;&#x6211;&#x4EEC;&#x8FFD;&#x6C42;&#x65B0;&#x7684;&#x6280;&#x672F;&#x5E76;&#x6CA1;&#x6709;&#x9519;&#xFF0C;&#x9519;&#x8BEF;&#x7684;&#x662F;&#x6211;&#x4EEC;&#x5C06;&#x5E0C;&#x671B;&#x5BC4;&#x6258;&#x5728;&#x6280;&#x672F;&#x672C;&#x8EAB;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x6211;&#x4EEC;&#x81EA;&#x5DF1;&#x3002;</p>
+<h2 id="&#x8BA9;REST&#x7406;&#x89E3;&#x8D77;&#x6765;&#x7B80;&#x5355;&#x70B9;"><a href="#&#x8BA9;REST&#x7406;&#x89E3;&#x8D77;&#x6765;&#x7B80;&#x5355;&#x70B9;" class="headerlink" title="&#x8BA9;REST&#x7406;&#x89E3;&#x8D77;&#x6765;&#x7B80;&#x5355;&#x70B9;"></a>&#x8BA9;REST&#x7406;&#x89E3;&#x8D77;&#x6765;&#x7B80;&#x5355;&#x70B9;</h2><p>&#x2003;&#x2003;&#x6211;&#x4EEC;&#x4ECE;&#x6700;&#x521D;&#x63A5;&#x89E6;&#x5230;REST&#x7684;&#x4E91;&#x91CC;&#x96FE;&#x91CC;&#xFF0C;&#x5230;&#x7FFB;&#x6765;&#x8986;&#x53BB;&#x5730;&#x8BB2;&#x8FF0;WebService&#xFF0C;&#x5176;&#x5B9E;&#x6211;&#x7684;&#x76EE;&#x7684;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#xFF0C;&#x90A3;&#x5C31;&#x662F;&#x544A;&#x8BC9;&#x5927;&#x5BB6;&#xFF0C;Web&#x6280;&#x672F;&#x53D1;&#x5C55;&#x5230;&#x4ECA;&#x5929;&#xFF0C;&#x4ECE;&#x672C;&#x8D28;&#x4E0A;&#x6765;&#x5C06;&#x53D8;&#x5316;&#x5E76;&#x6CA1;&#x6709;&#x592A;&#x5927;&#xFF0C;&#x53EF;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x4F1A;&#x770B;&#x5230;&#x524D;&#x7AEF;&#x9886;&#x57DF;&#x6BCF;&#x9694;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#x5C31;&#x4F1A;&#x6709;&#x65B0;&#x7684;&#x6846;&#x67B6;&#x4EA7;&#x751F;&#x5462;&#xFF1F;&#x56DE;&#x7B54;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x975E;&#x5E38;&#x7B80;&#x5355;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x6846;&#x67B6;&#x7684;&#x63D0;&#x51FA;&#x90FD;&#x662F;&#x56E0;&#x4E3A;&#x67D0;&#x79CD;&#x4E1A;&#x52A1;&#x7684;&#x80CC;&#x666F;&#x9700;&#x8981;&#xFF0C;&#x800C;&#x6240;&#x6709;&#x7684;&#x4E1A;&#x52A1;&#x65E0;&#x4E00;&#x4E0D;&#x662F;&#x56E0;&#x4E3A;&#x4EBA;&#x7C7B;&#x589E;&#x52A0;&#x4E86;&#x5176;&#x590D;&#x6742;&#x6027;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;&#x4F60;&#x4E0B;&#x6765;&#x770B;&#x5F85;&#x8FD9;&#x4E00;&#x5207;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x53D1;&#x73B0;&#x4ECE;WebService&#x5230;REST&#x5176;&#x5B9E;&#x53D8;&#x5316;&#x90FD;&#x662F;&#x975E;&#x5E38;&#x7EC6;&#x5FAE;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x4E0E;&#x5176;&#x5728;&#x65B0;&#x6280;&#x672F;&#x91CC;&#x75B2;&#x4E8E;&#x5954;&#x547D;&#x4E0D;&#x5982;&#x9759;&#x4E0B;&#x5FC3;&#x6765;&#x5B66;&#x4E60;&#x597D;HTML&#x3001;CSS&#x548C;JavaScript&#xFF0C;&#x867D;&#x7136;JavaScript&#x662F;&#x4E00;&#x4E2A;&#x5783;&#x573E;&#x7684;&#x8BED;&#x8A00;&#xFF0C;&#x53EF;&#x662F;&#x6709;&#x65F6;&#x5019;&#x5B83;&#x4F1A;&#x8BA9;&#x6211;&#x4EEC;&#x8FD9;&#x4E9B;&#x540E;&#x7AEF;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x8005;&#x90FD;&#x61F5;&#x903C;&#x5462;&#xFF0C;&#x54C8;&#x54C8;&#xFF0C;&#x6240;&#x4EE5;&#x73B0;&#x5728;&#x662F;&#x65F6;&#x5019;&#x7ED9;REST&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x5B9A;&#x4E49;&#xFF1A;</p>
+<blockquote>
+<p>REST&#x662F;&#x4E00;&#x79CD;&#x4F7F;&#x7528;URL&#x6765;&#x5B9A;&#x4F4D;&#x8D44;&#x6E90;&#xFF0C;&#x4F7F;&#x7528;HTTP&#x8BF7;&#x6C42;&#x63CF;&#x8FF0;&#x64CD;&#x4F5C;&#x7684;Web&#x670D;&#x52A1;&#x89C4;&#x8303;&#x3002;</p>
+</blockquote>
+<h1 id="REST&#x7684;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#x548C;&#x539F;&#x5219;"><a href="#REST&#x7684;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#x548C;&#x539F;&#x5219;" class="headerlink" title="REST&#x7684;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#x548C;&#x539F;&#x5219;"></a>REST&#x7684;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#x548C;&#x539F;&#x5219;</h1><p>&#x2003;&#x2003;&#x6211;&#x4EEC;&#x8BF4;REST&#x672C;&#x8D28;&#x4E0A;&#x662F;Web&#x670D;&#x52A1;&#x7684;&#x4E00;&#x79CD;&#x89C4;&#x8303;&#xFF0C;&#x4E00;&#x79CD;&#x601D;&#x60F3;&#xFF0C;&#x6240;&#x4EE5;&#x5355;&#x72EC;&#x6765;&#x8BF4;REST&#x662F;&#x6CA1;&#x6709;&#x610F;&#x4E49;&#x7684;&#xFF0C;&#x8FD9;&#x610F;&#x5473;&#x7740;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x8981;&#x6DF1;&#x5165;&#x4E86;&#x89E3;REST&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x4E86;&#x89E3;&#x5B83;&#x7684;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#x548C;&#x539F;&#x5219;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x5C31;&#x6765;&#x8BF4;&#x8BF4;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x3002;</p>
+<h2 id="&#x8D44;&#x6E90;-Resources"><a href="#&#x8D44;&#x6E90;-Resources" class="headerlink" title="&#x8D44;&#x6E90;(Resources)"></a>&#x8D44;&#x6E90;(Resources)</h2><p>&#x2003;&#x2003;&#x5728;REST&#x4E2D;&#x8D44;&#x6E90;&#x662F;&#x6574;&#x4E2A;&#x67B6;&#x6784;&#x6216;&#x8005;&#x8BF4;&#x6574;&#x4E2A;&#x7F51;&#x7EDC;&#x5904;&#x7406;&#x7684;&#x6838;&#x5FC3;&#xFF0C;&#x90A3;&#x4E48;&#x4EC0;&#x4E48;&#x662F;&#x8D44;&#x6E90;&#x5462;&#xFF1F;&#x5728;&#x6211;&#x4EEC;&#x4F20;&#x7EDF;&#x7684;&#x89C2;&#x5FF5;&#x4E2D;&#xFF0C;&#x8D44;&#x6E90;&#x662F;&#x6307;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x7684;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#xFF0C;&#x800C;&#x5728;REST&#x91CC;&#x8D44;&#x6E90;&#x5219;&#x662F;&#x6307;&#x4E00;&#x4E2A;URL&#x3002;URL&#x5373;&#x7EDF;&#x4E00;&#x8D44;&#x6E90;&#x5B9A;&#x4F4D;&#xFF0C;&#x800C;&#x6211;&#x4EEC;&#x90FD;&#x77E5;&#x9053;&#x901A;&#x8FC7;URL&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x4E92;&#x8054;&#x7F51;&#x4E0A;&#x7684;&#x8D44;&#x6E90;&#xFF0C;&#x6240;&#x4EE5;&#x5728;REST&#x91CC;&#x8FD9;&#x79CD;&#x5BF9;&#x8D44;&#x6E90;&#x7684;&#x6307;&#x5411;&#x6027;&#x66F4;&#x52A0;&#x5F3A;&#x70C8;&#xFF0C;&#x5E76;&#x4E14;&#x5728;&#x8FD9;&#x91CC;&#x8D44;&#x6E90;&#x7684;&#x8303;&#x7574;&#x4F1A;&#x88AB;&#x65E0;&#x9650;&#x653E;&#x5927;&#x800C;&#x5E76;&#x975E;&#x5C40;&#x9650;&#x5728;&#x6587;&#x4EF6;&#x672C;&#x8EAB;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;</p>
+<figure class="highlight awk"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>api.qc.com<span class="regexp">/v1/</span>feed &#x8868;&#x793A;&#x83B7;&#x53D6;&#x67D0;&#x4EBA;&#x7684;&#x6700;&#x65B0;Feed</span><br><span class="line">http:<span class="regexp">//</span>api.qc.com<span class="regexp">/v1/</span>friends &#x8868;&#x793A;&#x83B7;&#x53D6;&#x67D0;&#x4EBA;&#x7684;&#x597D;&#x53CB;&#x5217;&#x8868;</span><br><span class="line">http:<span class="regexp">//</span>api.qc.com<span class="regexp">/v1/</span>profile &#x8868;&#x793A;&#x83B7;&#x53D6;&#x67D0;&#x4EBA;&#x7684;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x7531;&#x6B64;&#x6211;&#x4EEC;&#x6CE8;&#x610F;&#x5230;REST&#x5728;&#x5F62;&#x5F0F;&#x4E0A;&#x66F4;&#x52A0;&#x8D8B;&#x5411;API&#x8BBE;&#x8BA1;&#xFF0C;&#x800C;&#x6211;&#x4EEC;&#x83B7;&#x53D6;&#x7684;&#x8D44;&#x6E90;&#x5219;&#x901A;&#x8FC7;&#x4E00;&#x5B9A;&#x7684;&#x5F62;&#x5F0F;&#x8FDB;&#x884C;&#x7EDF;&#x4E00;&#x800C;&#x89C4;&#x8303;&#x5316;&#x7684;&#x8868;&#x8FBE;&#xFF0C;&#x56E0;&#x6B64;REST&#x5B9E;&#x73B0;&#x4E86;&#x8BA9;&#x4E0D;&#x540C;&#x7684;&#x5E73;&#x53F0;&#x5171;&#x4EAB;&#x4E00;&#x5957;API&#x8FD9;&#x6837;&#x7684;&#x613F;&#x671B;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4EF6;&#x975E;&#x5E38;&#x7F8E;&#x597D;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x4E0A;&#x7684;&#x6280;&#x672F;&#x9635;&#x8425;&#x4E3E;&#x4E0D;&#x80DC;&#x6570;&#xFF0C;&#x800C;&#x5B83;&#x4EEC;&#x4E3A;&#x4E86;&#x5404;&#x81EA;&#x7684;&#x5229;&#x76CA;&#x5EFA;&#x7ACB;&#x4E00;&#x5957;&#x5C01;&#x95ED;&#x3001;&#x81C3;&#x80BF;&#x7684;&#x4F53;&#x7CFB;&#x6846;&#x67B6;&#xFF0C;&#x5F88;&#x591A;&#x65F6;&#x5019;&#x5F53;&#x6211;&#x4EEC;&#x4E0D;&#x9700;&#x8981;&#x8FD9;&#x6837;&#x7684;&#x201C;&#x5168;&#x5BB6;&#x6876;&#x201D;&#x5E76;&#x4E14;&#x5E0C;&#x671B;&#x201C;&#x8DE8;&#x5E73;&#x53F0;&#x201D;&#x7684;&#x65F6;&#x5019;&#xFF0C;REST&#x5C06;&#x4F1A;&#x662F;&#x4E00;&#x4E2A;&#x4E0D;&#x9519;&#x7684;&#x9009;&#x62E9;&#x3002;</p>
+<h2 id="&#x8868;&#x73B0;&#x5F62;&#x5F0F;-Representational"><a href="#&#x8868;&#x73B0;&#x5F62;&#x5F0F;-Representational" class="headerlink" title="&#x8868;&#x73B0;&#x5F62;&#x5F0F;(Representational)"></a>&#x8868;&#x73B0;&#x5F62;&#x5F0F;(Representational)</h2><p>&#x2003;&#x2003;&#x5728;REST&#x4E2D;&#x8868;&#x73B0;&#x5F62;&#x5F0F;&#x4F5C;&#x4E3A;&#x6211;&#x4EEC;&#x5BF9;&#x8D44;&#x6E90;&#x8BF7;&#x6C42;&#x7684;&#x4E00;&#x4E2A;&#x7ED3;&#x679C;&#x7684;&#x5448;&#x73B0;&#xFF0C;&#x901A;&#x8FC7;&#x5BF9;HTTP&#x534F;&#x8BAE;&#x7684;&#x5B66;&#x4E60;&#x6211;&#x4EEC;&#x5DF2;&#x7ECF;&#x77E5;&#x9053;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x4F1A;&#x7ED9;&#x5BA2;&#x6237;&#x7AEF;&#x8FD4;&#x56DE;&#x4EC0;&#x4E48;&#x5F62;&#x5F0F;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x53D6;&#x51B3;&#x4E8E;&#x670D;&#x52A1;&#x5668;&#x54CD;&#x5E94;&#x62A5;&#x6587;&#x4E2D;&#x76F8;&#x5173;&#x5934;&#x90E8;&#x5B57;&#x6BB5;&#xFF0C;&#x800C;&#x5BF9;REST&#x6765;&#x8BB2;&#xFF0C;&#x5B83;&#x901A;&#x5E38;&#x4F1A;&#x91C7;&#x7528;XML&#x6216;&#x8005;JSON&#x6765;&#x544A;&#x8BC9;&#x8BF7;&#x6C42;&#x8005;&#x8BF7;&#x6C42;&#x7684;&#x7ED3;&#x679C;&#xFF0C;&#x56E0;&#x4E3A;JSON&#x76F8;&#x6BD4;XML&#x6240;&#x542B;&#x7684;&#x5197;&#x4F59;&#x4FE1;&#x606F;&#x8F83;&#x5C11;&#xFF0C;&#x6240;&#x4EE5;&#x76EE;&#x524D;&#x66F4;&#x52A0;&#x503E;&#x5411;&#x4E8E;&#x6216;&#x8005;&#x8BF4;&#x6D41;&#x884C;&#x4F7F;&#x7528;JSON&#x4F5C;&#x4E3A;&#x8BF7;&#x6C42;&#x7ED3;&#x679C;&#x7684;&#x8868;&#x73B0;&#x5F62;&#x5F0F;&#x3002;</p>
+<p>##&#x72B6;&#x6001;&#x53D8;&#x5316;(State Transfer)<br>&#x2003;&#x2003;&#x867D;&#x7136;&#x6211;&#x4EEC;&#x4E00;&#x518D;&#x5F3A;&#x8C03;HTTP&#x534F;&#x8BAE;&#x662F;&#x65E0;&#x72B6;&#x6001;&#xFF0C;&#x8FD9;&#x4E3B;&#x8981;&#x4F53;&#x73B0;&#x5728;HTTP&#x8BF7;&#x6C42;&#x4E0E;&#x8BF7;&#x6C42;&#x3001;HTTP&#x54CD;&#x5E94;&#x4E0E;&#x54CD;&#x5E94;&#x7684;&#x4E0A;&#x4E0B;&#x6587;&#x65E0;&#x5173;&#x6027;&#x4E0A;&#x3002;&#x5728;REST&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x6240;&#x8BF4;&#x72B6;&#x6001;&#x53D8;&#x5316;&#x66F4;&#x591A;&#x662F;&#x6307;HTTP&#x4E2D;&#x7684;GET&#x3001;POST&#x3001;DELETE&#x7B49;&#x52A8;&#x8BCD;&#x5B9E;&#x73B0;&#x3002;&#x5177;&#x4F53;&#x6765;&#x8BB2;&#xFF0C;&#x867D;&#x7136;&#x8FD9;&#x4E00;&#x70B9;&#x6211;&#x4EEC;&#x5728;&#x524D;&#x9762;&#x6709;&#x6240;&#x63D0;&#x53CA;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x4E0B;&#x9762;&#x7684;&#x7B80;&#x5355;&#x793A;&#x4F8B;&#xFF1A;</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET <span class="string">http:</span><span class="comment">//someurl/tasks &#x8868;&#x793A;&#x83B7;&#x53D6;&#x5168;&#x90E8;&#x7684;tasks</span></span><br><span class="line">POST <span class="string">http:</span><span class="comment">//someurl/tasks &#x8868;&#x793A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;task</span></span><br><span class="line">GET <span class="string">http:</span><span class="comment">//someurl/tasks/{id} &#x8868;&#x793A;&#x83B7;&#x53D6;&#x4E00;&#x4E2A;&#x6307;&#x5B9A;id&#x7684;task</span></span><br><span class="line">PET <span class="string">http:</span><span class="comment">//someurl/tasks/{id} &#x8868;&#x793A;&#x66F4;&#x65B0;&#x4E00;&#x4E2A;&#x6307;&#x5B9A;id&#x7684;task</span></span><br><span class="line">DELETE <span class="string">http:</span><span class="comment">//someurl/tasks/{id} &#x8868;&#x793A;&#x5220;&#x9664;&#x4E00;&#x4E2A;&#x6307;&#x5B9A;id&#x7684;task</span></span><br></pre></td></tr></tbody></table></figure>
+<p>&#x9664;&#x6B64;&#x4E4B;&#x5916;&#xFF0C;&#x6211;&#x4EEC;&#x6CE8;&#x610F;&#x5230;REST&#x57FA;&#x4E8E;HTTP&#x534F;&#x8BAE;&#xFF0C;&#x6240;&#x4EE5;HTTP&#x534F;&#x8BAE;&#x4E2D;&#x7684;&#x72B6;&#x6001;&#x7801;&#x5BF9;&#x5B83;&#x6765;&#x8BB2;&#x540C;&#x6837;&#x9002;&#x7528;&#xFF0C;&#x4F8B;&#x5982;&#x6700;&#x5E38;&#x7528;&#x7684;200&#x8868;&#x793A;&#x6210;&#x529F;&#x3001;500&#x8868;&#x793A;&#x670D;&#x52A1;&#x5668;&#x5185;&#x90E8;&#x9519;&#x8BEF;&#x3001;404&#x8868;&#x793A;&#x65E0;&#x6CD5;&#x627E;&#x5230;&#x8BF7;&#x6C42;&#x8D44;&#x6E90;&#x7B49;&#x7B49;&#x3002;</p>
+<h1 id="&#x5982;&#x4F55;&#x6784;&#x5EFA;REST&#x98CE;&#x683C;&#x7684;API"><a href="#&#x5982;&#x4F55;&#x6784;&#x5EFA;REST&#x98CE;&#x683C;&#x7684;API" class="headerlink" title="&#x5982;&#x4F55;&#x6784;&#x5EFA;REST&#x98CE;&#x683C;&#x7684;API"></a>&#x5982;&#x4F55;&#x6784;&#x5EFA;REST&#x98CE;&#x683C;&#x7684;API</h1><p>&#x2003;&#x2003;&#x5982;&#x4F55;&#x6784;&#x5EFA;REST&#x98CE;&#x683C;&#x7684;API?&#x8FD9;&#x662F;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x76F8;&#x4FE1;&#x5927;&#x5BB6;&#x5728;&#x9605;&#x8BFB;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x611F;&#x5230;&#x75B2;&#x60EB;&#x5427;&#xFF0C;&#x6211;&#x60F3;&#x8BF4;&#x5199;&#x4F5C;&#x8005;&#x7684;&#x75B2;&#x60EB;&#x4E0D;&#x4E00;&#x5B9A;&#x4F1A;&#x6BD4;&#x9605;&#x8BFB;&#x8005;&#x7684;&#x75B2;&#x60EB;&#x8981;&#x8F7B;&#xFF0C;&#x73B0;&#x5728;&#x5230;&#x4E86;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x91CC;&#x6700;&#x96BE;&#x7684;&#x90E8;&#x5206;&#x5566;&#xFF0C;&#x8FD9;&#x53EF;&#x6BD4;&#x6211;&#x4EEC;&#x82B1;&#x8D39;&#x5927;&#x91CF;&#x7BC7;&#x5E45;&#x6765;&#x8BB2;&#x4EC0;&#x4E48;&#x662F;REST&#x8981;&#x66F4;&#x6709;&#x610F;&#x4E49;&#xFF0C;&#x8FD9;&#x662F;&#x771F;&#x6B63;&#x7684;&#x8BF4;&#x8D77;&#x6765;&#x5BB9;&#x6613;&#x505A;&#x8D77;&#x6765;&#x96BE;&#xFF0C;&#x5728;&#x6B63;&#x5F0F;&#x5F00;&#x59CB;&#x5B9E;&#x8DF5;&#x4EE5;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x63D0;&#x51FA;&#x4E0B;&#x9762;&#x7684;&#x6700;&#x4F73;&#x5B9E;&#x8DF5;&#xFF1A;</p>
+<ul>
+<li>URLRoot&#x91C7;&#x7528;&#x4E0B;&#x9762;&#x8FD9;&#x6837;&#x7684;&#x7ED3;&#x6784;&#xFF1A;</li>
+</ul>
+<figure class="highlight dts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span><span class="comment">//example.com/api/v1/</span></span><br><span class="line"><span class="symbol">http:</span><span class="comment">//api.example.com/v1/</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><p>API&#x7248;&#x672C;&#x53EF;&#x4EE5;&#x653E;&#x5728;URL&#x6216;&#x8005;HTTP&#x7684;Header&#x91CC;</p>
+</li>
+<li><p>URL&#x4F7F;&#x7528;&#x540D;&#x8BCD;&#x800C;&#x975E;&#x52A8;&#x8BCD;&#xFF1A;</p>
+</li>
+</ul>
+<figure class="highlight crystal"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/example.com/api</span><span class="regexp">/v1/get</span>Products &#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x7CDF;&#x7CD5;&#x7684;&#x8BBE;&#x8BA1;</span><br><span class="line">GET <span class="symbol">http:</span>/<span class="regexp">/example.com/api</span><span class="regexp">/v1/products</span> &#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x4F18;&#x96C5;&#x7684;&#x8BBE;&#x8BA1;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>&#x4FDD;&#x8BC1;&#x65B9;&#x6CD5;&#x65F6;&#x5B89;&#x5168;&#x7684;&#x4E0D;&#x4F1A;&#x5BF9;&#x8D44;&#x6E90;&#x72B6;&#x6001;&#x6709;&#x6240;&#x6539;&#x53D8;&#x3002;&#x4F8B;&#x5982;&#xFF1A;</li>
+</ul>
+<figure class="highlight awk"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http:<span class="regexp">//</span>example.com<span class="regexp">/api/</span>v1<span class="regexp">/deleteProduct?id=1 &#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x5371;&#x9669;&#x7684;&#x4FE1;&#x53F7;</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>&#x8D44;&#x6E90;&#x7684;&#x5730;&#x5740;&#x63A8;&#x8350;&#x4F7F;&#x7528;&#x5D4C;&#x5957;&#x7ED3;&#x6784;</li>
+</ul>
+<figure class="highlight awk"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http:<span class="regexp">//</span>example.com<span class="regexp">/api/</span>v1<span class="regexp">/friends/</span><span class="number">10375923</span><span class="regexp">/profile</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><p>&#x4F7F;&#x7528;&#x6B63;&#x786E;&#x7684;HTTP&#x72B6;&#x6001;&#x7801;&#x8868;&#x793A;&#x8BBF;&#x95EE;&#x72B6;&#x6001;</p>
+</li>
+<li><p>&#x8FD4;&#x56DE;&#x542B;&#x4E49;&#x660E;&#x786E;&#x7684;&#x7ED3;&#x679C;(&#x8FD9;&#x662F;&#x6211;&#x4E3A;&#x4EC0;&#x4E48;&#x63A8;&#x8350;&#x4F7F;&#x7528;JSON&#x7684;&#x7406;&#x7531;)</p>
+</li>
+</ul>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x6211;&#x76EE;&#x524D;&#x80FD;&#x591F;&#x7406;&#x89E3;&#x5E76;&#x8F93;&#x51FA;&#x7ED9;&#x5927;&#x5BB6;&#x7684;&#x53EA;&#x6709;&#x8FD9;&#x4E9B;&#x5566;&#xFF0C;&#x5173;&#x4E8E;&#x5177;&#x4F53;&#x5728;Web&#x5F00;&#x53D1;&#x4E2D;&#x6211;&#x4EEC;&#x5982;&#x4F55;&#x53BB;&#x5B9E;&#x73B0;RESTful API&#xFF0C;&#x8FD9;&#x4E2A;&#x6211;&#x89C9;&#x5F97;&#x5E76;&#x6CA1;&#x6709;&#x4E00;&#x4E2A;&#x56FA;&#x5B9A;&#x7684;&#x65B9;&#x6CD5;&#x5427;&#xFF0C;&#x800C;&#x4E14;&#x6211;&#x73B0;&#x5728;&#x7F16;&#x5199;&#x7684;&#x8FD9;&#x4E2A;&#x670D;&#x52A1;&#x5668;&#x53EA;&#x652F;&#x6301;Get&#x548C;Post&#x4E24;&#x79CD;&#x7C7B;&#x578B;&#xFF0C;&#x5982;&#x679C;&#x8981;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;RESTful API&#x67B6;&#x6784;&#xFF0C;&#x8FD8;&#x9700;&#x8981;&#x5F88;&#x957F;&#x7684;&#x65F6;&#x95F4;&#x53BB;&#x63A2;&#x7D22;&#xFF0C;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x5199;&#x5F97;&#x6211;&#x7684;&#x786E;&#x6709;&#x4E9B;&#x75B2;&#x60EB;&#xFF0C;&#x6240;&#x4EE5;&#x6709;&#x4E0D;&#x5468;&#x7684;&#x5730;&#x65B9;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x8C05;&#x89E3;&#xFF0C;&#x540E;&#x7EED;&#x66F4;&#x65B0;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x9879;&#x76EE;<a href="https://github.com/qinyuanpei/HttpServer" target="_blank" rel="noopener">HttpServer</a>&#x5C31;&#x597D;&#x5566;&#xFF0C;&#x8C22;&#x8C22;&#x5927;&#x5BB6;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/2734896333/">使用C#开发HTTP服务器之支持HTTPS</a></li><li><a href="https://qinyuanpei.github.io/posts/1700650235/">使用C#开发HTTP服务器系列之实现Get和Post</a></li><li><a href="https://qinyuanpei.github.io/posts/3603924376/">使用C#开发HTTP服务器系列之更简单的实现方式</a></li><li><a href="https://alili.tech/archive/84afbeeb/">HTTP的URI格式说明</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/3637847962/" rel="external">使用C#开发HTTP服务器系列之构建RESTful API</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/3637847962/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/3637847962/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C#</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/服务器/">服务器</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3637847962/&title=《使用C#开发HTTP服务器系列之构建RESTful API》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3637847962/&title=《使用C#开发HTTP服务器系列之构建RESTful API》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。到目前为止，“使用C#..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3637847962/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用C#开发HTTP服务器系列之构建RESTful API》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3637847962/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3637847962/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3603924376/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">使用C#开发HTTP服务器系列之更简单的实现方式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3695777215/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">使用C#开发HTTP服务器系列之静态页面</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/3637847962/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3637847962/&title=《使用C#开发HTTP服务器系列之构建RESTful API》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3637847962/&title=《使用C#开发HTTP服务器系列之构建RESTful API》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。到目前为止，“使用C#..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3637847962/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用C#开发HTTP服务器系列之构建RESTful API》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3637847962/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3637847962/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/3637847962/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

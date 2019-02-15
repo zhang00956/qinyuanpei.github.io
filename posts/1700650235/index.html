@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        使用C#开发HTTP服务器系列之实现Get和Post - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。在我们这个Web服务器有了一个基本的门面以后，我们是时候来用它做点实际的事情了。还记得我们最早提到HTTP协议的用途是什么吗？它叫超文本传输协议啊，所以我们必须考虑让我们的服务器能够接收到客户端传来的数据。因为我们目前完成了大部分的工作，所以对数据传输这个问题我们这里">
+<meta name="keywords" content="HTTP,服务器,C#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用C#开发HTTP服务器系列之实现Get和Post">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/1700650235/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。在我们这个Web服务器有了一个基本的门面以后，我们是时候来用它做点实际的事情了。还记得我们最早提到HTTP协议的用途是什么吗？它叫超文本传输协议啊，所以我们必须考虑让我们的服务器能够接收到客户端传来的数据。因为我们目前完成了大部分的工作，所以对数据传输这个问题我们这里">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix87avuaj20dj05974c.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用C#开发HTTP服务器系列之实现Get和Post">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。在我们这个Web服务器有了一个基本的门面以后，我们是时候来用它做点实际的事情了。还记得我们最早提到HTTP协议的用途是什么吗？它叫超文本传输协议啊，所以我们必须考虑让我们的服务器能够接收到客户端传来的数据。因为我们目前完成了大部分的工作，所以对数据传输这个问题我们这里">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix87avuaj20dj05974c.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用C#开发HTTP服务器系列之实现Get和Post</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用C#开发HTTP服务器系列之实现Get和Post</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-06-11T15:01:35.000Z" itemprop="datePublished" class="page-time">
+  2016-06-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#实现Get请求"><span class="post-toc-number">1.</span> <span class="post-toc-text">实现Get请求</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#实现Post请求"><span class="post-toc-number">2.</span> <span class="post-toc-text">实现Post请求</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#实例"><span class="post-toc-number">3.</span> <span class="post-toc-text">实例</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">4.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-使用C#开发HTTP服务器系列之实现Get和Post" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用C#开发HTTP服务器系列之实现Get和Post</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-06-11 15:01:35" datetime="2016-06-11T15:01:35.000Z" itemprop="datePublished">2016-06-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        17 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;&#x79E6;&#x5143;&#x57F9;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x5728;&#x6211;&#x4EEC;&#x8FD9;&#x4E2A;Web&#x670D;&#x52A1;&#x5668;&#x6709;&#x4E86;&#x4E00;&#x4E2A;&#x57FA;&#x672C;&#x7684;&#x95E8;&#x9762;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x662F;&#x65F6;&#x5019;&#x6765;&#x7528;&#x5B83;&#x505A;&#x70B9;&#x5B9E;&#x9645;&#x7684;&#x4E8B;&#x60C5;&#x4E86;&#x3002;&#x8FD8;&#x8BB0;&#x5F97;&#x6211;&#x4EEC;&#x6700;&#x65E9;&#x63D0;&#x5230;HTTP&#x534F;&#x8BAE;&#x7684;&#x7528;&#x9014;&#x662F;&#x4EC0;&#x4E48;&#x5417;&#xFF1F;&#x5B83;&#x53EB;&#x8D85;&#x6587;&#x672C;&#x4F20;&#x8F93;&#x534F;&#x8BAE;&#x554A;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5FC5;&#x987B;&#x8003;&#x8651;&#x8BA9;&#x6211;&#x4EEC;&#x7684;&#x670D;&#x52A1;&#x5668;&#x80FD;&#x591F;&#x63A5;&#x6536;&#x5230;&#x5BA2;&#x6237;&#x7AEF;&#x4F20;&#x6765;&#x7684;&#x6570;&#x636E;&#x3002;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x76EE;&#x524D;&#x5B8C;&#x6210;&#x4E86;&#x5927;&#x90E8;&#x5206;&#x7684;&#x5DE5;&#x4F5C;&#xFF0C;&#x6240;&#x4EE5;&#x5BF9;&#x6570;&#x636E;&#x4F20;&#x8F93;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x9009;&#x62E9;&#x4EE5;&#x6700;&#x7B80;&#x5355;&#x7684;GET&#x548C;POST&#x4E3A;&#x4F8B;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x4ECA;&#x5929;&#x7684;&#x91CD;&#x70B9;&#x5C31;&#x843D;&#x5B9E;&#x5728;Get&#x548C;Post&#x7684;&#x5B9E;&#x73B0;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x4E0A;&#x6765;&#x3002;&#x800C;&#x4ECE;&#x539F;&#x7406;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x65E0;&#x8BBA;Get&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#x8FD8;&#x662F;Post&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x53EF;&#x4EE5;&#x5728;&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#x4E2D;&#x83B7;&#x5F97;&#x5176;&#x8BF7;&#x6C42;&#x53C2;&#x6570;&#xFF0C;&#x4E0D;&#x540C;&#x7684;&#x662F;&#x524D;&#x8005;&#x51FA;&#x73B0;&#x5728;&#x8BF7;&#x6C42;&#x884C;&#x4E2D;&#xFF0C;&#x800C;&#x540E;&#x8005;&#x51FA;&#x73B0;&#x5728;&#x6D88;&#x606F;&#x4F53;&#x4E2D;&#x3002;&#x4F8B;&#x5982;&#x6211;&#x4EEC;&#x4F20;&#x9012;&#x7684;&#x4E24;&#x4E2A;&#x53C2;&#x6570;num1&#x548C;num2&#x5BF9;&#x5E94;&#x7684;&#x6570;&#x503C;&#x5206;&#x522B;&#x662F;12&#x548C;24&#xFF0C;&#x90A3;&#x4E48;&#x5728;&#x5177;&#x4F53;&#x7684;&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#x4E2D;&#x6211;&#x4EEC;&#x90FD;&#x80FD;&#x627E;&#x5230;&#x7C7B;&#x4F3C;&#x201C;num1=12&amp;num2=24&#x201D;&#x8FD9;&#x6837;&#x7684;&#x5B57;&#x7B26;&#x7ED3;&#x6784;&#xFF0C;&#x6240;&#x4EE5;&#x53EA;&#x8981;&#x9488;&#x5BF9;&#x8FD9;&#x4E2A;&#x5B57;&#x7B26;&#x7ED3;&#x6784;&#x8FDB;&#x884C;&#x89E3;&#x6790;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;&#x5BA2;&#x6237;&#x7AEF;&#x4F20;&#x9012;&#x7ED9;&#x670D;&#x52A1;&#x5668;&#x7684;&#x53C2;&#x6570;&#x5566;&#x3002;</p>
+<a id="more"></a>
+<h1 id="&#x5B9E;&#x73B0;Get&#x8BF7;&#x6C42;"><a href="#&#x5B9E;&#x73B0;Get&#x8BF7;&#x6C42;" class="headerlink" title="&#x5B9E;&#x73B0;Get&#x8BF7;&#x6C42;"></a>&#x5B9E;&#x73B0;Get&#x8BF7;&#x6C42;</h1><p>&#x2003;&#x2003;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x6765;&#x5B9E;&#x73B0;Get&#x8BF7;&#x6C42;&#xFF0C;Get&#x662F;HTTP&#x534F;&#x8BAE;&#x4E2D;&#x9ED8;&#x8BA4;&#x7684;&#x8BF7;&#x6C42;&#x7C7B;&#x578B;&#xFF0C;&#x6211;&#x4EEC;&#x5E73;&#x65F6;&#x8BBF;&#x95EE;&#x7F51;&#x9875;&#x3001;&#x8BF7;&#x6C42;&#x8D44;&#x6E90;&#x5B9E;&#x9645;&#x4E0A;&#x90FD;&#x662F;&#x901A;&#x8FC7;Get&#x65B9;&#x5F0F;&#x5B9E;&#x73B0;&#x7684;&#x3002;Get&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x7C7B;&#x4F3C;&#x201C;?id=001&amp;option=10&#x201D;&#x8FD9;&#x6837;&#x7684;&#x5F62;&#x5F0F;&#x9644;&#x52A0;&#x5728;URL&#x4E0A;&#xFF0C;&#x56E0;&#x6B64;Get&#x65B9;&#x5F0F;&#x5BF9;&#x6D4F;&#x89C8;&#x5668;&#x6765;&#x8BF4;&#x662F;&#x900F;&#x660E;&#x7684;&#xFF0C;&#x5373;&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x6D4F;&#x89C8;&#x5668;&#x5730;&#x5740;&#x680F;&#x77E5;&#x9053;&#xFF0C;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E2D;&#x4F20;&#x9012;&#x4E86;&#x54EA;&#x4E9B;&#x53C2;&#x6570;&#x4EE5;&#x53CA;&#x8FD9;&#x4E9B;&#x53C2;&#x6570;&#x7684;&#x503C;&#x5206;&#x522B;&#x662F;&#x4EC0;&#x4E48;&#x3002;&#x800C;&#x7531;&#x4E8E;&#x6D4F;&#x89C8;&#x5668;&#x7684;&#x9650;&#x5236;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#x7684;&#x65F6;&#x5019;&#x80FD;&#x591F;&#x4F20;&#x9012;&#x7684;&#x53C2;&#x6570;&#x6570;&#x76EE;&#x548C;&#x957F;&#x5EA6;&#x90FD;&#x662F;&#x6709;&#x9650;&#x7684;&#xFF0C;&#x800C;&#x4E14;&#x5F53;&#x53C2;&#x6570;&#x4E2D;&#x5B58;&#x5728;&#x4E2D;&#x6587;&#x6570;&#x503C;&#x7684;&#x65F6;&#x5019;&#x8FD8;&#x9700;&#x8981;&#x5BF9;&#x5176;&#x8FDB;&#x884C;&#x7F16;&#x7801;&#x3002;Get&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#x76F8;&#x5BF9;&#x7B80;&#x5355;&#xFF0C;&#x6211;&#x4EEC;&#x4E0B;&#x9762;&#x6765;&#x770B;&#x770B;&#x5B83;&#x7684;&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#xFF1A;</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET <span class="regexp">/?num1=23&amp;num2=12 HTTP/</span><span class="number">1.1</span></span><br><span class="line"><span class="string">Accept:</span> text<span class="regexp">/html, application/</span>xhtml+xml, image<span class="regexp">/jxr, */</span>*</span><br><span class="line">Accept-<span class="string">Language:</span> zh-Hans-CN,zh-Hans;q=<span class="number">0.5</span></span><br><span class="line">User-<span class="string">Agent:</span> Mozilla<span class="regexp">/5.0 (Windows NT 10.0) AppleWebKit/</span><span class="number">537.36</span> (KHTML, like Gecko) Chrome<span class="regexp">/46.0.2486.0 Safari/</span><span class="number">537.36</span> Edge/<span class="number">13.10586</span></span><br><span class="line">Accept-<span class="string">Encoding:</span> gzip, deflate</span><br><span class="line"><span class="string">Host:</span> <span class="string">localhost:</span><span class="number">4040</span></span><br><span class="line"><span class="string">Connection:</span> Keep-Alive</span><br><span class="line"><span class="string">Cookie:</span> _ga=GA1<span class="number">.1</span><span class="number">.1181222800</span><span class="number">.1463541781</span></span><br></pre></td></tr></tbody></table></figure>
+<p>&#x6B64;&#x65F6;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6CE8;&#x610F;&#x5230;&#x5728;&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#x7B2C;&#x4E00;&#x884C;&#xFF0C;&#x5373;&#x8BF7;&#x6C42;&#x884C;&#x4E2D;&#x51FA;&#x73B0;&#x4E86;&#x201C;/?num1=23&amp;num2=12&#x201D;&#x8FD9;&#x6837;&#x7684;&#x5B57;&#x6837;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x5BA2;&#x6237;&#x7AEF;&#x4F20;&#x9012;&#x7ED9;&#x670D;&#x52A1;&#x5668;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x6211;&#x4EEC;&#x5F88;&#x5BB9;&#x6613;&#x60F3;&#x5230;&#x53EA;&#x9700;&#x8981;&#x5C06;&#x8FD9;&#x4E2A;&#x5B57;&#x6BB5;&#x4E32;&#x4E2D;&#x7684;&#x201C;&#x952E;&#x201D;&#x548C;&#x201C;&#x503C;&#x201D;&#x90FD;&#x89E3;&#x6790;&#x51FA;&#x6765;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x5C31;&#x53EF;&#x4EE5;&#x5BF9;&#x8FD9;&#x4E9B;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5904;&#x7406;&#x7136;&#x540E;&#x8FD4;&#x56DE;&#x7ED9;&#x5BA2;&#x6237;&#x7AEF;&#x4E86;&#x3002;&#x6240;&#x4EE5;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x8FD9;&#x6837;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x6211;&#x4EEC;&#x4E3A;HtttpRequest&#x7C7B;&#x589E;&#x52A0;&#x4E86;&#x4E00;&#x4E2A;Parms&#x5C5E;&#x6027;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x952E;&#x548C;&#x503C;&#x5747;&#x4E3A;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;&#x7684;&#x5B57;&#x5178;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x5B57;&#x5178;&#x6765;&#x5B58;&#x50A8;&#x548C;&#x7BA1;&#x7406;&#x5BA2;&#x6237;&#x7AEF;&#x4F20;&#x9012;&#x6765;&#x7684;&#x53C2;&#x6570;&#x3002;</p>
+<figure class="highlight accesslog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//&#x83B7;&#x53D6;&#x8BF7;&#x6C42;&#x53C2;&#x6570;</span><br><span class="line">if(this.Method == <span class="string">&quot;<span class="keyword">GET</span>&quot;</span> &amp;&amp; this.URL.Contains(&apos;?&apos;))</span><br><span class="line">    this.Params = GetRequestParams(lines<span class="string">[0]</span>.Split(&apos; &apos;)<span class="string">[1]</span>.Split(&apos;?&apos;)<span class="string">[1]</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x663E;&#x7136;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x9700;&#x8981;&#x5224;&#x65AD;&#x8BF7;&#x6C42;&#x7C7B;&#x578B;&#x662F;&#x5426;&#x4E3A;GET&#x4EE5;&#x53CA;&#x8BF7;&#x6C42;&#x4E2D;&#x662F;&#x5426;&#x5E26;&#x6709;&#x53C2;&#x6570;&#xFF0C;&#x5176;&#x65B9;&#x6CD5;&#x662F;&#x5224;&#x65AD;&#x8BF7;&#x6C42;&#x5730;&#x5740;&#x4E2D;&#x662F;&#x5426;&#x542B;&#x6709;&#x201C;?&#x201D;&#x5B57;&#x7B26;&#x3002;&#x8FD9;&#x91CC;&#x7684;lines&#x662F;&#x6307;&#x5C06;&#x62A5;&#x6587;&#x4FE1;&#x606F;&#x6309;&#x884C;&#x5206;&#x5272;&#x4EE5;&#x540E;&#x7684;&#x6570;&#x7EC4;&#xFF0C;&#x663E;&#x7136;&#x8BF7;&#x6C42;&#x5730;&#x5740;&#x5728;&#x7B2C;&#x4E00;&#x884C;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x6839;&#x636E;&#x201C;?&#x201D;&#x5206;&#x5272;&#x8BE5;&#x884C;&#x6570;&#x636E;&#x4EE5;&#x540E;&#x5C31;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x201C;num1=23&amp;num2=12&#x201D;&#x8FD9;&#x6837;&#x7684;&#x7ED3;&#x679C;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;GetRequestParms&#x6765;&#x8FD4;&#x56DE;&#x53C2;&#x6570;&#x5B57;&#x5178;&#xFF0C;&#x8FD9;&#x6837;&#x4F5C;&#x505A;&#x662F;&#x4E3A;&#x4E86;&#x590D;&#x7528;&#x65B9;&#x6CD5;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x5904;&#x7406;Post&#x8BF7;&#x6C42;&#x7684;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x4F1A;&#x7EE7;&#x7EED;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x3002;&#x8BE5;&#x65B9;&#x6CD5;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x4ECE;&#x5185;&#x5BB9;&#x4E2D;&#x89E3;&#x6790;&#x8BF7;&#x6C42;&#x53C2;&#x6570;&#x5E76;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x5B57;&#x5178;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;content&quot;&gt;</span>&#x4F7F;&#x7528;&amp;&#x8FDE;&#x63A5;&#x7684;&#x53C2;&#x6570;&#x5B57;&#x7B26;&#x4E32;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span>&#x5982;&#x679C;&#x5B58;&#x5728;&#x53C2;&#x6570;&#x5219;&#x8FD4;&#x56DE;&#x53C2;&#x6570;&#x5426;&#x5219;&#x8FD4;&#x56DE;null<span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt; <span class="title">GetRequestParams</span>(<span class="params"><span class="keyword">string</span> content</span>)</span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">    <span class="comment">//&#x9632;&#x5FA1;&#x7F16;&#x7A0B;</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">string</span>.IsNullOrEmpty(content))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x6309;&#x7167;&amp;&#x5BF9;&#x5B57;&#x7B26;&#x8FDB;&#x884C;&#x5206;&#x5272;</span></span><br><span class="line">    <span class="keyword">string</span>[] reval = content.Split(<span class="string">&apos;&amp;&apos;</span>);</span><br><span class="line">    <span class="keyword">if</span>(reval.Length &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x5C06;&#x7ED3;&#x679C;&#x6DFB;&#x52A0;&#x81F3;&#x5B57;&#x5178;</span></span><br><span class="line">    Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt; dict = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;();</span><br><span class="line">    <span class="keyword">foreach</span>(<span class="keyword">string</span> val <span class="keyword">in</span> reval)</span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">string</span>[] kv = val.Split(<span class="string">&apos;=&apos;</span>);</span><br><span class="line">        <span class="keyword">if</span>(kv.Length &lt;= <span class="number">1</span>)</span><br><span class="line">            dict.Add(kv[<span class="number">0</span>], <span class="string">&quot;&quot;</span>);</span><br><span class="line">        dict.Add(kv[<span class="number">0</span>],kv[<span class="number">1</span>]);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x8FD4;&#x56DE;&#x5B57;&#x5178;</span></span><br><span class="line">    <span class="keyword">return</span> dict;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h1 id="&#x5B9E;&#x73B0;Post&#x8BF7;&#x6C42;"><a href="#&#x5B9E;&#x73B0;Post&#x8BF7;&#x6C42;" class="headerlink" title="&#x5B9E;&#x73B0;Post&#x8BF7;&#x6C42;"></a>&#x5B9E;&#x73B0;Post&#x8BF7;&#x6C42;</h1><p>&#x2003;&#x2003;Post&#x8BF7;&#x6C42;&#x76F8;&#x5BF9;Get&#x8BF7;&#x6C42;&#x6BD4;&#x8F83;&#x5B89;&#x5168;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x514B;&#x670D;&#x4E86;Get&#x8BF7;&#x6C42;&#x53C2;&#x6570;&#x957F;&#x5EA6;&#x7684;&#x9650;&#x5236;&#x95EE;&#x9898;&#xFF0C;&#x800C;&#x4E14;&#x7531;&#x4E8E;&#x5B83;&#x7684;&#x53C2;&#x6570;&#x662F;&#x5B58;&#x653E;&#x5728;&#x6D88;&#x606F;&#x4F53;&#x4E2D;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x4F20;&#x9012;&#x53C2;&#x6570;&#x7684;&#x65F6;&#x5019;&#x5BF9;&#x7528;&#x6237;&#x800C;&#x8A00;&#x662F;&#x4E0D;&#x53EF;&#x89C1;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x5E73;&#x65F6;&#x63A5;&#x89E6;&#x5230;&#x7684;&#x7F51;&#x7AD9;&#x767B;&#x5F55;&#x90FD;&#x662F;&#x8FD9;&#x79CD;&#x7C7B;&#x578B;&#xFF0C;&#x800C;&#x590D;&#x6742;&#x70B9;&#x7684;&#x7F51;&#x7AD9;&#x4F1A;&#x901A;&#x8FC7;&#x9A8C;&#x8BC1;&#x7801;&#x3001;Cookie&#x7B49;&#x5F62;&#x5F0F;&#x6765;&#x907F;&#x514D;&#x722C;&#x866B;&#x7A0B;&#x5E8F;&#x6A21;&#x62DF;&#x767B;&#x5F55;&#xFF0C;&#x5728;Web&#x5F00;&#x53D1;&#x4E2D;Post&#x8BF7;&#x6C42;&#x53EF;&#x4EE5;&#x7531;&#x4E00;&#x4E2A;&#x8868;&#x5355;&#x53D1;&#x8D77;&#xFF0C;&#x53EF;&#x4EE5;&#x7531;&#x722C;&#x866B;&#x7A0B;&#x5E8F;&#x5982;HttpWebRequest&#x3001;WebClient&#x7B49;&#x53D1;&#x8D77;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x91CD;&#x70B9;&#x6765;&#x5206;&#x6790;&#x5B83;&#x7684;&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#xFF1A;</p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Accept</span>: text/html, application/xhtml+xml, image/jxr, */*</span><br><span class="line"><span class="attribute">Accept-Language</span>: zh-Hans-CN,zh-Hans;q=0.5</span><br><span class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586</span><br><span class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</span><br><span class="line"><span class="attribute">Host</span>: localhost:4040</span><br><span class="line"><span class="attribute">Connection</span>: Keep-Alive</span><br><span class="line"><span class="attribute">Cookie</span>: _ga=GA1.1.1181222800.1463541781</span><br><span class="line"></span><br><span class="line">num1=23&amp;num2=12</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6CE8;&#x610F;&#x5230;&#x6B64;&#x65F6;&#x8BF7;&#x6C42;&#x884C;&#x7684;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#x53D8;&#x6210;&#x4E86;POST&#xFF0C;&#x800C;&#x5728;&#x62A5;&#x6587;&#x7ED3;&#x5C3E;&#x589E;&#x52A0;&#x4E86;&#x4E00;&#x884C;&#x5185;&#x5BB9;&#xFF0C;&#x6211;&#x4EEC;&#x79F0;&#x5176;&#x4E3A;&#x201C;&#x6D88;&#x606F;&#x4F53;&#x201D;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x53EF;&#x9009;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x8BF7;&#x6CE8;&#x610F;&#x5B83;&#x524D;&#x9762;&#x6709;&#x4E00;&#x4E2A;&#x7A7A;&#x884C;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x5904;&#x7406;&#x4E00;&#x4E2A;Posst&#x8BF7;&#x6C42;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x901A;&#x8FC7;&#x6700;&#x540E;&#x4E00;&#x884C;&#x5C31;&#x53EF;&#x4EE5;&#x89E3;&#x6790;&#x51FA;&#x5BA2;&#x6237;&#x7AEF;&#x4F20;&#x9012;&#x8FC7;&#x6765;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x548C;Get&#x8BF7;&#x6C42;&#x76F8;&#x540C;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x7EE7;&#x7EED;&#x4F7F;&#x7528;GetRequestParams&#x6765;&#x5B8C;&#x6210;&#x89E3;&#x6790;&#x3002;</p>
+<figure class="highlight accesslog"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if(this.Method == <span class="string">&quot;<span class="keyword">POST</span>&quot;</span>)</span><br><span class="line">    this.Params = GetRequestParams(lines<span class="string">[lines.Length-1]</span>);</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="&#x5B9E;&#x4F8B;"><a href="#&#x5B9E;&#x4F8B;" class="headerlink" title="&#x5B9E;&#x4F8B;"></a>&#x5B9E;&#x4F8B;</h1><p>&#x2003;&#x2003;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x6765;&#x5B8C;&#x6210;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x5730;&#x5B9E;&#x4F8B;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x81EA;&#x7136;&#x7531;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x8BBE;&#x8BA1;&#x7684;&#x8FD9;&#x4E2A;&#x670D;&#x52A1;&#x5668;&#x6765;&#x5B8C;&#x6210;&#x54AF;&#xFF0C;&#x800C;&#x5BA2;&#x6237;&#x7AEF;&#x5219;&#x7531;Unity&#x6765;&#x5B8C;&#x6210;&#x56E0;&#x4E3A;Unity&#x6709;&#x7B80;&#x5355;&#x7684;WWW&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x3002;&#x9996;&#x5148;&#x6765;&#x7F16;&#x5199;&#x670D;&#x52A1;&#x7AEF;&#xFF0C;&#x8FD9;&#x4E2A;&#x7EE7;&#x627F;HttpServer&#x5C31;&#x597D;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x4E3B;&#x8981;&#x6765;&#x5199;&#x8FD9;&#x91CC;&#x7684;&#x65B9;&#x6CD5;&#xFF1A;<br></p><figure class="highlight vala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> HttpServerLib;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">namespace</span> <span class="title">HttpServer</span></span></span><br><span class="line"><span class="class"></span>{</span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleServer</span> : <span class="title">HttpServerLib</span>.<span class="title">HttpServer</span></span></span><br><span class="line"><span class="class">    </span>{</span><br><span class="line">        <span class="comment">/// &lt;summary&gt;</span></span><br><span class="line">        <span class="comment">/// &#x6784;&#x9020;&#x51FD;&#x6570;</span></span><br><span class="line">        <span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line">        <span class="comment">/// &lt;param name=&quot;ipAddress&quot;&gt;IP&#x5730;&#x5740;&lt;/param&gt;</span></span><br><span class="line">        <span class="comment">/// &lt;param name=&quot;port&quot;&gt;&#x7AEF;&#x53E3;&#x53F7;&lt;/param&gt;</span></span><br><span class="line">        <span class="keyword">public</span> ExampleServer(<span class="keyword">string</span> ipAddress, <span class="keyword">int</span> port)</span><br><span class="line">            : base(ipAddress, port)</span><br><span class="line">        {</span><br><span class="line"></span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> OnPost(HttpRequest request)</span><br><span class="line">        {</span><br><span class="line">            <span class="comment">//&#x83B7;&#x53D6;&#x5BA2;&#x6237;&#x7AEF;&#x4F20;&#x9012;&#x7684;&#x53C2;&#x6570;</span></span><br><span class="line">            <span class="keyword">int</span> num1 = <span class="keyword">int</span>.Parse(request.Params[<span class="string">&quot;num1&quot;</span>]);</span><br><span class="line">            <span class="keyword">int</span> num2 = <span class="keyword">int</span>.Parse(request.Params[<span class="string">&quot;num2&quot;</span>]);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;&#x8FD4;&#x56DE;&#x4FE1;&#x606F;</span></span><br><span class="line">            <span class="keyword">string</span> content = <span class="keyword">string</span>.Format(<span class="string">&quot;&#x8FD9;&#x662F;&#x901A;&#x8FC7;Post&#x65B9;&#x5F0F;&#x8FD4;&#x56DE;&#x7684;&#x6570;&#x636E;:num1={0},num2={1}&quot;</span>,num1,num2);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x6784;&#x9020;&#x54CD;&#x5E94;&#x62A5;&#x6587;</span></span><br><span class="line">            HttpResponse response = <span class="keyword">new</span> HttpResponse(content, Encoding.UTF8);</span><br><span class="line">            response.StatusCode = <span class="string">&quot;200&quot;</span>;</span><br><span class="line">            response.Content_Type = <span class="string">&quot;text/html; charset=UTF-8&quot;</span>;</span><br><span class="line">            response.Server = <span class="string">&quot;ExampleServer&quot;</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x53D1;&#x9001;&#x54CD;&#x5E94;</span></span><br><span class="line">            ProcessResponse(request.Handler, response);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> OnGet(HttpRequest request)</span><br><span class="line">        {</span><br><span class="line">            <span class="comment">//&#x83B7;&#x53D6;&#x5BA2;&#x6237;&#x7AEF;&#x4F20;&#x9012;&#x7684;&#x53C2;&#x6570;</span></span><br><span class="line">            <span class="keyword">int</span> num1 = <span class="keyword">int</span>.Parse(request.Params[<span class="string">&quot;num1&quot;</span>]);</span><br><span class="line">            <span class="keyword">int</span> num2 = <span class="keyword">int</span>.Parse(request.Params[<span class="string">&quot;num2&quot;</span>]);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;&#x8FD4;&#x56DE;&#x4FE1;&#x606F;</span></span><br><span class="line">            <span class="keyword">string</span> content = <span class="keyword">string</span>.Format(<span class="string">&quot;&#x8FD9;&#x662F;&#x901A;&#x8FC7;Get&#x65B9;&#x5F0F;&#x8FD4;&#x56DE;&#x7684;&#x6570;&#x636E;:num1={0},num2={1}&quot;</span>,num1,num2);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x6784;&#x9020;&#x54CD;&#x5E94;&#x62A5;&#x6587;</span></span><br><span class="line">            HttpResponse response = <span class="keyword">new</span> HttpResponse(content, Encoding.UTF8);</span><br><span class="line">            response.StatusCode = <span class="string">&quot;200&quot;</span>;</span><br><span class="line">            response.Content_Type = <span class="string">&quot;text/html; charset=UTF-8&quot;</span>;</span><br><span class="line">            response.Server = <span class="string">&quot;ExampleServer&quot;</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//&#x53D1;&#x9001;&#x54CD;&#x5E94;</span></span><br><span class="line">            ProcessResponse(request.Handler, response);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x56E0;&#x4E3A;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x5BF9;Get&#x548C;Post&#x8FDB;&#x884C;&#x54CD;&#x5E94;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5BF9;OnGet&#x548C;OnPost&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x4E86;&#x91CD;&#x5199;&#xFF0C;&#x8FD9;&#x91CC;&#x7684;&#x5904;&#x7406;&#x65B9;&#x5F0F;&#x975E;&#x5E38;&#x7B80;&#x5355;&#xFF0C;&#x6309;&#x7167;&#x4E00;&#x5B9A;&#x683C;&#x5F0F;&#x8FD4;&#x56DE;&#x6570;&#x636E;&#x5373;&#x53EF;&#x3002;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x6765;&#x8BF4;&#x8BF4;Unity&#x4F5C;&#x4E3A;&#x5BA2;&#x6237;&#x7AEF;&#x8FD9;&#x8FB9;&#x8981;&#x505A;&#x7684;&#x5DE5;&#x4F5C;&#x3002;WWW&#x662F;Unity3D&#x4E2D;&#x63D0;&#x4F9B;&#x7684;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;HTTP&#x534F;&#x8BAE;&#x7684;&#x5C01;&#x88C5;&#x7C7B;&#xFF0C;&#x5B83;&#x548C;.NET&#x5E73;&#x53F0;&#x4E0B;&#x7684;WebClient&#x3001;HttpWebRequest/HttpWebResponse&#x7C7B;&#x4F3C;&#xFF0C;&#x90FD;&#x53EF;&#x4EE5;&#x5904;&#x7406;&#x5E38;&#x89C1;&#x7684;HTTP&#x8BF7;&#x6C42;&#x5982;Get&#x548C;Post&#x8FD9;&#x4E24;&#x79CD;&#x8BF7;&#x6C42;&#x65B9;&#x5F0F;&#x3002;</p>
+<p>WWW&#x7684;&#x4F18;&#x52BF;&#x4E3B;&#x8981;&#x662F;&#x7B80;&#x5355;&#x6613;&#x7528;&#x548C;&#x652F;&#x6301;&#x534F;&#x7A0B;&#xFF0C;&#x5C24;&#x5176;&#x662F;Unity3D&#x4E2D;&#x7684;&#x534F;&#x7A0B;&#xFF08;Coroutine&#xFF09;&#x8FD9;&#x4E2A;&#x7279;&#x6027;&#xFF0C;&#x5982;&#x679C;&#x80FD;&#x591F;&#x5F97;&#x5230;&#x826F;&#x597D;&#x7684;&#x4F7F;&#x7528;&#xFF0C;&#x5E38;&#x5E38;&#x80FD;&#x591F;&#x8D77;&#x5230;&#x4E8B;&#x500D;&#x529F;&#x534A;&#x7684;&#x6548;&#x679C;&#x3002;&#x56E0;&#x4E3A;WWW&#x5F3A;&#x8C03;&#x7684;&#x662F;&#x4EE5;HTTP&#x77ED;&#x94FE;&#x63A5;&#x4E3A;&#x4E3B;&#x7684;&#x6613;&#x7528;&#x6027;&#xFF0C;&#x6240;&#x4EE5;&#x76F8;&#x5E94;&#x5730;&#x5728;&#x8D85;&#x65F6;&#x3001;Cookie&#x7B49;HTTP&#x5934;&#x90E8;&#x5B57;&#x6BB5;&#x652F;&#x6301;&#x7684;&#x5B8C;&#x6574;&#x6027;&#x4E0A;&#x65E0;&#x6CD5;&#x548C;WebClient&#x3001;HttpWebRequest/HttpWebRespons&#x76F8;&#x63D0;&#x5E76;&#x8BBA;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x66F4;&#x590D;&#x6742;&#x7684;HTTP&#x534F;&#x8BAE;&#x652F;&#x6301;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x9009;&#x62E9;&#x5728;WebClient&#x3001;HttpWebRequest/HttpWebResponse&#x4E0A;&#x8FDB;&#x884C;&#x6DF1;&#x5EA6;&#x5B9A;&#x5236;&#x5C06;&#x4F1A;&#x662F;&#x4E00;&#x4E2A;&#x4E0D;&#x9519;&#x7684;&#x9009;&#x62E9;&#x3002;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x7684;&#x662F;&#x53D1;&#x8D77;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;HTTP&#x8BF7;&#x6C42;&#xFF0C;&#x6240;&#x4EE5;&#x4F7F;&#x7528;WWW&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x6EE1;&#x8DB3;&#x6211;&#x4EEC;&#x7684;&#x8981;&#x6C42;&#xFF0C;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x5728;Unity3D&#x4E2D;&#x5982;&#x4F55;&#x53D1;&#x8D77;&#x4E00;&#x4E2A;Get&#x8BF7;&#x6C42;&#xFF0C;&#x8FD9;&#x91CC;&#x7ED9;&#x51FA;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#xFF1A;<br></p><figure class="highlight arduino"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x91C7;&#x7528;GET&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#x6570;&#x636E;</span></span><br><span class="line">IEnumerator Get()</span><br><span class="line">{</span><br><span class="line">    WWW www = <span class="keyword">new</span> WWW (<span class="string">&quot;http://127.0.0.1:4040/?num1=12&amp;num2=23&quot;</span>);</span><br><span class="line">    <span class="built_in">yield</span> <span class="built_in">return</span> www;</span><br><span class="line">    Debug.Log(www.<span class="built_in">text</span>);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x662F;&#x9700;&#x8981;&#x4F7F;&#x7528;StartCoroutine&#x8C03;&#x7528;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x5C31;&#x53EF;&#x4EE5;&#x5566;&#xFF01;&#x540C;&#x6837;&#x5730;&#xFF0C;&#x5BF9;&#x4E8E;Post&#x8BF7;&#x6C42;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x91C7;&#x7528;&#x4E00;&#x4E2A;WWWForm&#x6765;&#x5C01;&#x88C5;&#x53C2;&#x6570;&#xFF0C;&#x800C;&#x5728;&#x7F51;&#x9875;&#x5F00;&#x53D1;&#x4E2D;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x90FD;&#x662F;&#x501F;&#x52A9;&#x8868;&#x5355;&#x6765;&#x5411;&#x670D;&#x52A1;&#x5668;&#x4F20;&#x9012;&#x53C2;&#x6570;&#x7684;&#xFF0C;&#x8FD9;&#x91CC;&#x7ED9;&#x51FA;&#x540C;&#x6837;&#x7B80;&#x5355;&#x7684;&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#xFF1A;<br></p><figure class="highlight stata"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x91C7;&#x7528;POST&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#x6570;&#x636E;</span></span><br><span class="line">IEnumerator <span class="keyword">Post</span>()</span><br><span class="line">{</span><br><span class="line">    WWWForm <span class="keyword">form</span> = new WWWForm ();</span><br><span class="line">    <span class="keyword">form</span>.AddField (<span class="string">&quot;num1&quot;</span>, 12);</span><br><span class="line">    <span class="keyword">form</span>.AddField (<span class="string">&quot;num2&quot;</span>, 23);</span><br><span class="line">    WWW www = new WWW (<span class="string">&quot;http://127.0.0.1:4040/&quot;</span>, <span class="keyword">form</span>);</span><br><span class="line">    yield <span class="keyword">return</span> www;</span><br><span class="line">    Debug.<span class="keyword">Log</span> (www.text);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x800C;&#x8FD0;&#x884C;&#x8FD9;&#x4E2A;&#x5B9E;&#x4F8B;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x4E0B;&#x9762;&#x7684;&#x7ED3;&#x679C;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzix87avuaj20dj05974c.jpg" alt="&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;" title>
+                </div>
+                <div class="image-caption">&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;</div>
+            </figure>
+<p>&#x90FD;&#x662F;&#x8C01;&#x544A;&#x8BC9;&#x4F60;&#x505A;&#x670D;&#x52A1;&#x5668;&#x5F00;&#x53D1;&#x4E00;&#x5B9A;&#x8981;&#x7528;Java&#x7684;&#x554A;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5199;&#x51FA;&#x81EA;&#x5DF1;&#x7684;&#x670D;&#x52A1;&#x5668;&#x4E86;&#xFF0C;&#x672C;&#x7BC7;&#x7ED3;&#x675F;&#xFF0C;&#x4E0B;&#x671F;&#x89C1;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/2734896333/">使用C#开发HTTP服务器之支持HTTPS</a></li><li><a href="https://qinyuanpei.github.io/posts/3603924376/">使用C#开发HTTP服务器系列之更简单的实现方式</a></li><li><a href="https://qinyuanpei.github.io/posts/3637847962/">使用C#开发HTTP服务器系列之构建RESTful API</a></li><li><a href="https://alili.tech/archive/84afbeeb/">HTTP的URI格式说明</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/1700650235/" rel="external">使用C#开发HTTP服务器系列之实现Get和Post</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/1700650235/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/1700650235/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C#</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/服务器/">服务器</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/1700650235/&title=《使用C#开发HTTP服务器系列之实现Get和Post》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/1700650235/&title=《使用C#开发HTTP服务器系列之实现Get和Post》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。在我们这个Web服务器..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/1700650235/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用C#开发HTTP服务器系列之实现Get和Post》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/1700650235/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/1700650235/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/1190622881/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Unity3D游戏开发之在uGUI中使用不规则精灵制作按钮</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3603924376/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">使用C#开发HTTP服务器系列之更简单的实现方式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/1700650235/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/1700650235/&title=《使用C#开发HTTP服务器系列之实现Get和Post》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/1700650235/&title=《使用C#开发HTTP服务器系列之实现Get和Post》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。在我们这个Web服务器..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/1700650235/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用C#开发HTTP服务器系列之实现Get和Post》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/1700650235/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/1700650235/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/1700650235/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

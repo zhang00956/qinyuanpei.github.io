@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        记通过EF生成不同数据库SQL脚本的一次尝试 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;#x2003;&amp;#x2003;&amp;#x63A5;&amp;#x89E6;&amp;#x65B0;&amp;#x9879;&amp;#x76EE;&amp;#x6709;&amp;#x6BB5;&amp;#x65F6;&amp;#x95F4;&amp;#x4E86;&amp;#xFF0C;&amp;#x5982;&amp;#x679C;&amp;#x8BA9;&amp;#x6211;&amp;#x7528;&amp;#x4E00;&amp;#x53E5;&amp;#x8BDD;&amp;#x6765;&amp;#x5F62;&amp;#x5BB9;&amp;#x6B64;">
+<meta name="keywords" content="EF,.NET Core,Logger">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记通过EF生成不同数据库SQL脚本的一次尝试">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/795474045/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;#x2003;&amp;#x2003;&amp;#x63A5;&amp;#x89E6;&amp;#x65B0;&amp;#x9879;&amp;#x76EE;&amp;#x6709;&amp;#x6BB5;&amp;#x65F6;&amp;#x95F4;&amp;#x4E86;&amp;#xFF0C;&amp;#x5982;&amp;#x679C;&amp;#x8BA9;&amp;#x6211;&amp;#x7528;&amp;#x4E00;&amp;#x53E5;&amp;#x8BDD;&amp;#x6765;&amp;#x5F62;&amp;#x5BB9;&amp;#x6B64;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05glt2tij20j306x74e.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz02250ixxj20u904w74c.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.524Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记通过EF生成不同数据库SQL脚本的一次尝试">
+<meta name="twitter:description" content="&amp;#x2003;&amp;#x2003;&amp;#x63A5;&amp;#x89E6;&amp;#x65B0;&amp;#x9879;&amp;#x76EE;&amp;#x6709;&amp;#x6BB5;&amp;#x65F6;&amp;#x95F4;&amp;#x4E86;&amp;#xFF0C;&amp;#x5982;&amp;#x679C;&amp;#x8BA9;&amp;#x6211;&amp;#x7528;&amp;#x4E00;&amp;#x53E5;&amp;#x8BDD;&amp;#x6765;&amp;#x5F62;&amp;#x5BB9;&amp;#x6B64;">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05glt2tij20j306x74e.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">记通过EF生成不同数据库SQL脚本的一次尝试</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">记通过EF生成不同数据库SQL脚本的一次尝试</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-09-17T09:42:23.000Z" itemprop="datePublished" class="page-time">
+  2018-09-17
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#基本原理"><span class="post-toc-number">1.</span> <span class="post-toc-text">基本原理</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#尝试过程"><span class="post-toc-number">2.</span> <span class="post-toc-text">尝试过程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#EF6"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">EF6</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#EF-Core"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">EF Core</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#本文小结"><span class="post-toc-number">3.</span> <span class="post-toc-text">本文小结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">4.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-记通过EF生成不同数据库SQL脚本的一次尝试" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">记通过EF生成不同数据库SQL脚本的一次尝试</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-09-17 09:42:23" datetime="2018-09-17T09:42:23.000Z" itemprop="datePublished">2018-09-17</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        20 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x63A5;&#x89E6;&#x65B0;&#x9879;&#x76EE;&#x6709;&#x6BB5;&#x65F6;&#x95F4;&#x4E86;&#xFF0C;&#x5982;&#x679C;&#x8BA9;&#x6211;&#x7528;&#x4E00;&#x53E5;&#x8BDD;&#x6765;&#x5F62;&#x5BB9;&#x6B64;&#x523B;&#x7684;&#x611F;&#x53D7;&#xFF0C;&#x5927;&#x6982;&#x5C31;&#x662F;<strong>&#x201C;&#x75DB;&#x5E76;&#x5FEB;&#x4E50;&#x7740;&#x201D;</strong>&#x3002;&#x75DB;&#x82E6;&#x4E4B;&#x4E00;&#x662F;&#x9762;&#x5BF9;TFS&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x7684;&#x5206;&#x652F;&#x7BA1;&#x7406;&#x5B9E;&#x5728;&#x662F;&#x4E00;&#x8A00;&#x96BE;&#x5C3D;&#xFF0C;&#x65E0;&#x65F6;&#x65E0;&#x523B;&#x4E0D;&#x5728;&#x4F53;&#x9A8C;&#x7740;&#x4EBA;&#x8089;&#x5408;&#x4EE3;&#x7801;&#x7684;&#x201C;&#x8DA3;&#x5473;&#x201D;&#x3002;&#x800C;&#x75DB;&#x82E6;&#x4E4B;&#x4E8C;&#x662F;&#x540C;&#x65F6;&#x7EF4;&#x62A4;&#x4E09;&#x5957;&#x6570;&#x636E;&#x5E93;&#x7684;&#x811A;&#x672C;&#xFF0C;&#x8FD9;&#x8BA9;&#x6211;&#x60F3;&#x5230;&#x4E00;&#x4E2A;&#x6897;&#xFF0C;&#x5728;&#x8BB2;&#x5230;&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4E00;&#x4E2A;&#x5E38;&#x5E38;&#x88AB;&#x63D0;&#x5230;&#x7684;&#x573A;&#x666F;&#x662F;&#xFF0C;&#x600E;&#x4E48;&#x6837;&#x4ECE;&#x8BBE;&#x8BA1;&#x4E0A;&#x652F;&#x6301;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5207;&#x6362;&#x3002;&#x6211;&#x60F3;&#xFF0C;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x662F;&#x975E;&#x5E38;&#x5BB9;&#x6613;&#x56DE;&#x7B54;&#x7684;&#xFF0C;&#x771F;&#x6B63;&#x7684;&#x95EE;&#x9898;&#x662F;&#x6211;&#x4EEC;&#x771F;&#x7684;&#x9700;&#x8981;&#x5207;&#x6362;&#x6570;&#x636E;&#x5E93;&#x5417;&#xFF1F;&#x539F;&#x8C05;&#x6211;&#x7684;&#x5E74;&#x5C11;&#x65E0;&#x77E5;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x4EA7;&#x54C1;&#x56E0;&#x4E3A;&#x8981;&#x540C;&#x65F6;&#x652F;&#x6301;&#x516C;&#x6709;&#x4E91;&#x548C;&#x79C1;&#x6709;&#x5316;&#x90E8;&#x7F72;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x6570;&#x636E;&#x5E93;&#x7684;&#x9009;&#x62E9;&#x4E0A;&#xFF0C;&#x8986;&#x76D6;&#x5230;&#x4E86;&#x4E3B;&#x6D41;MySQL&#x3001;Oracle&#x548C;SQL Server&#xFF0C;&#x8FD9;&#x76F4;&#x63A5;&#x5BFC;&#x81F4;&#x6211;&#x4EEC;&#x8981;&#x7EF4;&#x62A4;&#x4E09;&#x5957;&#x6570;&#x636E;&#x5E93;&#x7684;&#x811A;&#x672C;&#xFF0C;&#x4F60;&#x8BF4;&#x8FD9;&#x6837;&#x5B50;&#x80FD;&#x4E0D;&#x75DB;&#x82E6;&#x5417;&#xFF1F;&#x800C;&#x5FEB;&#x4E50;&#x7684;&#x5730;&#x65B9;&#x5728;&#x4E8E;&#xFF0C;&#x7EC8;&#x4E8E;&#x6709;&#x673A;&#x4F1A;&#x5728;&#x4E00;&#x4E2A;&#x6709;&#x4E00;&#x5B9A;&#x7528;&#x6237;&#x4F53;&#x91CF;&#x7684;&#x4EA7;&#x54C1;&#x4E0A;&#x53C2;&#x4E0E;&#x7814;&#x53D1;&#xFF0C;&#x4EE5;&#x53CA;&#x4ECE;&#x4E0B;&#x5468;&#x5F00;&#x59CB;&#x6211;&#x4EEC;&#x5C06;&#x4ECE;TFS&#x5207;&#x6362;&#x5230;Git&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x4ECA;&#x5929;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x4E3B;&#x9898;&#x662F;&#xFF0C;<strong>&#x901A;&#x8FC7;EF&#x6765;&#x751F;&#x6210;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x5E93;&#x7684;SQL&#x811A;&#x672C;</strong>&#xFF0C;&#x8FD9;&#x662F;&#x75DB;&#x82E6;&#x4E2D;&#x7684;&#x4E00;&#x6B21;&#x5C1D;&#x8BD5;&#xFF0C;&#x6240;&#x8C13;<strong>&#x201C;&#x75DB;&#x5E76;&#x5FEB;&#x4E50;&#x7740;&#x201D;</strong>&#x3002;</p>
+<h1 id="&#x57FA;&#x672C;&#x539F;&#x7406;"><a href="#&#x57FA;&#x672C;&#x539F;&#x7406;" class="headerlink" title="&#x57FA;&#x672C;&#x539F;&#x7406;"></a>&#x57FA;&#x672C;&#x539F;&#x7406;</h1><p>&#x2003;&#x2003;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x6570;&#x636E;&#x5E93;&#x548C;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x8FD9;&#x4E24;&#x8005;&#x95F4;&#x5B58;&#x5728;&#x7740;&#x5929;&#x7136;&#x963B;&#x6297;&#xFF0C;&#x8FD9;&#x662F;&#x56E0;&#x4E3A;&#x4E24;&#x8005;&#x5728;&#x4E8B;&#x7269;&#x7684;&#x8BA4;&#x77E5;&#x4E0A;&#x5B58;&#x5728;&#x5DEE;&#x5F02;&#xFF0C;&#x6570;&#x636E;&#x5E93;&#x5173;&#x6CE8;&#x7684;&#x662F;&#x4E8C;&#x7EF4;&#x8868;&#x3001;&#x662F;&#x96C6;&#x5408;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#xFF0C;&#x800C;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x5173;&#x6CE8;&#x7684;&#x662F;&#x5C01;&#x88C5;&#x3001;&#x662F;&#x7EC6;&#x8282;&#x7684;&#x9690;&#x85CF;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x4E0D;&#x7BA1;&#x5230;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#xFF0C;&#x8FD9;&#x4E24;&#x8005;&#x90FD;&#x53EA;&#x80FD;&#x4EE5;&#x67D0;&#x79CD;&#x5C34;&#x5C2C;&#x7684;&#x65B9;&#x5F0F;&#x5171;&#x5B58;&#xFF0C;SQL&#x6267;&#x884C;&#x6548;&#x7387;&#x9AD8;&#xFF0C;&#x8FD9;&#x662F;&#x4EE5;&#x727A;&#x7272;&#x53EF;&#x8BFB;&#x6027;&#x4E3A;&#x4EE3;&#x4EF7;&#x7684;&#xFF1B; ORM&#x8FCE;&#x5408;&#x4E86;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#xFF0C;&#x8FD9;&#x662F;&#x4EE5;&#x727A;&#x7272;&#x6027;&#x80FD;&#x4E3A;&#x4EE3;&#x4EF7;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x5373;&#x4F7F;&#x5230;&#x4E86;&#x4ECA;&#x5929;&#xFF0C;&#x5173;&#x4E8E;SQL&#x548C;ORM&#x7684;&#x4E89;&#x8BBA;&#x4ECE;&#x6765;&#x6CA1;&#x6709;&#x505C;&#x6B62;&#x8FC7;&#xFF0C;&#x751A;&#x81F3;&#x5199;SQL&#x7684;&#x4EBA;&#x4E0D;&#x77E5;&#x4E0D;&#x89C9;&#x95F4;&#x201C;&#x9020;&#x201D;&#x51FA;&#x4E86;ORM&#xFF0C;&#x800C;&#x4F7F;&#x7528;ORM&#x7684;&#x4EBA;&#x6709;&#x65F6;&#x9700;&#x8981;SQL&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x9762;&#x5BF9;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x9700;&#x8981;&#x540C;&#x65F6;&#x7EF4;&#x62A4;&#x4E09;&#x5957;&#x6570;&#x636E;&#x5E93;&#x811A;&#x672C;&#x7684;&#x5DE5;&#x4F5C;&#xFF0C;&#x6211;&#x4E2A;&#x4EBA;&#x503E;&#x5411;&#x4E8E;&#x7528;&#x5DE5;&#x5177;&#x53BB;&#x751F;&#x6210;&#xFF0C;&#x6216;&#x8BB8;&#x662F;&#x51FA;&#x4E8E;&#x7A0B;&#x5E8F;&#x5458;&#x5BF9;&#x201C;&#x61D2;&#x201D;&#x8FD9;&#x79CD;&#x7F8E;&#x5FB7;&#x7684;&#x6781;&#x81F4;&#x8FFD;&#x6C42;&#xFF0C;&#x6216;&#x8BB8;&#x662F;&#x51FA;&#x4E8E;&#x6211;&#x5BF9;SQL&#x8FD9;&#x79CD;&#x201C;&#x65B9;&#x8A00;&#x201D;&#x5929;&#x751F;&#x7684;&#x6392;&#x65A5;&#xFF0C;&#x603B;&#x800C;&#x8A00;&#x4E4B;&#xFF0C;&#x6211;&#x4E0D;&#x662F;&#x5F88;&#x559C;&#x6B22;&#x624B;&#x5199;SQL&#x9664;&#x975E;&#x7279;&#x522B;&#x5FC5;&#x8981;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x548C;&#x6B63;&#x5219;&#x4E00;&#x6837;&#xFF0C;&#x53EA;&#x6709;&#x5199;&#x5F97;&#x4EBA;&#x61C2;&#x5B83;&#x771F;&#x6B63;&#x7684;&#x542B;&#x4E49;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x90A3;&#x4E48;&#xFF0C;&#x8BF4;&#x5230;&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x77E5;&#x9053;&#x4E86;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#xFF0C;ORM&#x53EF;&#x4EE5;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x751F;&#x6210;SQL&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x6211;&#x4EEC;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x8BA9;&#x5B83;&#x5E2E;&#x6211;&#x4EEC;&#x751F;&#x6210;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x5E93;&#x7684;SQL&#x811A;&#x672C;&#x5462;&#xFF1F;&#x867D;&#x7136;ORM&#x7684;&#x6027;&#x80FD;&#x603B;&#x662F;&#x4E3A;&#x4EBA;&#x6240;&#x8BDF;&#x75C5;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x4E25;&#x683C;&#x9075;&#x5FAA;&#x67D0;&#x79CD;&#x89C4;&#x5219;&#xFF0C;&#x6240;&#x4EE5;&#x6CE8;&#x5B9A;&#x505A;&#x4E0D;&#x5230;&#x50CF;&#x4EBA;&#x7C7B;&#x4E00;&#x6837;&#x201C;&#x7075;&#x6D3B;&#x201D;&#x3002;&#x6211;&#x4EEC;&#x59CB;&#x7EC8;&#x8BA4;&#x4E3A;&#x4E0D;&#x201C;&#x7075;&#x6D3B;&#x201D;&#x7684;&#x5C31;&#x662F;&#x201C;&#x7B28;&#x62D9;&#x201D;&#x7684;&#xFF0C;&#x53EF;&#x5373;&#x4FBF;&#x5982;&#x6B64;ORM&#x751F;&#x6210;&#x7684;SQL&#x4F9D;&#x7136;&#x6BD4;&#x4EBA;&#x7C7B;&#x5199;&#x5F97;&#x8981;&#x597D;&#x770B;&#x3002;&#x6545;&#x800C;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x601D;&#x8DEF;&#x662F;&#xFF0C;<strong>&#x5728;ORM&#x751F;&#x6210;SQL&#x8BED;&#x53E5;&#x7684;&#x65F6;&#x5019;&#x5C06;&#x5176;&#x8BB0;&#x5F55;&#x4E0B;&#x6765;&#xFF0C;&#x7136;&#x540E;&#x6309;&#x7167;&#x4E00;&#x5B9A;&#x89C4;&#x5219;&#x751F;&#x6210;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x5E93;&#x7684;&#x811A;&#x672C;</strong>&#x3002;&#x6BD5;&#x7ADF;SQL&#x8BED;&#x8A00;&#x66F4;&#x63A5;&#x8FD1;&#x201C;&#x65B9;&#x8A00;&#x201D;&#xFF0C;&#x6BCF;&#x4E00;&#x79CD;&#x6570;&#x636E;&#x5E93;&#x7684;SQL&#x811A;&#x672C;&#x90FD;&#x5B58;&#x5728;&#x7740;&#x7EC6;&#x5FAE;&#x7684;&#x5DEE;&#x522B;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x540E;&#x6765;&#x4EBA;&#x4EEC;&#x4E0D;&#x5F97;&#x4E0D;&#x53D1;&#x660E;T-SQL&#xFF0C;&#x53EF;&#x4EFB;&#x4F55;&#x4E1C;&#x897F;&#x5F52;&#x6839;&#x7ED3;&#x5E95;&#x4E0D;&#x90FD;&#x662F;&#x6743;&#x529B;&#x548C;&#x5229;&#x76CA;&#x5E26;&#x6765;&#x7684;&#x9644;&#x5C5E;&#x54C1;&#x5417;&#xFF1F;&#x4EBA;&#x7C7B;&#x4E3A;&#x4E86;&#x4E92;&#x76F8;&#x7ADE;&#x4E89;&#x800C;&#x5F62;&#x6210;&#x5DEE;&#x5F02;&#x5316;&#xFF0C;&#x53EF;&#x5F53;&#x4E00;&#x5207;&#x5DEE;&#x5F02;&#x90FD;&#x4E0D;&#x751A;&#x660E;&#x663E;&#x65F6;&#xFF0C;&#x6700;&#x7EC8;&#x53C8;&#x4E0D;&#x5F97;&#x4E0D;&#x82B1;&#x8D39;&#x7CBE;&#x529B;&#x6765;&#x89E3;&#x51B3;&#x8FD9;&#x4E9B;&#x5DEE;&#x5F02;&#x3002;&#x53EF;&#x4E00;&#x4E2A;&#x53EA;&#x6709;&#x5784;&#x65AD;&#x5B58;&#x5728;&#x7684;&#x4E16;&#x754C;&#xFF0C;&#x9664;&#x4E86;&#x8BA9;&#x4EBA;&#x60F3;&#x8D77;1984&#x91CC;&#x7684;Big Brother&#x4EE5;&#x5916;&#xFF0C;&#x8FD8;&#x80FD;&#x60F3;&#x8D77;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;</p>
+<h1 id="&#x5C1D;&#x8BD5;&#x8FC7;&#x7A0B;"><a href="#&#x5C1D;&#x8BD5;&#x8FC7;&#x7A0B;" class="headerlink" title="&#x5C1D;&#x8BD5;&#x8FC7;&#x7A0B;"></a>&#x5C1D;&#x8BD5;&#x8FC7;&#x7A0B;</h1><p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x987A;&#x7740;&#x8FD9;&#x4E2A;&#x601D;&#x8DEF;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x4F1A;&#x60F3;&#x5230;&#x5728;ORM&#x4E2D;&#x6DFB;&#x52A0;&#x62E6;&#x622A;&#x5668;&#x6216;&#x8005;&#x662F;&#x65E5;&#x5FD7;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x6765;&#x83B7;&#x5F97;&#x7531;ORM&#x751F;&#x6210;&#x7684;SQL&#x8BED;&#x53E5;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4EE5;Entity Framework(&#x4EE5;&#x4E0B;&#x7B80;&#x79F0;EF)&#x4E3A;&#x4F8B;&#xFF0C;&#x8FD9;&#x662F;.NET&#x4E2D;&#x6700;&#x5E38;&#x89C1;&#x7684;ORM&#xFF0C;&#x56E0;&#x4E3A;&#x76EE;&#x524D;&#x5B98;&#x65B9;&#x7684;Web&#x5F00;&#x53D1;&#x6846;&#x67B6;&#x6709;ASP.NET&#x548C;ASP.NET Core&#x4E24;&#x4E2A;&#x7248;&#x672C;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5206;&#x522B;&#x4EE5;ASP.NET&#x548C;ASP.NET Core&#x4E3A;&#x4F8B;&#x6765;&#x8BF4;&#x660E;&#x5177;&#x4F53;&#x7684;&#x5B9E;&#x73B0;&#x8FC7;&#x7A0B;&#xFF0C;&#x76F8;&#x5E94;&#x5730;&#xFF0C;&#x6211;&#x4EEC;&#x5206;&#x522B;&#x4F7F;&#x7528;&#x4E86;EF6&#x548C;EF Core &#x4F5C;&#x4E3A;&#x5404;&#x81EA;&#x7684;ORM&#x3002; </p>
+<h2 id="EF6"><a href="#EF6" class="headerlink" title="EF6"></a>EF6</h2><p>&#x2003;&#x2003;&#x5BF9;&#x4E8E;EF6&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x7EE7;&#x627F;<strong>DbCommandInterecptor</strong>&#x7C7B;&#x6765;&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x62E6;&#x622A;&#x5668;&#x3002;&#x800C;&#x5728;&#x62E6;&#x622A;&#x5668;&#x4E2D;&#x91CD;&#x5199;&#x76F8;&#x5E94;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x7684;&#x5E38;&#x89C1;&#x64CD;&#x4F5C;(CURD)&#x8FDB;&#x884C;&#x62E6;&#x622A;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x6839;&#x636E;&#x8FD9;&#x4E2A;&#x601D;&#x8DEF;&#xFF0C;&#x6211;&#x4EEC;&#x4F1A;&#x8054;&#x60F3;&#x5230;&#xFF0C;&#x901A;&#x5E38;&#x6570;&#x636E;&#x5E93;&#x8FC1;&#x79FB;&#x90FD;&#x662F;&#x9488;&#x5BF9;&#x201C;&#x5199;&#x201D;&#x8FD9;&#x4E2A;&#x64CD;&#x4F5C;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x60F3;&#x6CD5;&#x662F;&#x8BB0;&#x5F55;INSERT&#x548C;UPDATE&#x4E24;&#x79CD;SQL&#x8BED;&#x53E5;&#x3002;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x4E0B;&#x9762;&#x7684;&#x793A;&#x4F8B;&#x6765;&#x9A8C;&#x8BC1;&#x8FD9;&#x4E2A;&#x60F3;&#x6CD5;&#xFF0C;&#x9700;&#x8981;&#x8BF4;&#x660E;&#x7684;&#x662F;&#xFF0C;&#x672C;&#x6587;&#x4E2D;&#x6240;&#x6709;&#x6570;&#x636E;&#x5E93;&#x76F8;&#x5173;&#x7684;&#x793A;&#x4F8B;&#xFF0C;&#x5747;&#x91C7;&#x7528;Code First&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x521B;&#x5EFA;&#x3002;<br></p><figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SQLGenInterceptor</span> : <span class="title">DbCommandInterceptor</span></span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">NonQueryExecuting</span>(<span class="params">DbCommand command, DbCommandInterceptionContext&lt;<span class="keyword">int</span>&gt; interceptionContext</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">var</span> sqlText = FormatSQL(command);</span><br><span class="line">        Log.Info(sqlText);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">ReaderExecuting</span>(<span class="params">DbCommand command, DbCommandInterceptionContext&lt;DbDataReader&gt; interceptionContext</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">var</span> sqlText = FormatSQL(command);</span><br><span class="line">        Log.Info(sqlText);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">ScalarExecuting</span>(<span class="params">DbCommand command, DbCommandInterceptionContext&lt;<span class="keyword">object</span>&gt; interceptionContext</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">var</span> sqlText = FormatSQL(command);</span><br><span class="line">        Log.Info(sqlText);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">string</span> <span class="title">FormatSQL</span>(<span class="params">DbCommand command</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">var</span> sqlText = command.CommandText;</span><br><span class="line">        <span class="keyword">foreach</span> (DbParameter sqlParam <span class="keyword">in</span> command.Parameters)</span><br><span class="line">        {</span><br><span class="line">            sqlText = sqlText.Replace(sqlParam.ParameterName,            sqlParam.Value.ToString());</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> sqlText;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x5728;&#x8FD9;&#x4E2A;&#x793A;&#x4F8B;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;NLog&#x6765;&#x8BB0;&#x5F55;&#x7531;EF&#x751F;&#x6210;&#x7684;SQL&#x8BED;&#x53E5;&#xFF0C;&#x53EF;&#x4EE5;&#x6CE8;&#x610F;&#x5230;&#x5B83;&#x6BD4;&#x6211;&#x4EEC;&#x60F3;&#x8C61;&#x4E2D;&#x7684;&#x8981;&#x7A0D;&#x5FAE;&#x590D;&#x6742;&#x4E9B;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x4EBA;&#x4EEC;&#x8BF4;ORM&#x6027;&#x80FD;&#x5DEE;&#x5E76;&#x4E0D;&#x662F;&#x6CA1;&#x6709;&#x9053;&#x7406;&#x3002;&#x53EF;&#x5F53;&#x4F60;&#x89C1;&#x8FC7;&#x90A3;&#x4E9B;&#x7531;&#x4EBA;&#x624B;&#x5199;&#x51FA;&#x7684;&#x5929;&#x4E66;&#x4E00;&#x822C;&#x7684;SQL&#x8BED;&#x53E5;&#x540E;&#xFF0C;&#x4E5F;&#x8BB8;&#x4E24;&#x8005;&#x5728;&#x53EF;&#x8BFB;&#x6027;&#x4E0A;&#x6765;&#x8BF4;&#x4E0D;&#x8FC7;&#x662F;&#x4E94;&#x5341;&#x6B65;&#x7B11;&#x767E;&#x6B65;&#x3002;&#x5B9E;&#x9645;&#x4E0A;EF&#x751F;&#x6210;&#x7684;SQL&#x662F;&#x4E00;&#x79CD;&#x53EB;&#x505A;T-SQL&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x628A;&#x5B83;&#x7406;&#x89E3;&#x4E3A;&#x4E00;&#x79CD;&#x6807;&#x51C6;&#x7684;SQL&#x8BED;&#x8A00;&#x3002;&#x8B6C;&#x5982;&#x5728;PowerBuilder&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x5E93;&#x5EFA;&#x6A21;&#x8F6F;&#x4EF6;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;T-SQL&#x8F6C;&#x6362;&#x51FA;&#x4E3B;&#x6D41;&#x6570;&#x636E;&#x5E93;&#x7684;SQL&#x8BED;&#x53E5;&#x3002;&#x535A;&#x4E3B;&#x5728;&#x5DE5;&#x4F5C;&#x4E2D;&#x9700;&#x8981;&#x7EF4;&#x62A4;&#x4E09;&#x5957;SQL&#x811A;&#x672C;&#xFF0C;&#x800C;&#x8FD9;&#x4E9B;&#x811A;&#x672C;&#x95F4;&#x7EC6;&#x5C0F;&#x7684;&#x8BED;&#x6CD5;&#x5DEE;&#x5F02;&#xFF0C;&#x5C31;&#x53D8;&#x6210;&#x4E86;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E2D;&#x6700;&#x96BE;&#x5FD8;&#x7684;&#x8BB0;&#x5FC6;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4E0D;&#x8003;&#x8651;&#x53BB;&#x505A;&#x8BED;&#x6CD5;&#x8F6C;&#x6362;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x56E0;&#x4E3A;&#x5B9E;&#x9645;&#x4E0A;&#x901A;&#x8FC7;&#x4F20;&#x5165;&#x4E0D;&#x540C;&#x7684;&#x8FDE;&#x63A5;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x80FD;&#x5F97;&#x5230;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x5E93;&#x7684;SQL&#x811A;&#x672C;&#xFF0C;&#x6240;&#x4EE5;&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x5DE5;&#x4F5C;&#x5C31;&#x4EA4;&#x7ED9;&#x5404;&#x4F4D;&#x4E86;(&#x9003;&#x2026;&#x2026;</p>
+<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x6CE8;&#x5165;SQLGen&#x62E6;&#x622A;&#x5668;</span></span><br><span class="line">DbInterception.Add(<span class="keyword">new</span> SQLGenInterceptor());</span><br><span class="line"><span class="keyword">using</span> (<span class="keyword">var</span> context = <span class="keyword">new</span> DataContext())</span><br><span class="line">{</span><br><span class="line">    context.Users.Add(<span class="keyword">new</span> User()</span><br><span class="line">    {</span><br><span class="line">        UserName = <span class="string">&quot;PayneQin&quot;</span>,</span><br><span class="line">        UserRole = <span class="string">&quot;Administrator&quot;</span></span><br><span class="line">    });</span><br><span class="line"></span><br><span class="line">    context.SaveChanges();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x73B0;&#x5728;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5C06;&#x8FD9;&#x4E2A;&#x62E6;&#x622A;&#x5668;&#x6CE8;&#x518C;&#x5230;EF&#x4E2D;&#xFF0C;&#x6CE8;&#x518C;&#x8FC7;&#x7A0B;&#x975E;&#x5E38;&#x7B80;&#x5355;&#xFF0C;&#x4E00;&#x65E6;&#x62E6;&#x622A;&#x5668;&#x6CE8;&#x518C;&#x5B8C;&#x6210;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x5728;EF&#x4E2D;&#x6267;&#x884C;&#x76F8;&#x5E94;&#x64CD;&#x4F5C;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x5728;&#x65E5;&#x5FD7;&#x4E2D;&#x770B;&#x5230;&#x76F8;&#x5BF9;&#x5E94;&#x7684;SQ&#x8BED;&#x53E5;&#x4E86;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x8FBE;&#x5230;&#x4E86;&#x7528;EF&#x751F;&#x6210;SQL&#x8BED;&#x53E5;&#x7684;&#x76EE;&#x7684;&#xFF0C;&#x867D;&#x7136;&#x8BF4;&#x8FD9;&#x6837;&#x53EF;&#x80FD;&#x8FD8;&#x6CA1;&#x624B;&#x5199;&#x6765;&#x5FEB;&#xFF0C;&#x53EF;&#x5B83;&#x81F3;&#x5C11;&#x8BA9;&#x4F60;&#x77E5;&#x9053;&#x4E86;&#xFF0C;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x4E0A;&#x6709;&#x4E00;&#x79CD;&#x4E0D;&#x9700;&#x8981;&#x624B;&#x5199;SQL&#x7684;&#x53EF;&#x80FD;&#x6027;&#x554A;&#xFF0C;&#x4F60;&#x8BF4;&#x5BF9;&#x5417;&#xFF1F;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz05glt2tij20j306x74e.jpg" alt="EF&#x751F;&#x6210;SQL&#x8BED;&#x53E5;&#x6BD4;&#x60F3;&#x8C61;&#x4E2D;&#x66F4;&#x4E3A;&#x590D;&#x6742;" title>
+                </div>
+                <div class="image-caption">EF&#x751F;&#x6210;SQL&#x8BED;&#x53E5;&#x6BD4;&#x60F3;&#x8C61;&#x4E2D;&#x66F4;&#x4E3A;&#x590D;&#x6742;</div>
+            </figure>
+<h2 id="EF-Core"><a href="#EF-Core" class="headerlink" title="EF Core"></a>EF Core</h2><p>&#x2003;&#x2003;&#x5BF9;&#x4E8E;EF Core&#x6765;&#x8BF4;&#xFF0C;&#x5B83;&#x5E76;&#x6CA1;&#x6709;&#x63D0;&#x4F9B;&#x50CF;EF6&#x90A3;&#x6837;&#x7684;&#x62E6;&#x622A;&#x5668;&#xFF0C;&#x867D;&#x7136;&#x5B98;&#x65B9;&#x66FE;&#x7ECF;&#x8BF4;&#x8FC7;&#x540E;&#x7EED;&#x4F1A;&#x505A;&#x8FD9;&#x65B9;&#x9762;&#x7684;&#x5DE5;&#x4F5C;[&#x644A;&#x624B;]&#x2026;&#x2026;&#x4E0D;&#x8FC7;&#x529E;&#x6CD5;&#x7EC8;&#x7A76;&#x662F;&#x4EBA;&#x60F3;&#x51FA;&#x6765;&#x7684;&#xFF0C;&#x5BF9;&#x4E8E;EF Core&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x6CE8;&#x5165;&#x65E5;&#x5FD7;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x5B9E;&#x73B0;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#xFF0C;&#x5FAE;&#x8F6F;&#x5728;.NET Core&#x4E2D;&#x5927;&#x529B;&#x5730;&#x53D1;&#x5C55;&#x4E86;&#x4F9D;&#x8D56;&#x6CE8;&#x5165;&#x3001;&#x4E2D;&#x95F4;&#x4EF6;&#x7B49;&#x4E00;&#x7CFB;&#x5217;&#x7279;&#x6027;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x5BF9;&#x4E8E;&#x6211;&#x4EEC;&#x8FD9;&#x79CD;&#x559C;&#x6B22;&#x641E;&#x4E8B;&#x60C5;&#x7684;&#x4EBA;&#x6765;&#x8BF4;&#xFF0C;&#x7B80;&#x76F4;&#x592A;&#x65B9;&#x4FBF;&#x4E86;&#x6709;&#x6728;&#x6709;&#x554A;&#xFF01;.NET Core&#x4E2D;&#x65E5;&#x5FD7;&#x6CE8;&#x5165;&#x4E3B;&#x8981;&#x96C6;&#x4E2D;&#x5728;ILogger&#x3001;ILoggerFactory&#x548C;ILoggerProvider&#x4E09;&#x4E2A;&#x63A5;&#x53E3;&#xFF0C;&#x7B80;&#x5355;&#x6765;&#x8BF4;&#xFF0C;ILoggerFactory&#x662F;&#x65E5;&#x5FD7;&#x5DE5;&#x5382;&#xFF0C;&#x8D1F;&#x8D23;&#x8FD4;&#x56DE;&#x5177;&#x4F53;&#x7684;Logger&#xFF1B;&#x800C;ILoggerProvider&#xFF0C;&#x5219;&#x51B3;&#x5B9A;&#x5728;&#x4EC0;&#x4E48;&#x60C5;&#x51B5;&#x4E0B;&#x5E94;&#x8BE5;&#x63D0;&#x4F9B;&#x4EC0;&#x4E48;&#x6837;&#x7684;Logger&#x3002;&#x6700;&#x5E38;&#x89C1;&#x7684;&#x4E24;&#x79CD;LoggerProvider&#x662F;Console&#x548C;Debug&#xFF0C;&#x5B83;&#x4EEC;&#x5206;&#x522B;&#x901A;&#x8FC7;AddConsole()&#x548C;AddDebug()&#x6765;&#x6CE8;&#x5165;&#x3002;&#x5177;&#x4F53;&#x5230;&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x4E0B;&#x9762;&#x7684;&#x65B9;&#x5F0F;&#x5B9E;&#x73B0;&#xFF1A;</p>
+<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SQLGenLogger</span> : <span class="title">ILogger</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="keyword">string</span> categoryName;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SQLGenLogger</span>(<span class="params"><span class="keyword">string</span> categoryName</span>)</span> =&gt; <span class="keyword">this</span>.categoryName = categoryName;</span><br><span class="line">    <span class="keyword">public</span> IDisposable BeginScope&lt;TState&gt;(TState state) =&gt; <span class="literal">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">bool</span> <span class="title">IsEnabled</span>(<span class="params">LogLevel logLevel</span>)</span> =&gt; <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> Log&lt;TState&gt;(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func&lt;TState, Exception, <span class="keyword">string</span>&gt; formatter)</span><br><span class="line">    {</span><br><span class="line">        Log.Info(state)</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x9996;&#x5148;&#x5B9A;&#x4E49;SQLGenLogger&#xFF0C;&#x987E;&#x540D;&#x601D;&#x4E49;&#xFF0C;&#x5B83;&#x662F;&#x7528;&#x6765;&#x8BB0;&#x5F55;&#x751F;&#x6210;&#x7684;SQL&#x8BED;&#x53E5;&#x7684;&#xFF0C;&#x540C;&#x6837;&#xFF0C;&#x6211;&#x4EEC;&#x9009;&#x62E9;&#x4E86;NLog&#x3002;&#x8FD9;&#x91CC;&#x6709;&#x4E00;&#x70B9;&#x8981;&#x8BF4;&#x660E;&#xFF0C;&#x5E73;&#x65F6;&#x6211;&#x4EEC;&#x5728;&#x63A7;&#x5236;&#x5668;&#x4E2D;&#x4F7F;&#x7528;ILogger&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x901A;&#x5E38;&#x4F1A;&#x5728;&#x63A7;&#x5236;&#x5668;&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x4E2D;&#x6CE8;&#x5165;ILogger<foocontroller>&#xFF0C;&#x4E00;&#x65E6;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x6CDB;&#x578B;&#x7684;ILogger&#x63A5;&#x53E3;&#xFF0C;Log()&#x65B9;&#x6CD5;&#x4E2D;&#x7684;&#x53C2;&#x6570;state&#x5B9E;&#x9645;&#x4E0A;&#x5C31;&#x662F;&#x5F53;&#x524D;&#x7C7B;&#x578B;&#xFF0C;&#x8FD9;&#x91CC;&#x548C;SQL&#x8BED;&#x53E5;&#x76F8;&#x5173;&#x7684;&#x7C7B;&#x578B;DbCommandData&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x535A;&#x4E3B;&#x8BD5;&#x51FA;&#x6765;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x5982;&#x679C;&#x4E0D;&#x9650;&#x5B9A;ILogger<t>&#x4E2D;&#x7684;&#x53C2;&#x6570;T&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x5F97;&#x5230;&#x6240;&#x6709;&#x7684;&#x6267;&#x884C;&#x65E5;&#x5FD7;&#xFF0C;&#x663E;&#x7136;&#xFF0C;&#x8FD9;&#x4E0D;&#x662F;&#x6211;&#x4EEC;&#x60F3;&#x8981;&#x7684;&#x7ED3;&#x679C;&#x3002;</t></foocontroller></p>
+<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SQLGenLoggerProvider</span> : <span class="title">ILoggerProvider</span></span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ILogger <span class="title">CreateLogger</span>(<span class="params"><span class="keyword">string</span> categoryName</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">if</span>(categoryName  == <span class="string">&quot;Microsoft.EntityFrameworkCore.Database.Command&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> SQLGenLogger(categoryName);</span><br><span class="line">        <span class="keyword">return</span> NullLogger.Instance;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x63A5;&#x4E0B;&#x6765;&#x6765;&#x770B;&#xFF0C;ILoggerProvider&#x63A5;&#x53E3;&#x7684;&#x5B9E;&#x73B0;&#x3002;&#x6211;&#x4EEC;&#x8BF4;&#x8FC7;&#xFF0C;ILoggerProvider&#x63A5;&#x53E3;&#x51B3;&#x5B9A;&#x5728;&#x4EC0;&#x4E48;&#x60C5;&#x51B5;&#x4E0B;&#x5E94;&#x8BE5;&#x63D0;&#x4F9B;&#x4EC0;&#x4E48;&#x6837;&#x7684;Logger&#xFF0C;&#x6211;&#x4EEC;&#x6CE8;&#x610F;&#x5230;&#x5B83;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;CreateLogger()&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5B83;&#x4F1A;&#x6839;&#x636E;categoryName&#x6765;&#x8FD4;&#x56DE;&#x4E0D;&#x540C;&#x7684;Logger&#xFF0C;&#x800C;&#x53C2;&#x6570;categoryName&#x5B9E;&#x9645;&#x4E0A;&#x7B49;&#x4EF7;&#x4E0E;nameof(FooController)&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x5230;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5C31;&#x4F1A;&#x660E;&#x767D;&#xFF0C;&#x4E3A;&#x4EC0;&#x4E48;&#x8FD9;&#x91CC;&#x8981;&#x5224;&#x65AD;categoryName&#x4E86;&#xFF0C;&#x5B83;&#x5B9E;&#x9645;&#x4E0A;&#x8D77;&#x4E00;&#x4E2A;&#x8FC7;&#x6EE4;&#x7684;&#x4F5C;&#x7528;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;SQL&#x76F8;&#x5173;&#x7684;&#x65E5;&#x5FD7;&#xFF0C;&#x5B83;&#x548C;SQLGenLogger&#x4E2D;&#x7684;state&#x76F8;&#x5BF9;&#x5E94;&#xFF0C;&#x6211;&#x4EEC;&#x5DF2;&#x7ECF;&#x8BF4;&#x8FC7;&#xFF0C;&#x8FD9;&#x662F;&#x535A;&#x4E3B;&#x8BD5;&#x51FA;&#x6765;&#x7684;&#x3002;</p>
+<figure class="highlight csharp"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DataContext</span> : <span class="title">DbContext</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">virtual</span> DbSet&lt;User&gt; Users { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnConfiguring</span>(<span class="params">DbContextOptionsBuilder optionsBuilder</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">var</span> loggerFactory = <span class="keyword">new</span> LoggerFactory();</span><br><span class="line">        loggerFactory.AddProvider(<span class="keyword">new</span> SQLGenLoggerProvider());</span><br><span class="line">        <span class="comment">//&#x5728;&#x8FD9;&#x91CC;&#x6CE8;&#x5165;&#x65E5;&#x5FD7;&#x5DE5;&#x5382;</span></span><br><span class="line">        optionsBuilder.UseLoggerFactory(loggerFactory)</span><br><span class="line">            .EnableSensitiveDataLogging()</span><br><span class="line">            .UseSqlServer(<span class="string">@&quot;Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=SQLGen.DataContext;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;</span>); </span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnModelCreating</span>(<span class="params">ModelBuilder modelBuilder</span>)</span></span><br><span class="line"><span class="function"></span>  {</span><br><span class="line">  		modelBuilder.ApplyConfiguration(<span class="keyword">new</span> UserTypeMap());</span><br><span class="line">  		modelBuilder.Entity&lt;User&gt;().ToTable(<span class="string">&quot;Users&quot;</span>);</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x2003;&#x2003;&#x597D;&#x5566;&#xFF0C;&#x63A5;&#x4E0B;&#x6765;&#x5C31;&#x975E;&#x5E38;&#x7B80;&#x5355;&#x5566;&#xFF0C;&#x6211;&#x4EEC;&#x5728;DbContext&#x91CC;&#x5BF9;EF&#x7684;Logger&#x8FDB;&#x884C;&#x914D;&#x7F6E;&#xFF0C;&#x628A;&#x6211;&#x4EEC;&#x5B9A;&#x4E49;&#x7684;SQLGenLoggerProvider&#x6CE8;&#x5165;&#x5230;EF&#x91CC;&#xFF0C;&#x53EF;&#x4EE5;&#x6CE8;&#x610F;&#x5230;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x5982;&#x6211;&#x4EEC;&#x671F;&#x671B;&#x5F97;&#x90A3;&#x6837;&#xFF0C;&#x8F93;&#x51FA;&#x7531;EF&#x751F;&#x6210;&#x7684;SQL&#x811A;&#x672C;&#xFF0C;&#x8FD9;&#x5B9E;&#x5728;&#x662F;&#x6709;&#x8DA3;&#xFF0C;Ok&#xFF0C;&#x6253;&#x5B8C;&#x6536;&#x5DE5;&#xFF01;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz02250ixxj20u904w74c.jpg" alt="&#x901A;&#x8FC7;&#x6CE8;&#x5165;&#x65E5;&#x5FD7;&#x83B7;&#x53D6;EF&#x751F;&#x6210;&#x7684;SQL" title>
+                </div>
+                <div class="image-caption">&#x901A;&#x8FC7;&#x6CE8;&#x5165;&#x65E5;&#x5FD7;&#x83B7;&#x53D6;EF&#x751F;&#x6210;&#x7684;SQL</div>
+            </figure>
+<h1 id="&#x672C;&#x6587;&#x5C0F;&#x7ED3;"><a href="#&#x672C;&#x6587;&#x5C0F;&#x7ED3;" class="headerlink" title="&#x672C;&#x6587;&#x5C0F;&#x7ED3;"></a>&#x672C;&#x6587;&#x5C0F;&#x7ED3;</h1><p>&#x2003;&#x2003;&#x6211;&#x4E00;&#x76F4;&#x76F8;&#x4FE1;&#xFF0C;&#x61D2;&#x60F0;&#x662F;&#x5DE5;&#x7A0B;&#x5E08;&#x7684;&#x4E00;&#x79CD;&#x7F8E;&#x5FB7;&#xFF0C;&#x56E0;&#x4E3A;&#x4E3A;&#x4E86;&#x8BA9;&#x81EA;&#x5DF1;&#x6709;&#x673A;&#x4F1A;&#x61D2;&#x60F0;&#xFF0C;&#x4F60;&#x5C31;&#x5FC5;&#x987B;&#x8981;&#x5148;&#x8BA9;&#x81EA;&#x5DF1;&#x52E4;&#x594B;&#x8D77;&#x6765;&#x3002;&#x6211;&#x4E00;&#x76F4;&#x6015;&#x81EA;&#x5DF1;&#x5728;&#x8212;&#x9002;&#x533A;&#x91CC;&#x6E29;&#x6C34;&#x716E;&#x9752;&#x86D9;&#xFF0C;&#x660E;&#x660E;&#x4E00;&#x76F4;&#x5728;&#x91CD;&#x590D;&#x505A;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#xFF0C;&#x8FD8;&#x8981;&#x5B89;&#x6170;&#x81EA;&#x5DF1;&#x8BF4;&#xFF1A;&#x201C;&#x505A;&#x597D;&#x8FD9;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#x4E00;&#x6837;&#x662F;&#x6210;&#x529F;&#x201C;&#xFF0C;&#x6709;&#x65F6;&#x5019;&#xFF0C;&#x4E00;&#x5473;&#x5730;&#x91CD;&#x590D;&#x81EA;&#x5DF1;&#x5E76;&#x4E0D;&#x89C1;&#x5F97;&#x4F1A;&#x6709;&#x592A;&#x591A;&#x6536;&#x83B7;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x5C31;&#x50CF;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x4E00;&#x6837;&#xFF0C;&#x6211;&#x672C;&#x6765;&#x50CF;&#x5077;&#x61D2;&#x5C11;&#x5199;&#x4E00;&#x70B9;SQL&#xFF0C;&#x7ED3;&#x679C;&#x610F;&#x5916;&#x5730;&#x53D1;&#x73B0;&#x4E86;&#x7ED9;&#x6570;&#x636E;&#x5E93;&#x8BB0;&#x5F55;&#x65E5;&#x5FD7;&#x7684;&#x65B9;&#x6CD5;&#x3002;&#x5F53;&#x6709;&#x4E86;&#x610F;&#x5916;&#x6536;&#x83B7;&#x4EE5;&#x540E;&#xFF0C;&#x66FE;&#x7ECF;&#x7684;&#x521D;&#x8877;&#x5230;&#x5E95;&#x662F;&#x4EC0;&#x4E48;&#x53EF;&#x80FD;&#x5C31;&#x6CA1;&#x90A3;&#x4E48;&#x91CD;&#x8981;&#x4E86;&#xFF0C;&#x5982;&#x201C;&#x96E8;&#x8840;&#x201D;&#x4E2D;&#x5DE6;&#x6B87;&#x6240;&#x8BF4;&#xFF0C;&#x5F53;&#x4F60;&#x8D62;&#x4E86;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x8BF4;&#x66FE;&#x7ECF;&#x6709;&#x5341;&#x6210;&#x628A;&#x63E1;&#x4EA6;&#x4E0D;&#x4E3A;&#x8FC7;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x4E3B;&#x8981;&#x4ECB;&#x7ECD;&#x5982;&#x4F55;&#x5229;&#x7528;EF&#x6765;&#x751F;&#x6210;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x5E93;&#x7684;SQL&#x811A;&#x672C;&#xFF0C;&#x5BF9;EF6&#x6765;&#x8BF4;&#xFF0C;&#x9700;&#x8981;&#x7EE7;&#x627F;DbCommandInterecptor&#x7C7B;&#x7F16;&#x5199;&#x62E6;&#x622A;&#x5668;&#xFF1B;&#x5BF9;&#x4E8E;EF Core&#x6765;&#x8BF4;&#xFF0C;&#x9700;&#x8981;&#x6CE8;&#x5165;ILogger&#x6765;&#x8BB0;&#x5F55;&#x65E5;&#x5FD7;&#x3002;&#x672C;&#x6587;&#x7684;&#x5EF6;&#x4F38;&#x4E4B;&#x4E00;&#x662F;&#x8BB0;&#x5F55;SQL&#x6267;&#x884C;&#x65E5;&#x5FD7;&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x5728;&#x672C;&#x6587;&#x5DF2;&#x7ECF;&#x6709;&#x6240;&#x4F53;&#x73B0;&#x3002;&#x672C;&#x6587;&#x66F4;&#x6DF1;&#x5C42;&#x6B21;&#x7684;&#x5EF6;&#x4F38;&#x662F;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x57FA;&#x7840;&#x4E0A;&#x5B9E;&#x73B0;&#x6570;&#x636E;&#x5E93;&#x7684;&#x4E3B;&#x4ECE;&#x590D;&#x5236;&#x3001;&#x8BFB;&#x5199;&#x5206;&#x79BB;&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x6211;&#x4F1A;&#x5728;&#x4E0B;&#x4E00;&#x7BC7;&#x535A;&#x5BA2;&#x4E2D;&#x8BB2;&#x89E3;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x7EE7;&#x7EED;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x597D;&#x5566;&#xFF0C;&#x4EE5;&#x4E0A;&#x5C31;&#x662F;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x5168;&#x90E8;&#x5185;&#x5BB9;&#x5566;&#xFF0C;&#x665A;&#x5B89;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/2418566449/">基于EF的数据库主从复制、读写分离实现</a></li><li><a href="https://qinyuanpei.github.io/posts/3269605707/">基于WebSocket和Redis实现Bilibili弹幕效果</a></li><li><a href="https://qinyuanpei.github.io/posts/1989654282/">使用.NET Core和Vue搭建WebSocket聊天室</a></li><li><a href="https://blog.yuanpei.me/posts/2418566449/">基于EF的数据库主从复制、读写分离实现</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/795474045/" rel="external">记通过EF生成不同数据库SQL脚本的一次尝试</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/795474045/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/795474045/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NET-Core/">.NET Core</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EF/">EF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logger/">Logger</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/795474045/&title=《记通过EF生成不同数据库SQL脚本的一次尝试》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/795474045/&title=《记通过EF生成不同数据库SQL脚本的一次尝试》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/795474045/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《记通过EF生成不同数据库SQL脚本的一次尝试》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/795474045/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/795474045/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3222622531/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">使用VSCode作为SourceTree的Diff和Merge工具</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/2463121881/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">漫谈前端进化史之从Form表单到文件上传</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/795474045/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/795474045/&title=《记通过EF生成不同数据库SQL脚本的一次尝试》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/795474045/&title=《记通过EF生成不同数据库SQL脚本的一次尝试》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/795474045/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《记通过EF生成不同数据库SQL脚本的一次尝试》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/795474045/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/795474045/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/795474045/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

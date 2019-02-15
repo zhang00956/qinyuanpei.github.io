@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        当Unity3D游戏开发遇上Excel - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://blog.csdn.net/qinyuanpei。今天我们来聊聊常用办公软件Excel和游戏开发那不为人知的秘密。今天的内容将涉及到Excel在游戏开发中的应用以及如何利用程序解析Excel中的数据。">
+<meta name="keywords" content="Unity3D,游戏,Excel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="当Unity3D游戏开发遇上Excel">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/906436376/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://blog.csdn.net/qinyuanpei。今天我们来聊聊常用办公软件Excel和游戏开发那不为人知的秘密。今天的内容将涉及到Excel在游戏开发中的应用以及如何利用程序解析Excel中的数据。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20150303100456547">
+<meta property="og:image" content="http://img.blog.csdn.net/20150303100419825">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.520Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="当Unity3D游戏开发遇上Excel">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://blog.csdn.net/qinyuanpei。今天我们来聊聊常用办公软件Excel和游戏开发那不为人知的秘密。今天的内容将涉及到Excel在游戏开发中的应用以及如何利用程序解析Excel中的数据。">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150303100456547">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">当Unity3D游戏开发遇上Excel</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">当Unity3D游戏开发遇上Excel</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-01-25T19:41:57.000Z" itemprop="datePublished" class="page-time">
+  2015-01-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏开发/">游戏开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-当Unity3D游戏开发遇上Excel" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">当Unity3D游戏开发遇上Excel</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-01-25 19:41:57" datetime="2015-01-25T19:41:57.000Z" itemprop="datePublished">2015-01-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏开发/">游戏开发</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        17 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#xFF0C;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;&#x79E6;&#x5143;&#x57F9;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://blog.csdn.net/qinyuanpei" target="_blank" rel="noopener">http://blog.csdn.net/qinyuanpei</a>&#x3002;&#x4ECA;&#x5929;&#x6211;&#x4EEC;&#x6765;&#x804A;&#x804A;&#x5E38;&#x7528;&#x529E;&#x516C;&#x8F6F;&#x4EF6;Excel&#x548C;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x90A3;&#x4E0D;&#x4E3A;&#x4EBA;&#x77E5;&#x7684;&#x79D8;&#x5BC6;&#x3002;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x5C06;&#x6D89;&#x53CA;&#x5230;Excel&#x5728;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x4E2D;&#x7684;&#x5E94;&#x7528;&#x4EE5;&#x53CA;&#x5982;&#x4F55;&#x5229;&#x7528;&#x7A0B;&#x5E8F;&#x89E3;&#x6790;Excel&#x4E2D;&#x7684;&#x6570;&#x636E;&#x3002;</p>
+<a id="more"></a>
+<p>&#x2003;&#x2003;&#x4F5C;&#x4E3A;&#x5E38;&#x7528;&#x7684;&#x529E;&#x516C;&#x8F6F;&#x4EF6;&#x7684;Excel&#x76F8;&#x4FE1;&#x5927;&#x5BB6;&#x90FD;&#x4E0D;&#x964C;&#x751F;&#x5566;&#x3002;&#x53EF;&#x662F;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x8BA4;&#x4E3A;Excel&#x53EA;&#x662F;&#x529E;&#x516C;&#x8F6F;&#x4EF6;&#x7684;&#x8BDD;&#xFF0C;&#x90A3;&#x4E48;&#x8FD9;&#x5C31;&#x4E0D;&#x53EA;&#x662F;&#x5929;&#x771F;&#x800C;&#x662F;Out&#x4E86;&#x3002;&#x4E8B;&#x5B9E;&#x4E0A;Excel&#x548C;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x6709;&#x7740;&#x5BC6;&#x5207;&#x7684;&#x8054;&#x7CFB;&#xFF0C;&#x4E0D;&#x77E5;&#x9053;&#x5927;&#x5BB6;&#x8FD8;&#x8BB0;&#x4E0D;&#x8BB0;&#x5F97;&#x90A3;&#x6B3E;&#x5229;&#x7528;Excel&#x5F00;&#x53D1;&#x51FA;&#x6765;&#x7684;&#x4E09;&#x56FD;&#x6740;&#xFF0C;&#x8FD9;&#x53EF;&#x80FD;&#x662F;Excel&#x7B2C;&#x4E00;&#x6B21;&#x4EE5;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x7684;&#x8EAB;&#x4EFD;&#x51FA;&#x73B0;&#x5728;&#x5927;&#x5BB6;&#x9762;&#x524D;&#x5427;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5728;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x9886;&#x57DF;&#x6709;&#x4E00;&#x79CD;&#x5DE5;&#x4F5C;&#x53EB;&#x505A;&#x7B56;&#x5212;&#xFF0C;&#x5C31;&#x50CF;&#x5728;&#x8F6F;&#x4EF6;&#x5F00;&#x53D1;&#x9886;&#x57DF;&#x6709;&#x4E00;&#x79CD;&#x5DE5;&#x4F5C;&#x53EB;&#x505A;&#x4EA7;&#x54C1;&#x7ECF;&#x7406;&#x4E00;&#x6837;&#x3002;&#x800C;&#x5728;&#x8BF8;&#x591A;&#x7684;&#x7B56;&#x5212;&#x5DE5;&#x4F5C;&#x4E2D;&#xFF0C;&#x6570;&#x503C;&#x7B56;&#x5212;&#x662F;&#x4E00;&#x4E2A;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5F71;&#x54CD;&#x6E38;&#x620F;&#x8FDB;&#x7A0B;&#x7684;&#x5DE5;&#x4F5C;&#xFF0C;&#x56E0;&#x4E3A;&#x6570;&#x503C;&#x7B56;&#x5212;&#x4F53;&#x73B0;&#x4E86;&#x4E00;&#x4E2A;&#x6E38;&#x620F;&#x5728;&#x6574;&#x4F53;&#x6570;&#x503C;&#x4E0A;&#x7684;&#x5E73;&#x8861;&#xFF0C;&#x8BBE;&#x8BA1;&#x8005;&#x9700;&#x8981;&#x7EF4;&#x62A4;&#x597D;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x5E73;&#x8861;&#xFF0C;&#x786E;&#x4FDD;&#x6E38;&#x620F;&#x5916;&#x7684;&#x73A9;&#x5BB6;&#x548C;&#x6E38;&#x620F;&#x91CC;&#x7684;&#x654C;&#x4EBA;&#x9762;&#x5BF9;&#x7684;&#x662F;&#x540C;&#x4E00;&#x4E2A;&#x516C;&#x5E73;&#x7684;&#x865A;&#x62DF;&#x4E16;&#x754C;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x4F8B;&#x5982;&#x300A;&#x4ED9;&#x5251;&#x5947;&#x4FA0;&#x4F20;&#x56DB;&#x300B;&#x8FD9;&#x6B3E;&#x6E38;&#x620F;&#x4E2D;&#xFF0C;&#x97E9;&#x83F1;&#x7EB1;&#x5728;&#x6E38;&#x620F;&#x540E;&#x671F;&#x7684;&#x901F;&#x5EA6;&#x53EF;&#x4EE5;&#x8BF4;&#x662F;&#x5B8C;&#x5168;&#x6253;&#x7834;&#x4E86;&#x6E38;&#x620F;&#x7684;&#x5E73;&#x8861;&#x6027;&#xFF0C;&#x56E0;&#x4E3A;&#x97E9;&#x83F1;&#x7EB1;&#x672C;&#x8EAB;&#x7684;&#x901F;&#x5EA6;&#x5C31;&#x6BD4;&#x8F83;&#x5FEB;&#xFF0C;&#x518D;&#x52A0;&#x4E0A;&#x4ED9;&#x98CE;&#x4E91;&#x4F53;&#x672F;&#x7684;&#x52A0;&#x901F;&#x6548;&#x679C;&#x5B8C;&#x5168;&#x5BF9;&#x7384;&#x9704;&#x4EA7;&#x751F;&#x4E86;&#x620F;&#x5267;&#x6027;&#x538B;&#x5236;&#xFF0C;&#x5BFC;&#x81F4;&#x5728;&#x6E38;&#x620F;&#x7ED3;&#x5C3E;&#x7684;Boss&#x6218;&#x4E2D;&#x7ECF;&#x5E38;&#x662F;&#x97E9;&#x83F1;&#x7EB1;&#x51FA;&#x624B;N&#x6B21;&#x540E;&#x624D;&#x6328;&#x5230;&#x7384;&#x9704;&#x51FA;&#x624B;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x97E9;&#x83F1;&#x7EB1;&#x7684;&#x4E7E;&#x5764;&#x4E00;&#x63B7;&#x6BCF;&#x6B21;&#x6D88;&#x8017;&#x6C14;15&#xFF0C;&#x53EF;&#x662F;&#x56E0;&#x4E3A;&#x97E9;&#x83F1;&#x7EB1;&#x7684;&#x901F;&#x5EA6;&#x8DB3;&#x591F;&#x5FEB;&#xFF0C;&#x6240;&#x4EE5;&#x97E9;&#x83F1;&#x7EB1;&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x666E;&#x901A;&#x7269;&#x7406;&#x653B;&#x51FB;&#x5FEB;&#x901F;&#x5730;&#x79EF;&#x6EE1;&#x6C14;&#x8FDB;&#x800C;&#x65BD;&#x5C55;&#x4E7E;&#x5764;&#x4E00;&#x63B7;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x6E38;&#x620F;&#x7684;&#x5E73;&#x8861;&#x6027;&#x88AB;&#x6253;&#x7834;&#x4E86;&#x5440;&#xFF0C;&#x66F4;&#x4E0D;&#x8981;&#x8BF4;&#x8FD9;&#x90E8;&#x6E38;&#x620F;&#x91CC;&#x6700;&#x4E3A;&#x7ECF;&#x5178;&#x7684;&#x5343;&#x65B9;&#x6B8B;&#x5149;&#x5251;Bug&#x4E86;&#xFF0C;&#x8FD9;&#x540C;&#x6837;&#x662F;&#x6E38;&#x620F;&#x5E73;&#x8861;&#x6027;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x5F52;&#x6839;&#x5230;&#x5E95;&#x662F;&#x7D2B;&#x82F1;&#x7684;&#x8FD9;&#x4E2A;&#x6280;&#x80FD;&#x5728;&#x914D;&#x7F6E;&#x6570;&#x636E;&#x65F6;&#x51FA;&#x73B0;&#x4E86;&#x9519;&#x8BEF;&#xFF0C;&#x8FD9;&#x5145;&#x5206;&#x8BF4;&#x660E;&#x6570;&#x636E;&#x7684;&#x6B63;&#x786E;&#x5408;&#x7406;&#x4E0E;&#x5426;&#x662F;&#x4F1A;&#x5BF9;&#x6E38;&#x620F;&#x4EA7;&#x751F;&#x91CD;&#x8981;&#x5F71;&#x54CD;&#x7684;&#x3002;<br><img src="http://img.blog.csdn.net/20150303100456547" alt="&#x6155;&#x5BB9;&#x7D2B;&#x82F1;&#x5343;&#x65B9;&#x6B8B;&#x5149;&#x5251;"><br><img src="http://img.blog.csdn.net/20150303100419825" alt="&#x97E9;&#x83F1;&#x7EB1;&#x4E7E;&#x5764;&#x4E00;&#x63B7;"><br>&#x5C3D;&#x7BA1;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;Xml&#x3001;Json&#x3001;ini&#x3001;&#x6570;&#x636E;&#x5E93;&#x7B49;&#x5B58;&#x50A8;&#x5F62;&#x5F0F;&#x6765;&#x5B58;&#x50A8;&#x8FD9;&#x4E9B;&#x6570;&#x636E;&#xFF0C;&#x53EF;&#x662F;&#x6BEB;&#x65E0;&#x7591;&#x95EE;&#x7684;&#x662F;&#xFF0C;Excel&#x662F;Window&#x5E73;&#x53F0;&#x4E0A;&#x6700;&#x597D;&#x7684;&#x6570;&#x636E;&#x5904;&#x7406;&#x8F6F;&#x4EF6;&#xFF0C;&#x56E0;&#x6B64;&#x6570;&#x503C;&#x7B56;&#x5212;&#x66F4;&#x503E;&#x5411;&#x4E8E;&#x4F7F;&#x7528;Excel&#x6765;&#x8BBE;&#x8BA1;&#x6E38;&#x620F;&#x4E2D;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x9762;&#x5BF9;&#x5982;&#x6B64;&#x91CD;&#x8981;&#x7684;&#x6570;&#x503C;&#x7B56;&#x5212;&#x5DE5;&#x4F5C;&#xFF0C;&#x6211;&#x4EEC;&#x81EA;&#x7136;&#x5E0C;&#x671B;&#x5728;&#x89E3;&#x6790;Excel&#x6587;&#x4EF6;&#x65F6;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x4EEC;&#x603B;&#x4E0D;&#x80FD;&#x6307;&#x671B;&#x7740;&#x7B56;&#x5212;&#x628A;Excel&#x6570;&#x636E;&#x8F6C;&#x6362;&#x6210;&#x6211;&#x4EEC;&#x80FD;&#x5904;&#x7406;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x5427;&#xFF0C;&#x56E0;&#x6B64;&#x5C31;&#x6709;&#x4E86;&#x535A;&#x4E3B;&#x4ECA;&#x5929;&#x7684;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x4ECA;&#x5929;&#x7684;&#x6587;&#x7AE0;&#x4E2D;&#x6211;&#x4EEC;&#x4E3B;&#x8981;&#x7684;&#x5185;&#x5BB9;&#x5C31;&#x662F;&#x5982;&#x4F55;&#x901A;&#x8FC7;&#x7A0B;&#x5E8F;&#x6765;&#x89E3;&#x6790;Excel&#x6587;&#x4EF6;&#x3002;</p>
+<p>###1&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;<br>&#x2003;&#x2003;&#x6700;&#x8FD1;&#x535A;&#x4E3B;&#x4E00;&#x4E2A;&#x670B;&#x53CB;&#x5411;&#x6211;&#x62B1;&#x6028;&#xFF0C;&#x8BF4;&#x624B;&#x5934;&#x4E0A;&#x6709;&#x597D;&#x51E0;&#x767E;&#x4E2A;Excel&#x5DE5;&#x4F5C;&#x8868;&#x8981;&#x5904;&#x7406;&#xFF0C;&#x5927;&#x6982;&#x51E0;&#x5341;&#x4E07;&#x6761;&#x6570;&#x636E;&#x5427;&#x3002;&#x539F;&#x56E0;&#x662F;&#x5F53;&#x65F6;&#x516C;&#x53F8;&#x5206;&#x914D;&#x4EFB;&#x52A1;&#x65F6;&#x4EA4;&#x5F85;&#x4E0D;&#x6E05;&#xFF0C;&#x7B49;&#x5230;&#x4E86;&#x5411;&#x516C;&#x53F8;&#x4EA4;&#x63A5;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x670B;&#x53CB;&#x5FFD;&#x7136;&#x53D1;&#x73B0;&#x8FD9;&#x4E9B;Excel&#x6587;&#x4EF6;&#x7684;&#x8868;&#x683C;&#x683C;&#x5F0F;&#x548C;&#x516C;&#x53F8;&#x89C4;&#x5B9A;&#x7684;&#x4E0D;&#x4E00;&#x6837;&#x554A;&#x3002;&#x8FD9;&#x53EF;&#x6025;&#x574F;&#x4E86;&#x535A;&#x4E3B;&#x7684;&#x8FD9;&#x4F4D;&#x670B;&#x53CB;&#xFF0C;&#x535A;&#x4E3B;&#x7684;&#x670B;&#x53CB;&#x53EA;&#x597D;&#x4E0D;&#x65AD;&#x5730;&#x7684;&#x590D;&#x5236;&#x3001;&#x9ECF;&#x8D34;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x4E9B;&#x6570;&#x636E;&#x662F;&#x5206;&#x5E03;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x6570;&#x636E;&#x8868;&#x91CC;&#xFF0C;&#x670B;&#x53CB;&#x6574;&#x5929;&#x90FD;&#x5FD9;&#x5F97;&#x7126;&#x5934;&#x70C2;&#x989D;&#xFF0C;&#x53EF;&#x662F;&#x5373;&#x4F7F;&#x8FD9;&#x6837;&#x6548;&#x7387;&#x8FD8;&#x662F;&#x5F97;&#x4E0D;&#x5230;&#x4FDD;&#x8BC1;&#x554A;&#xFF0C;&#x670B;&#x53CB;&#x6700;&#x540E;&#x627E;&#x5230;&#x4E86;&#x535A;&#x4E3B;&#x8FD9;&#x91CC;&#xFF0C;&#x95EE;&#x6211;&#x80FD;&#x4E0D;&#x80FD;&#x7F16;&#x5199;&#x7A0B;&#x5E8F;&#x5E2E;&#x4ED6;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x3002;&#x56E0;&#x4E3A;&#x5E73;&#x65F6;&#x7ECF;&#x5E38;&#x4E0E;&#x6280;&#x672F;&#x5708;&#x5B50;&#x91CC;&#x7684;&#x670B;&#x53CB;&#x804A;&#x5929;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x535A;&#x4E3B;&#x5370;&#x8C61;&#x91CC;Excel&#x7684;&#x89E3;&#x6790;&#x5728;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x4E2D;&#x8FD8;&#x662F;&#x8F83;&#x4E3A;&#x5E38;&#x89C1;&#x7684;&#xFF0C;&#x800C;&#x4E14;&#x535A;&#x4E3B;&#x77E5;&#x9053;&#x5BF9;&#x4E8E;&#x5FAE;&#x8F6F;&#x7684;Office&#x529E;&#x516C;&#x8F6F;&#x4EF6;&#x662F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;VBA&#x7F16;&#x7A0B;&#x6765;&#x5B9E;&#x73B0;&#x67D0;&#x4E9B;&#x529F;&#x80FD;&#x7684;&#xFF0C;&#x53EF;&#x662F;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x4E00;&#x76F4;&#x5728;&#x7528;&#x56FD;&#x4EA7;&#x7684;WPS&#xFF0C;&#x6240;&#x4EE5;&#x5BF9;&#x4E8E;Excel&#x7684;&#x89E3;&#x6790;&#x57FA;&#x672C;&#x4E0A;&#x662F;&#x505C;&#x7559;&#x5728;&#x4E00;&#x4E2A;&#x6982;&#x5FF5;&#x6027;&#x7684;&#x8BA4;&#x8BC6;&#x4E0A;&#xFF0C;&#x53EF;&#x662F;&#x670B;&#x53CB;&#x7684;&#x5FD9;&#x4E0D;&#x80FD;&#x4E0D;&#x5E2E;&#x4E0D;&#x662F;&#xFF0C;&#x6240;&#x4EE5;&#x535A;&#x4E3B;&#x51B3;&#x5B9A;&#x501F;&#x7740;&#x8FD9;&#x4E2A;&#x673A;&#x4F1A;&#x597D;&#x597D;&#x7814;&#x7A76;&#x4E0B;Excel&#x6587;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x3002;</p>
+<p>###2&#x3001;&#x89E3;&#x51B3;&#x65B9;&#x6848;<br>&#x2003;&#x2003;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x5728;&#x4E4B;&#x524D;&#x5E76;&#x6CA1;&#x6709;&#x8FC7;&#x89E3;&#x6790;Excel&#x6587;&#x4EF6;&#x7684;&#x7ECF;&#x5386;&#xFF0C;&#x6240;&#x4EE5;&#x535A;&#x4E3B;&#x5C31;&#x5230;Github&#x4E0A;&#x6DD8;&#x4E86;&#x4E9B;&#x5F00;&#x6E90;&#x9879;&#x76EE;&#x3002;&#x548C;&#x5F88;&#x591A;&#x4EBA;&#x7231;&#x901B;&#x5929;&#x732B;&#x3001;&#x6DD8;&#x5B9D;&#x7684;&#x7ECF;&#x5386;&#x7C7B;&#x4F3C;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x53D1;&#x73B0;&#x6709;&#x4E00;&#x4E2A;&#x4EBA;&#x7ECF;&#x5E38;&#x559C;&#x6B22;&#x5230;Github&#x4E0A;&#x6643;&#x8361;&#x3001;&#x559C;&#x6B22;&#x5173;&#x6CE8;&#x6280;&#x672F;&#x7C7B;&#x7684;&#x535A;&#x5BA2;&#x6216;&#x8005;&#x8D44;&#x8BAF;&#x3001;&#x7ECF;&#x5E38;&#x518D;&#x770B;PDF&#x7248;&#x7684;&#x6280;&#x672F;&#x6587;&#x6863;&#x6216;&#x4E66;&#x7C4D;&#xFF0C;&#x8BF7;&#x5343;&#x4E07;&#x4E0D;&#x8981;&#x6000;&#x7591;&#xFF0C;&#x8FD9;&#x4E2A;&#x4EBA;&#x7EDD;&#x5BF9;&#x662F;&#x7A0B;&#x5E8F;&#x5458;&#x3002;&#x54C8;&#x54C8;&#xFF0C;&#x597D;&#x4E86;&#xFF0C;&#x73A9;&#x7B11;&#x5C31;&#x6B64;&#x6253;&#x4F4F;&#x554A;&#x3002;&#x7ECF;&#x8FC7;&#x535A;&#x4E3B;&#x5BF9;&#x8FD9;&#x4E9B;&#x5F00;&#x6E90;&#x9879;&#x76EE;&#x7684;&#x7B80;&#x5355;&#x5206;&#x6790;&#x548C;&#x6574;&#x7406;&#xFF0C;&#x76EE;&#x524D;&#xFF0C;&#x5BF9;Excel&#x6587;&#x4EF6;&#x89E3;&#x6790;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x4E3B;&#x8981;&#x6709;&#x4EE5;&#x4E0B;&#x4E09;&#x79CD;&#xFF1A;</p>
+<p>####1&#x3001;Microsoft.Office.Interop.Excel<br>&#x2003;&#x2003;&#x7B2C;&#x4E00;&#x79CD;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x662F;&#x57FA;&#x4E8E;&#x5FAE;&#x8F6F;&#x63D0;&#x4F9B;&#x7684;Office API,&#x8FD9;&#x7EC4;API&#x4EE5;COM&#x7EC4;&#x4EF6;&#x7684;&#x5F62;&#x5F0F;&#x7ED9;&#x51FA;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8C03;&#x7528;&#x8BE5;API&#x5B9E;&#x73B0;&#x5BF9;Excel&#x6587;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x3002;&#x4F7F;&#x7528;&#x8FD9;&#x7EC4;API&#x975E;&#x5E38;&#x7B80;&#x5355;,&#x535A;&#x4E3B;&#x7A0D;&#x540E;&#x4F1A;&#x4E3A;&#x5927;&#x5BB6;&#x7ED9;&#x51FA;&#x4E00;&#x4E2A;&#x793A;&#x4F8B;&#x4EE3;&#x7801;&#x3002;&#x5FAE;&#x8F6F;&#x7684;Office API&#x7279;&#x70B9;&#x662F;&#x4F7F;&#x7528;&#x8D77;&#x6765;&#x65B9;&#x4FBF;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;C#&#x3001;Visual Basic&#x7B49;&#x8BED;&#x8A00;&#x8FDB;&#x884C;&#x76F8;&#x5173;&#x5F00;&#x53D1;&#x3002;&#x53EF;&#x662F;&#x8FD9;&#x79CD;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x7684;&#x7684;&#x7F3A;&#x70B9;&#x540C;&#x6837;&#x5F88;&#x660E;&#x663E;&#xFF0C;&#x56E0;&#x4E3A;COM&#x7EC4;&#x4EF6;&#x4E3B;&#x8981;&#x4F9D;&#x8D56;&#x4E8E;&#x7CFB;&#x7EDF;&#xFF0C;&#x56E0;&#x6B64;&#x4F7F;&#x7528;COM&#x7EC4;&#x4EF6;&#x9700;&#x8981;&#x5728;&#x7CFB;&#x7EDF;&#x4E2D;&#x6CE8;&#x518C;&#xFF0C;&#x8FD9;&#x5C06;&#x5BF9;&#x4EE3;&#x7801;&#x7684;&#x53EF;&#x79FB;&#x690D;&#x6027;&#x4EA7;&#x751F;&#x5F71;&#x54CD;&#xFF0C;&#x800C;&#x4E14;&#x53D7;&#x5236;&#x4E8E;COM&#x6280;&#x672F;&#xFF0C;&#x8FD9;&#x79CD;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x53EA;&#x80FD;&#x8FD0;&#x884C;&#x5728;Windows&#x5E73;&#x53F0;&#x4E0A;&#xFF0C;&#x65E0;&#x6CD5;&#x5B9E;&#x73B0;&#x8DE8;&#x5E73;&#x53F0;&#xFF0C;&#x52A0;&#x4E4B;&#x89E3;&#x6790;&#x901F;&#x5EA6;&#x8F83;&#x6162;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x79CD;&#x65B9;&#x6848;&#x901A;&#x5E38;&#x53EA;&#x9002;&#x5408;&#x5728;&#x89E3;&#x6790;&#x901F;&#x5EA6;&#x8981;&#x6C42;&#x4E0D;&#x9AD8;&#xFF0C;&#x8FD0;&#x884C;&#x73AF;&#x5883;&#x4E3A;Windows&#x5E73;&#x53F0;&#x7684;&#x5E94;&#x7528;&#x573A;&#x666F;&#x3002;</p>
+<p>####2&#x3001;ExcelReader<br>&#x2003;&#x2003;&#x7B2C;&#x4E8C;&#x79CD;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x5F97;&#x76CA;&#x4E8E;OpenOffice&#x6807;&#x51C6;,OpenOffice&#x6807;&#x51C6;&#x53EF;&#x4EE5;&#x8BA9;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x4E00;&#x79CD;&#x6807;&#x51C6;&#x6765;&#x89E3;&#x6790;&#x548C;&#x5904;&#x7406;Excel&#x6587;&#x4EF6;&#x800C;&#x65E0;&#x9700;&#x5173;&#x6CE8;Excel&#x6587;&#x4EF6;&#x662F;&#x6765;&#x81EA;&#x5FAE;&#x8F6F;&#x7684;Misrosoft Office&#x3001;&#x91D1;&#x5C71;&#x7684;WPS&#x8FD8;&#x662F;&#x5176;&#x5B83;&#x7684;&#x529E;&#x516C;&#x8F6F;&#x4EF6;&#x3002;&#x5982;&#x679C;&#x8BF4;&#x7B2C;&#x4E00;&#x79CD;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x662F;Windows&#x5E73;&#x53F0;&#x4E0A;&#x89E3;&#x6790;Excel&#x6587;&#x4EF6;&#x7684;&#x9009;&#x62E9;&#x4E4B;&#x4E00;&#xFF0C;&#x90A3;&#x4E48;ExcelRead&#x5C31;&#x662F;&#x8DE8;&#x5E73;&#x53F0;&#x76EE;&#x6807;&#x4E0B;&#x89E3;&#x6790;Excel&#x6587;&#x4EF6;&#x7684;&#x9996;&#x9009;&#x65B9;&#x6848;&#x3002;&#x5C24;&#x5176;&#x50CF;Unity3D&#x8FD9;&#x6837;&#x7684;&#x8DE8;&#x5E73;&#x53F0;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x4E0B;&#xFF0C;&#x9009;&#x62E9;&#x4E00;&#x4E2A;&#x8DE8;&#x5E73;&#x53F0;&#x7684;&#x7C7B;&#x5E93;&#x6216;&#x8005;&#x7EC4;&#x4EF6;&#x80FD;&#x591F;&#x4FDD;&#x8BC1;&#x6211;&#x4EEC;&#x7684;&#x6E38;&#x620F;&#x5728;&#x5404;&#x79CD;&#x5E73;&#x53F0;&#x4E0B;&#x7A33;&#x5B9A;&#x5730;&#x8FD0;&#x884C;&#xFF0C;&#x6240;&#x4EE5;ExcelRead&#x662F;&#x535A;&#x4E3B;&#x5411;&#x5927;&#x5BB6;&#x63A8;&#x8350;&#x7684;&#x4E00;&#x4E2A;&#x8DE8;&#x5E73;&#x53F0;&#x7684;Excel&#x89E3;&#x6790;&#x65B9;&#x6848;&#x3002;</p>
+<p>####3&#x3001;FastExcel<br>&#x2003;&#x2003;&#x7B2C;&#x4E09;&#x79CD;&#x89E3;&#x51B3;&#x65B9;&#x6848;FastExcel&#x662F;&#x535A;&#x4E3B;&#x5728;&#x89E3;&#x51B3;&#x535A;&#x4E3B;&#x7684;&#x8FD9;&#x4F4D;&#x670B;&#x53CB;&#x7684;&#x95EE;&#x9898;&#x65F6;&#x6240;&#x91C7;&#x53D6;&#x7684;&#x65B9;&#x6848;&#x3002;FastExcel&#x662F;&#x4E00;&#x4E2A;&#x5728;&#x5F00;&#x6E90;&#x4E16;&#x754C;&#x91CC;&#x6BD4;&#x8F83;&#x8457;&#x540D;&#x7684;Excel&#x8BFB;&#x5199;&#x7684;&#x7C7B;&#x5E93;&#xFF0C;&#x56E0;&#x6B64;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x7C7B;&#x5E93;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x8F83;&#x4E3A;&#x5E7F;&#x6CDB;&#x7684;&#x793E;&#x533A;&#x652F;&#x6301;&#xFF0C;&#x800C;&#x4E14;&#x5728;FastExcel&#x8FD9;&#x4E2A;&#x9879;&#x76EE;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x4E2D;&#xFF0C;&#x4F5C;&#x8005;&#x4E3A;&#x6211;&#x4EEC;&#x63D0;&#x4F9B;&#x4E86;&#x4F7F;&#x7528;FastExel&#x8FDB;&#x884C;Excel&#x89E3;&#x6790;&#x7684;&#x76F8;&#x5173;&#x793A;&#x4F8B;&#xFF0C;&#x5177;&#x6709;&#x8F83;&#x9AD8;&#x7684;&#x53C2;&#x8003;&#x4EF7;&#x503C;&#xFF0C;&#x57FA;&#x672C;&#x4E0A;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x4E2A;&#x793A;&#x4F8B;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x5199;&#x51FA;&#x53EF;&#x4EE5;&#x8FD0;&#x884C;&#x7684;&#x4EE3;&#x7801;&#x3002;&#x6839;&#x636E;&#x793A;&#x4F8B;&#x4EE3;&#x7801;&#x7684;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x4F7F;&#x7528;FastExcel&#x5355;&#x72EC;&#x8BFB;&#x5199;100000&#x884C;&#x6570;&#x636E;&#x57FA;&#x672C;&#x4E0A;&#x7EF4;&#x6301;&#x5728;3~4&#x79D2;&#xFF0C;&#x8BFB;&#x5199;&#x901F;&#x5EA6;&#x8FD8;&#x662F;&#x86EE;&#x5FEB;&#x7684;&#x3002;&#x4E0D;&#x8FC7;FastExcel&#x4F7F;&#x7528;&#x7684;&#x662F;&#x8FED;&#x4EE3;&#x5668;&#x548C;Linq to Xml&#x6765;&#x8BFB;&#x53D6;Excel&#x6587;&#x4EF6;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;&#x6570;&#x636E;&#x8868;&#x4E2D;&#x5B58;&#x5728;&#x7A7A;&#x767D;&#x5355;&#x5143;&#x683C;&#x65F6;&#xFF0C;&#x8BFB;&#x5199;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x6BD4;&#x8F83;&#x8BE1;&#x5F02;&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x6CE8;&#x610F;&#x3002;</p>
+<p>###3&#x3001;&#x5DE5;&#x7A0B;&#x6848;&#x4F8B;<br>&#x2003;&#x2003;&#x65E2;&#x7136;&#x4ECA;&#x5929;&#x7684;&#x4E3B;&#x9898;&#x662F;Unity3D&#x6E38;&#x620F;&#x5F00;&#x53D1;&#xFF0C;&#x6240;&#x4EE5;&#x65E0;&#x8BBA;&#x6211;&#x4EEC;&#x5728;&#x524D;&#x9762;&#x63D0;&#x51FA;&#x4E86;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF0C;&#x6700;&#x540E;&#x6211;&#x4EEC;&#x90FD;&#x8981;&#x843D;&#x5B9E;&#x5230;&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x4E0A;&#xFF0C;&#x6240;&#x4EE5;&#x6700;&#x540E;&#x548C;&#x5927;&#x5BB6;&#x5206;&#x4EAB;&#x7684;&#x662F;&#x4E00;&#x4E2A;Unity3D&#x914D;&#x5408;ExcelReader&#x5B9E;&#x73B0;Excel&#x89E3;&#x6790;&#x7684;&#x7B80;&#x5355;&#x6848;&#x4F8B;&#x3002;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x9009;&#x62E9;ExcelReader&#x5462;&#xFF1F;&#x56E0;&#x4E3A;ExcelReader&#x662F;&#x4E00;&#x4E2A;&#x8DE8;&#x5E73;&#x53F0;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x4E00;&#x8D77;&#x6765;&#x5B66;&#x4E60;&#x8FD9;&#x4E2A;&#x6848;&#x4F8B;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> Excel;</span><br><span class="line"><span class="keyword">using</span> System.Data;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExcelScripts</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span> (<span class="params"></span>) </span></span><br><span class="line"><span class="function"></span>	{</span><br><span class="line">		FileStream m_Stream=File.Open(Application.dataPath + </span><br><span class="line">			<span class="string">&quot;\\Excel\\UserLevel.xlsx&quot;</span>,FileMode.Open,FileAccess.Read);</span><br><span class="line">		<span class="comment">//&#x4F7F;&#x7528;OpenXml&#x8BFB;&#x53D6;Excel&#x6587;&#x4EF6;</span></span><br><span class="line">		IExcelDataReader mExcelReader=ExcelReaderFactory.CreateOpenXmlReader(m_Stream);</span><br><span class="line">		<span class="comment">//&#x5C06;Excel&#x6570;&#x636E;&#x8F6C;&#x5316;&#x4E3A;DataSet</span></span><br><span class="line">		DataSet mResultSets=mExcelReader.AsDataSet();</span><br><span class="line">		<span class="comment">//&#x8BFB;&#x53D6;&#x884C;&#x6570;</span></span><br><span class="line">		<span class="keyword">int</span> rowCount=mResultSets.Tables[<span class="number">0</span>].Rows.Count;</span><br><span class="line">		<span class="comment">//&#x9010;&#x884C;&#x8BFB;&#x53D6;,&#x4ECE;&#x7B2C;&#x4E00;&#x884C;&#x8BFB;&#x4EE5;&#x8DF3;&#x8FC7;&#x8868;&#x5934;</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;rowCount;i++)</span><br><span class="line">		{</span><br><span class="line">			<span class="comment">//&#x5C06;&#x8BFB;&#x53D6;&#x7684;Excel&#x6570;&#x636E;&#x8F6C;&#x5316;&#x6210;&#x6570;&#x636E;&#x5B9E;&#x4F53;</span></span><br><span class="line">			UserLevel mUser=<span class="keyword">new</span> UserLevel();</span><br><span class="line">			mUser.Name=mResultSets.Tables[<span class="number">0</span>].Rows[i][<span class="number">0</span>].ToString();</span><br><span class="line">			mUser.Level=mResultSets.Tables[<span class="number">0</span>].Rows[i][<span class="number">1</span>].ToString();</span><br><span class="line">			mUser.Description=mResultSets.Tables[<span class="number">0</span>].Rows[i][<span class="number">2</span>].ToString();</span><br><span class="line">			mUser.Skill=mResultSets.Tables[<span class="number">0</span>].Rows[i][<span class="number">3</span>].ToString();</span><br><span class="line">			<span class="comment">//&#x8F93;&#x51FA;Debug&#x4FE1;&#x606F;</span></span><br><span class="line">			Debug.Log(mUser.ToString());</span><br><span class="line">			<span class="comment">//ADD:&#x66F4;&#x591A;&#x903B;&#x8F91;</span></span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="comment">//&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x5B9E;&#x4F53;&#x7C7B;UserLevel</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">class</span> <span class="title">UserLevel</span></span><br><span class="line">	{</span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">string</span> m_Name;</span><br><span class="line">		<span class="keyword">public</span> <span class="keyword">string</span> Name </span><br><span class="line">		{</span><br><span class="line">		  <span class="keyword">get</span> { <span class="keyword">return</span> m_Name;}</span><br><span class="line">		  <span class="keyword">set</span> { m_Name = <span class="keyword">value</span>;}</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">string</span> m_Level;</span><br><span class="line">		<span class="keyword">public</span> <span class="keyword">string</span> Level </span><br><span class="line">		{</span><br><span class="line">		  <span class="keyword">get</span> {	<span class="keyword">return</span> m_Level;}</span><br><span class="line">		  <span class="keyword">set</span> {	m_Level = <span class="keyword">value</span>;}</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">string</span> m_Description;</span><br><span class="line">		<span class="keyword">public</span> <span class="keyword">string</span> Description </span><br><span class="line">		{</span><br><span class="line">		  <span class="keyword">get</span> { <span class="keyword">return</span> m_Description;}</span><br><span class="line">		  <span class="keyword">set</span> { m_Description = <span class="keyword">value</span>;}</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">string</span> m_Skill;</span><br><span class="line">		<span class="keyword">public</span> <span class="keyword">string</span> Skill </span><br><span class="line">		{</span><br><span class="line">		  <span class="keyword">get</span> {	<span class="keyword">return</span> m_Skill;}		</span><br><span class="line">		  <span class="keyword">set</span> {	m_Skill = <span class="keyword">value</span>;}</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>		{</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">string</span>.Format(<span class="string">&quot;Name={0}&amp;Level={1}&amp;Description={2}&amp;Skill={3}&quot;</span>,</span><br><span class="line">			               m_Name,m_Level,m_Description,m_Skill);</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x4ECA;&#x5929;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x5168;&#x90E8;&#x5185;&#x5BB9;&#x4E86;&#xFF0C;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x559C;&#x6B22;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li><li><a href="https://qinyuanpei.github.io/posts/1156673678/">EasyAR尝鲜系列教程之自定义Marker的实现</a></li><li><a href="https://qinyuanpei.github.io/posts/4088452183/">Unity3D游戏开发之MMD For Unity插件研究</a></li><li><a href="https://blog.yuanpei.me/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/906436376/" rel="external">当Unity3D游戏开发遇上Excel</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/906436376/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/906436376/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Excel/">Excel</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Unity3D/">Unity3D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/游戏/">游戏</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/906436376/&title=《当Unity3D游戏开发遇上Excel》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/906436376/&title=《当Unity3D游戏开发遇上Excel》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://blog.csdn.net/qinyuanpei。..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/906436376/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《当Unity3D游戏开发遇上Excel》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/906436376/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/906436376/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/1478979553/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">互联网黑洞读书笔记(1)</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1176959868/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Unity3D塔防游戏开发项目讲解(下)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/906436376/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/906436376/&title=《当Unity3D游戏开发遇上Excel》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/906436376/&title=《当Unity3D游戏开发遇上Excel》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://blog.csdn.net/qinyuanpei。..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/906436376/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《当Unity3D游戏开发遇上Excel》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/906436376/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/906436376/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/906436376/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

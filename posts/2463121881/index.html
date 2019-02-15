@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        漫谈前端进化史之从Form表单到文件上传 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;#x2003;&amp;#x2003;Hi&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;">
+<meta name="keywords" content="HTTP,Form,RFC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈前端进化史之从Form表单到文件上传">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/2463121881/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;#x2003;&amp;#x2003;Hi&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fziy867pz8j20ig07laa5.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fziy5kad23j20if08k3z9.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixzg5fsdj20rv0dv75u.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05o9mcsoj20h606uq2s.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05ljreo8j20me08vt98.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz05f46qf1j20rv0dvjso.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz020zu3ooj20t90903zd.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.524Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="漫谈前端进化史之从Form表单到文件上传">
+<meta name="twitter:description" content="&amp;#x2003;&amp;#x2003;Hi&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fziy867pz8j20ig07laa5.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">漫谈前端进化史之从Form表单到文件上传</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">漫谈前端进化史之从Form表单到文件上传</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-09-05T12:57:36.000Z" itemprop="datePublished" class="page-time">
+  2018-09-05
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#从Form表单说起"><span class="post-toc-number">1.</span> <span class="post-toc-text">从Form表单说起</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#神奇的Input控件"><span class="post-toc-number">2.</span> <span class="post-toc-text">神奇的Input控件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#HTTP与文件上传"><span class="post-toc-number">3.</span> <span class="post-toc-text">HTTP与文件上传</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Form表单消失以后"><span class="post-toc-number">4.</span> <span class="post-toc-text">Form表单消失以后</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#本文小结"><span class="post-toc-number">5.</span> <span class="post-toc-text">本文小结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">6.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-漫谈前端进化史之从Form表单到文件上传" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">漫谈前端进化史之从Form表单到文件上传</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-09-05 12:57:36" datetime="2018-09-05T12:57:36.000Z" itemprop="datePublished">2018-09-05</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        30 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;Hi&#xFF0C;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x662F;Payne&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="https://qinyuanpei.github.io">https://qinyuanpei.github.io</a>&#x3002;&#x4ECA;&#x5929;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x4EEC;&#x6765;&#x8BF4;&#x8BF4;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x76F8;&#x5173;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x770B;&#x5230;&#x8FD9;&#x91CC;&#xFF0C;&#x5927;&#x5BB6;&#x4E00;&#x5B9A;&#x89C9;&#x5F97;&#x535A;&#x4E3B;&#x5728;&#x6280;&#x672F;&#x4E0A;&#x8D8A;&#x6765;&#x8D8A;&#x6CA1;&#x8FFD;&#x6C42;&#x4E86;&#x5427;&#xFF0C;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x8FD9;&#x79CD;&#x518D;&#x7B80;&#x5355;&#x4E0D;&#x8FC7;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x771F;&#x7684;&#x503C;&#x5F97;&#x535A;&#x4E3B;&#x4F60;&#x4E13;&#x95E8;&#x5199;&#x7BC7;&#x535A;&#x5BA2;&#x5417;&#xFF1F;&#x5728;&#x4ECB;&#x7ECD;&#x58F0;&#x660E;&#x5F0F;RESTful&#x5BA2;&#x6237;&#x7AEF;WebApiClient&#x7684;&#x8FD9;&#x7BC7;<a href>&#x6587;&#x7AE0;</a>&#x4E2D;&#xFF0C;&#x535A;&#x4E3B;&#x66FE;&#x7ECF;&#x63D0;&#x5230;&#xFF0C;HTTP&#x534F;&#x8BAE;&#x4E2D;&#x5BF9;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7684;&#x652F;&#x6301;&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x901A;&#x8FC7;multipart/form-data&#x6765;&#x5B9E;&#x73B0;&#x3002;&#x56E0;&#x4E3A;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x662F;&#x5C06;&#x6587;&#x4EF6;&#x89C6;&#x4E3A;&#x4E00;&#x79CD;&#x7279;&#x6B8A;&#x7684;&#x952E;&#x503C;&#x5BF9;&#xFF0C;&#x6240;&#x4EE5;&#x5BF9;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6211;&#x672C;&#x4EBA;&#x4E0D;&#x592A;&#x559C;&#x6B22;&#x3002;&#x53EF;&#x4F5C;&#x4E3A;&#x6807;&#x51C6;&#x7684;&#x610F;&#x4E49;&#x5C31;&#x662F;&#x8981;&#x5FFD;&#x7565;&#x4E2A;&#x4EBA;&#x7684;&#x60C5;&#x611F;&#x56E0;&#x7D20;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x5728;&#x4ECA;&#x5929;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x4E2D;&#xFF0C;&#x535A;&#x4E3B;&#x66F4;&#x591A;&#x7684;&#x662F;&#x60F3;&#x4ECE;HTTP&#x534F;&#x8BAE;(<strong>RFC2388</strong>)&#x7684;&#x89D2;&#x5EA6;&#x6765;&#x770B;&#x5F85;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x5373;&#x4E3A;&#x4EC0;&#x4E48;&#x5B83;&#x9009;&#x62E9;&#x4E86;multipart/form-data&#x6765;&#x5B9E;&#x73B0;&#x4E0A;&#x4F20;&#xFF0C;&#x4EE5;&#x53CA;&#x4F34;&#x968F;&#x7740;&#x524D;&#x7AEF;&#x6280;&#x672F;&#x7684;&#x53D1;&#x5C55;&#x5B83;&#x7ECF;&#x5386;&#x4E86;&#x54EA;&#x4E9B;&#x53D8;&#x5316;&#x3002;</p>
+<h1 id="&#x4ECE;Form&#x8868;&#x5355;&#x8BF4;&#x8D77;"><a href="#&#x4ECE;Form&#x8868;&#x5355;&#x8BF4;&#x8D77;" class="headerlink" title="&#x4ECE;Form&#x8868;&#x5355;&#x8BF4;&#x8D77;"></a>&#x4ECE;Form&#x8868;&#x5355;&#x8BF4;&#x8D77;</h1><p>&#x2003;&#x2003;&#x5723;&#x7ECF;&#x4E0A;&#x5F00;&#x7BC7;&#x5C31;&#x70B9;&#x660E;&#x4E3B;&#x65E8;&#xFF0C;&#x201C;&#x8D77;&#x521D;&#x795E;&#x521B;&#x9020;&#x5929;&#x5730;&#x3002;&#x5730;&#x662F;&#x7A7A;&#x865A;&#x6DF7;&#x6C8C;&#x3002;&#x6E0A;&#x9762;&#x9ED1;&#x6697;&#x201D;&#x3002;&#x4E00;&#x5207;&#x7684;&#x4E00;&#x5207;&#xFF0C;&#x90FD;&#x8981;&#x4ECE;&#x795E;&#x521B;&#x9020;&#x5929;&#x5730;&#x5F00;&#x59CB;&#xFF0C;&#x795E;&#x8BF4;&#xFF0C;&#x8981;&#x6709;&#x5149;&#xFF0C;&#x8FD9;&#x4E16;&#x4E0A;&#x4FBF;&#x6709;&#x4E86;&#x5149;&#x3002;&#x90A3;&#x4E48;&#xFF0C;&#x5BF9;&#x4E8E;HTTP&#x534F;&#x8BAE;&#x6211;&#x4EEC;&#x8981;&#x4ECE;&#x54EA;&#x91CC;&#x5F00;&#x59CB;&#x8BF4;&#x8D77;&#x5462;&#x3002;HTTP&#x7684;&#x5168;&#x79F0;&#x662F;&#x8D85;&#x6587;&#x672C;&#x4F20;&#x8F93;&#x534F;&#x8BAE;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x5B83;&#x8BBE;&#x8BA1;&#x7684;&#x521D;&#x8877;&#x662F;&#x4F20;&#x8F93;&#x8D85;&#x6587;&#x672C;&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x3002;&#x4EC0;&#x4E48;&#x662F;&#x8D85;&#x6587;&#x672C;&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x5462;&#xFF1F;&#x4ECE;&#x73B0;&#x4EE3;&#x7F51;&#x9875;&#x7684;&#x7EC4;&#x6210;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x77E5;&#x9053;&#xFF0C;&#x5B83;&#x4E0D;&#x5355;&#x5355;&#x662F;&#x6307;&#x6587;&#x672C;&#x7C7B;&#x4FE1;&#x606F;&#xFF0C;&#x540C;&#x65F6;&#x6307;&#x56FE;&#x7247;&#x3001;&#x97F3;&#x9891;&#x3001;&#x89C6;&#x9891;&#x7B49;&#x7B49;&#x4E00;&#x5207;&#x53EF;&#x80FD;&#x7684;&#x4FE1;&#x606F;&#x5F62;&#x5F0F;&#x3002;&#x53EF;&#x795E;&#x5947;&#x7684;&#x5730;&#x65B9;&#x5C31;&#x5728;&#x4E8E;&#xFF0C;HTTP&#x534F;&#x8BAE;&#x662F;&#x57FA;&#x4E8E;&#x6587;&#x672C;&#x7684;&#x534F;&#x8BAE;&#xFF0C;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x6211;&#x4EEC;&#x5728;&#x7F51;&#x9875;&#x4E2D;&#x7684;&#x4FE1;&#x606F;&#x4EA4;&#x6362;&#xFF0C;&#x662F;&#x501F;&#x52A9;&#x67D0;&#x79CD;&#x6587;&#x672C;&#x7C7B;&#x578B;&#x7684;&#x901A;&#x4FE1;&#x534F;&#x8BAE;&#x3002;&#x987A;&#x7740;&#x8FD9;&#x4E2A;&#x601D;&#x8DEF;&#xFF0C;&#x6700;&#x65E9;&#x6211;&#x4EEC;&#x5728;&#x7F51;&#x9875;&#x4E2D;&#x4EA4;&#x6362;&#x4FE1;&#x606F;&#x7684;&#x65B9;&#x5F0F;&#x662F;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;&#x6211;&#x8BA4;&#x4E3A;&#x662F;Form&#x8868;&#x5355;&#x3002;&#x60F3;&#x60F3;&#x770B;&#xFF0C;&#x6211;&#x4EEC;&#x5728;Form&#x8868;&#x5355;&#x4E2D;&#x8F93;&#x5165;&#x4FE1;&#x606F;&#xFF0C;&#x7136;&#x540E;&#x901A;&#x8FC7;&#x4E00;&#x4E2A;&#x6309;&#x94AE;&#x5C06;&#x6570;&#x636E;&#x63D0;&#x4EA4;&#x5230;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x4F1A;&#x5BF9;&#x6211;&#x4EEC;&#x7684;&#x8BF7;&#x6C42;&#x505A;&#x51FA;&#x54CD;&#x5E94;&#x3002;&#x4E8B;&#x5B9E;&#x4E0A;&#xFF0C;&#x76F4;&#x5230;&#x4ECA;&#x5929;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x524D;&#x7AEF;&#x4F9D;&#x7136;&#x5728;&#x91C7;&#x7528;&#x8FD9;&#x4E00;&#x673A;&#x5236;&#x3002;&#x6240;&#x4E0D;&#x540C;&#x7684;&#x662F;&#xFF0C;&#x6211;&#x4EEC;&#x4ECA;&#x5929;&#x7528;&#x5404;&#x79CD;&#x7EC4;&#x4EF6;&#x66FF;&#x4EE3;&#x4E86;Form&#x8868;&#x5355;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x8BB2;&#x5404;&#x79CD;&#x8BED;&#x8A00;&#x7684;&#x201D;&#x6253;&#x5370;&#x201D;&#x7406;&#x89E3;&#x4E3A;Hello World&#xFF0C;&#x90A3;&#x4E48;&#x5BF9;&#x524D;&#x7AEF;&#x800C;&#x8A00;&#x6700;&#x6D45;&#x663E;&#x7684;Hello World&#x662F;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;&#x6211;&#x4E2A;&#x4EBA;&#x4EE5;&#x4E3A;&#x662F;&#x767B;&#x5F55;&#xFF0C;&#x60F3;&#x8C61;&#x4E00;&#x4E0B;&#xFF0C;&#x8FD9;&#x662F;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;Web&#x5E94;&#x7528;&#x91CC;&#x90FD;&#x6709;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x6211;&#x4EEC;&#x8F93;&#x5165;&#x7528;&#x6237;&#x540D;&#x548C;&#x5BC6;&#x7801;&#x4EE5;&#x540E;&#xFF0C;&#x70B9;&#x51FB;&#x201C;&#x767B;&#x5F55;&#x201D;&#x6309;&#x94AE;&#x5C31;&#x53EF;&#x4EE5;&#x767B;&#x5F55;&#x5230;&#x7CFB;&#x7EDF;&#x3002;&#x867D;&#x7136;&#xFF0C;&#x6B64;&#x65F6;&#x6B64;&#x523B;&#x7684;&#x4F60;&#x6211;&#xFF0C;&#x90FD;&#x77E5;&#x9053;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;POST&#x8BF7;&#x6C42;&#xFF0C;&#x751A;&#x81F3;&#x5BF9;&#x4E8E;&#x7528;&#x6237;&#x540D;&#x548C;&#x5BC6;&#x7801;&#x8FD9;&#x4E24;&#x4E2A;&#x5B57;&#x6BB5;&#xFF0C;&#x6211;&#x4EEC;&#x6709;&#x591A;&#x79CD;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x5C06;&#x5176;&#x4F20;&#x9012;&#x5230;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x3002;&#x90A3;&#x4E48;&#xFF0C;&#x5404;&#x4F4D;&#x662F;&#x5426;&#x77E5;&#x9053;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;Form&#x8868;&#x5355;&#x6765;&#x767B;&#x5F55;&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E2D;&#x5230;&#x5E95;&#x53D1;&#x751F;&#x4E86;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;&#x65E2;&#x7136;&#x63D0;&#x5230;&#x4E86;&#x767B;&#x5F55;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x901A;&#x8FC7;&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x6765;&#x5206;&#x6790;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x5982;&#x4F60;&#x6240;&#x89C1;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x76F8;&#x5F53;&#x201C;&#x7B80;&#x964B;&#x201D;&#x7684;Web&#x9875;&#x9762;&#x3002;&#x5BF9;&#x4E00;&#x540D;&#x540E;&#x7AEF;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x800C;&#x8A00;&#xFF0C;&#x7CBE;&#x81F4;&#x7684;Web&#x9875;&#x9762;&#x5C31;&#x662F;&#x4E00;&#x6BB5;&#x88AB;&#x5957;&#x5728;&#x534E;&#x4E3D;&#x5916;&#x58F3;&#x91CC;&#x7684;&#x4EE3;&#x7801;(&#x4E0D;&#x77E5;&#x9053;&#x8FD9;&#x6837;&#x4F1A;&#x4E0D;&#x4F1A;&#x88AB;&#x524D;&#x7AEF;&#x7F51;&#x7EA2;&#x4EEC;&#x6253;&#x6B7B;)&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x6392;&#x9664;&#x4E86;&#x6837;&#x5F0F;&#x76F8;&#x5173;&#x7684;CSS&#xFF0C;&#x53EF;&#x4EE5;&#x8BA9;&#x6211;&#x4EEC;&#x66F4;&#x52A0;&#x4E13;&#x6CE8;&#x4E8E;&#x6838;&#x5FC3;&#x539F;&#x7406;&#x3002;&#x540C;&#x6837;&#x5730;&#xFF0C;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x4E86;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;Web API&#xFF0C;&#x6765;&#x5904;&#x7406;&#x524D;&#x7AEF;&#x53D1;&#x9001;&#x6765;&#x7684;HTTP&#x8BF7;&#x6C42;&#xFF0C;&#x8FD9;&#x4E0D;&#x662F;&#x672C;&#x6587;&#x7684;&#x91CD;&#x70B9;&#xFF0C;&#x6211;&#x4EEC;&#x5047;&#x8BBE;&#x5B83;&#x5B58;&#x5728;&#x4E14;&#x53EF;&#x4EE5;&#x5DE5;&#x4F5C;&#x5C31;&#x597D;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fziy867pz8j20ig07laa5.jpg" alt="HTML&#x7ED3;&#x6784;/&#x754C;&#x9762;" title>
+                </div>
+                <div class="image-caption">HTML&#x7ED3;&#x6784;/&#x754C;&#x9762;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x8FD9;&#x91CC;&#x5DF2;&#x7ECF;&#x8BF4;&#x8FC7;&#xFF0C;&#x6BD4;&#x8D77;&#x70AB;&#x9177;&#x7684;Web&#x9875;&#x9762;&#x548C;&#x540E;&#x7AEF;&#x63A5;&#x53E3;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x66F4;&#x5173;&#x5FC3;&#x7684;&#x662F;&#xFF0C;&#x767B;&#x5F55;&#x65F6;&#x5230;&#x5E95;&#x53D1;&#x751F;&#x4E86;&#x4EC0;&#x4E48;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x5927;&#x5BB6;&#x90FD;&#x731C;&#x5BF9;&#x4E86;&#xFF0C;&#x901A;&#x8FC7;Chrome&#x81EA;&#x5E26;&#x7684;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x5DE5;&#x5177;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6355;&#x6349;&#x5230;&#x70B9;&#x51FB;&#x201C;&#x767B;&#x5F55;&#x201D;&#x6309;&#x94AE;&#x65F6;&#x53D1;&#x51FA;&#x7684;HTTP&#x8BF7;&#x6C42;&#xFF0C;&#x6211;&#x4EEC;&#x4E00;&#x8D77;&#x6765;&#x770B;&#x770B;&#x5B83;&#x7684;&#x62A5;&#x6587;&#x5185;&#x5BB9;&#x662F;&#x4EC0;&#x4E48;&#x5427;&#xFF0C;&#x76F8;&#x4FE1;&#x5927;&#x5BB6;&#x90FD;&#x4F1A;&#x6709;&#x4E00;&#x79CD;&#x604D;&#x7136;&#x5927;&#x609F;&#x7684;&#x611F;&#x89C9;&#xFF0C;&#x8BA9;&#x6211;&#x4EEC;&#x62ED;&#x76EE;&#x4EE5;&#x5F85;&#x5427;&#xFF01;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fziy5kad23j20if08k3z9.jpg" alt="encrypt&#x4E3A;x-www-form-urlencode&#x65F6;&#x7684;&#x8BF7;&#x6C42;&#x62A5;&#x6587;" title>
+                </div>
+                <div class="image-caption">encrypt&#x4E3A;x-www-form-urlencode&#x65F6;&#x7684;&#x8BF7;&#x6C42;&#x62A5;&#x6587;</div>
+            </figure><p></p>
+<p>&#x2003;&#x2003;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x62A5;&#x6587;&#x5185;&#x5BB9;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#xFF0C;&#x201C;&#x767B;&#x5F55;&#x201D;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x4E00;&#x4E2A;POST&#x8BF7;&#x6C42;&#xFF0C;&#x8FD9;&#x662F;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x5728;HTML&#x7ED3;&#x6784;&#x4E2D;&#x58F0;&#x660E;&#x4E86;&#xFF0C;Form&#x8868;&#x5355;&#x7528;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x65B9;&#x5F0F;&#x53BB;&#x63D0;&#x4EA4;&#x6570;&#x636E;&#x3002;&#x800C;&#x5B9E;&#x9645;&#x4E0A;&#x5462;&#xFF0C;Form&#x8868;&#x5355;&#x9ED8;&#x8BA4;&#x7684;&#x884C;&#x4E3A;&#x662F;GET&#x3002;&#x6211;&#x4EEC;&#x540C;&#x6837;&#x4F1A;&#x6CE8;&#x610F;&#x5230;&#x62A5;&#x6587;&#x4E2D;&#x7684;Content-Type&#x4E3A;application/x-www-form-urlencode&#xFF0C;&#x5B83;&#x7684;&#x7279;&#x70B9;&#x662F;&#x91C7;&#x7528;&#x7C7B;&#x4F3C;key1=value1&amp;key2=value2&#x2026;&#x2026;&#x7684;&#x5F62;&#x5F0F;&#x6765;&#x63D0;&#x4EA4;&#x6570;&#x636E;&#xFF0C;&#x5E76;&#x4E14;&#x6BCF;&#x4E00;&#x4E2A;value&#x90FD;&#x4F1A;&#x88AB;&#x7F16;&#x7801;&#x3002;&#x8FD9;&#x6837;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x4E0D;&#x5F97;&#x4E0D;&#x63D0;&#x5230;Form&#x8868;&#x5355;&#x7684;encrypt&#x5C5E;&#x6027;&#xFF0C;&#x5B83;&#x6709;&#x4E09;&#x79CD;&#x57FA;&#x672C;&#x53D6;&#x503C;&#xFF1A;text/plain&#x3001;application/x-www-form-urlencode&#x548C;multipart/form-data&#x3002;&#x5176;&#x4E2D;&#xFF0C;text/plain&#x8FD9;&#x79CD;&#x4E0D;&#x5FC5;&#x518D;&#x8BF4;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x4F20;&#x9012;&#x7684;&#x662F;&#x7EAF;&#x6587;&#x672C;&#x6570;&#x636E;&#x3002;&#x800C;&#x5BF9;&#x4E8E;multipart/form-data&#x6765;&#x8BF4;&#xFF0C;&#x5B83;&#x7684;&#x7279;&#x70B9;&#x662F;&#x91C7;&#x7528;&#x4E00;&#x7CFB;&#x5217;&#x7684;boundary&#x6765;&#x5206;&#x5272;&#x4E0D;&#x540C;&#x7684;&#x503C;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x5C06;&#x793A;&#x4F8B;&#x4E2D;Form&#x8868;&#x5355;&#x7684;encrypt&#x5C5E;&#x6027;&#x8BBE;&#x4E3A;multipart/form-data&#xFF0C;&#x5C31;&#x4F1A;&#x5F97;&#x5230;&#x4E0B;&#x9762;&#x7684;&#x62A5;&#x6587;&#x5185;&#x5BB9;&#xFF0C;&#x53EF;&#x4EE5;&#x6CE8;&#x610F;&#x5230;&#xFF0C;&#x5B83;&#x548C;&#x6211;&#x4EEC;&#x9884;&#x671F;&#x662F;&#x4E00;&#x81F4;&#x7684;&#x3002;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzixzg5fsdj20rv0dv75u.jpg" alt="encrypt&#x4E3A;multipart/form-data&#x65F6;&#x7684;&#x8BF7;&#x6C42;&#x62A5;&#x6587;" title>
+                </div>
+                <div class="image-caption">encrypt&#x4E3A;multipart/form-data&#x65F6;&#x7684;&#x8BF7;&#x6C42;&#x62A5;&#x6587;</div>
+            </figure><p></p>
+<p>&#x2003;&#x2003;&#x6216;&#x8BB8;&#x5927;&#x5BB6;&#x4F1A;&#x8BF4;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x7528;AJAX&#x6765;&#x8BF7;&#x6C42;RESTful&#x98CE;&#x683C;&#x7684;API&#x65F6;&#xFF0C;&#x4E0D;&#x90FD;&#x662F;&#x7528;JSON&#x4F5C;&#x4E3A;&#x6570;&#x636E;&#x4EA4;&#x6362;&#x7684;&#x683C;&#x5F0F;&#x5417;&#xFF1F;&#x5BF9;&#x4E8E;&#x8FD9;&#x4E00;&#x70B9;&#xFF0C;&#x6216;&#x8BB8;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#xFF0C;Form&#x8868;&#x5355;&#x662F;&#x5C01;&#x88C5;&#x4E86;&#x6709;&#x9650;&#x7684;3&#x79CD;Content-Type&#x7684;XHR&#x5BF9;&#x8C61;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;Form&#x8868;&#x5355;&#x8DB3;&#x4EE5;&#x8BA9;&#x6211;&#x4EEC;&#x4E00;&#x7AA5;AJAX&#x6700;&#x521D;&#x7684;&#x6837;&#x5B50;&#x3002;&#x867D;&#x7136;&#xFF0C;&#x6211;&#x4EEC;&#x4ECA;&#x5929;&#x5DF2;&#x7ECF;&#x4E0D;&#x518D;&#x4E3B;&#x5F20;&#x4F7F;&#x7528;jQuery&#xFF0C;&#x4F46;&#x662F;&#x719F;&#x6089;jQuery&#x7684;&#x670B;&#x53CB;&#x4E00;&#x5B9A;&#x77E5;&#x9053;&#x8FD9;&#x4E00;&#x70B9;&#xFF0C;&#x5373;jQuery&#x4E2D;&#x9ED8;&#x8BA4;&#x7684;Content-Type&#x793A;&#x4F8B;&#x4E0A;&#x662F;application/x-www-form-urlencoded&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x5373;&#x4F7F;&#x6211;&#x4EEC;&#x4ECA;&#x5929;&#x6709;&#x4E86;&#x5168;&#x65B0;&#x7684;Fetch API&#xFF0C;&#x53EF;&#x5B83;&#x4F9D;&#x7136;&#x8131;&#x79BB;&#x4E0D;&#x4E86;HTTP&#x534F;&#x8BAE;&#x7684;&#x8303;&#x7574;&#x3002;&#x53EF;&#x6216;&#x8BB8;&#x6B63;&#x56E0;&#x4E3A;&#x5982;&#x6B64;&#xFF0C;HTTP&#x4E2D;&#x7684;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x591A;&#x5C11;&#x50CF;&#x662F;&#x67D0;&#x79CD;&#x59A5;&#x534F;&#x7684;&#x4EA7;&#x7269;&#x3002;</p>
+<h1 id="&#x795E;&#x5947;&#x7684;Input&#x63A7;&#x4EF6;"><a href="#&#x795E;&#x5947;&#x7684;Input&#x63A7;&#x4EF6;" class="headerlink" title="&#x795E;&#x5947;&#x7684;Input&#x63A7;&#x4EF6;"></a>&#x795E;&#x5947;&#x7684;Input&#x63A7;&#x4EF6;</h1><p>&#x2003;&#x2003;OK&#xFF0C;&#x5728;&#x672C;&#x6587;&#x7684;&#x7B2C;&#x4E00;&#x8282;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x7684;&#x662F;&#x6700;&#x7B80;&#x5355;&#x7684;Input&#x63A7;&#x4EF6;&#xFF0C;&#x5373;&#x5B83;&#x7684;type&#x5C5E;&#x6027;&#x4E3A;&#x201C;text&#x201D;&#x3002;&#x4E8B;&#x5B9E;&#x4E0A;&#xFF0C;Input&#x63A7;&#x4EF6;&#x662F;&#x4E00;&#x4E2A;&#x795E;&#x5947;&#x7684;&#x63A7;&#x4EF6;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0D;&#x540C;&#x7684;type&#x4F1A;&#x6709;&#x4E0D;&#x540C;&#x7684;&#x4F5C;&#x7528;&#x3002;&#x4F8B;&#x5982;&#xFF0C;type&#x4E3A;password&#x5BF9;&#x5E94;&#x5BC6;&#x7801;&#x57DF;&#xFF1B;type&#x4E3A;checkbox&#x5BF9;&#x5E94;&#x590D;&#x9009;&#xFF1B;type&#x4E3A;radio&#x5BF9;&#x5E94;&#x5355;&#x9009;&#x57DF;&#xFF1B;type&#x4E3A;button&#x5BF9;&#x5E94;&#x6309;&#x94AE;&#x57DF;&#x7B49;&#x7B49;&#x2026;&#x2026;&#x6709;&#x5F88;&#x591A;&#x670B;&#x53CB;&#x53EF;&#x80FD;&#x4F1A;&#x95EE;&#xFF0C;&#x4F60;&#x8BF4;&#x7684;&#x8FD9;&#x4E2A;&#x548C;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x6709;&#x4EC0;&#x4E48;&#x5173;&#x7CFB;&#x5417;&#xFF1F;&#x6211;&#x60F3;&#x8BF4;&#x7684;&#x662F;&#xFF0C;&#x5F53;&#x7136;&#x6709;&#x5173;&#x7CFB;&#x800C;&#x4E14;&#x5173;&#x7CFB;&#x5BC6;&#x5207;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x4E0B;&#x9762;&#x8981;&#x63D0;&#x5230;&#x7684;&#x8FD9;&#x79CD;Input&#x63A7;&#x4EF6;&#xFF0C;&#x548C;&#x672C;&#x6587;&#x60F3;&#x8981;&#x8BF4;&#x660E;&#x7684;HTTP&#x4E0A;&#x4F20;&#xFF0C;&#x5728;&#x672C;&#x8D28;&#x4E0A;&#x6709;&#x7740;&#x5343;&#x4E1D;&#x4E07;&#x7F15;&#x7684;&#x8054;&#x7CFB;&#x3002;&#x5177;&#x4F53;&#x662F;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x8054;&#x7CFB;&#x5462;&#xFF1F;&#x6211;&#x4EEC;&#x6765;&#x4E00;&#x8D77;&#x770B;&#x4E0B;&#x9762;&#x7684;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz05o9mcsoj20h606uq2s.jpg" alt="HTTP_Upload_06" title>
+                </div>
+                <div class="image-caption">HTTP_Upload_06</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz05ljreo8j20me08vt98.jpg" alt="HTTP_Upload_05" title>
+                </div>
+                <div class="image-caption">HTTP_Upload_05</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x6211;&#x4EEC;&#x5F88;&#x5BB9;&#x6613;&#x53D1;&#x73B0;&#x7684;&#x4E00;&#x70B9;&#x662F;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x91C7;&#x7528;type&#x4E3A;file&#x7684;Input&#x63A7;&#x4EF6;&#x4E0A;&#x4F20;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x65F6;&#xFF0C;&#x5B83;&#x4F1A;&#x91C7;&#x7528;multipart/form-data&#x6765;&#x4F20;&#x9012;&#x6570;&#x636E;&#xFF0C;&#x62A5;&#x6587;&#x4E2D;&#x4F7F;&#x7528;&#x4E86;&#x548C;&#x7B2C;&#x4E8C;&#x4E2A;&#x793A;&#x4F8B;&#x7C7B;&#x4F3C;&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x5373;&#x7B2C;&#x4E00;&#x90E8;&#x5206;&#x8D1F;&#x8D23;&#x63CF;&#x8FF0;&#x6587;&#x4EF6;&#x4FE1;&#x606F;&#xFF0C;&#x8B6C;&#x5982;&#x6587;&#x4EF6;&#x7684;&#x540D;&#x79F0;&#x3001;&#x6269;&#x5C55;&#x540D;&#x7C7B;&#x578B;&#x7B49;&#x7B49;&#xFF1B;&#x7B2C;&#x4E8C;&#x90E8;&#x5206;&#x8868;&#x793A;&#x6587;&#x4EF6;&#x6570;&#x636E;&#x6D41;&#xFF0C;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x4E8C;&#x8FDB;&#x5236;&#x5F62;&#x5F0F;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x65E2;&#x7136;&#x5B83;&#x91C7;&#x7528;multipart/form-data&#x6765;&#x4F20;&#x9012;&#x6570;&#x636E;&#xFF0C;&#x90A3;&#x4E48;&#x8FD9;&#x662F;&#x5426;&#x610F;&#x5473;&#x7740;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;&#x8FD9;&#x4E2A;&#x7ED3;&#x6784;&#x4E2D;&#x643A;&#x5E26;&#x66F4;&#x591A;&#x7684;&#x4FE1;&#x606F;&#x5462;&#xFF1F;&#x8B6C;&#x5982;&#xFF0C;&#x6709;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5C06;&#x6587;&#x4EF6;&#x548C;&#x7528;&#x6237;&#x63D0;&#x4EA4;&#x7684;&#x4FE1;&#x606F;&#x5173;&#x8054;&#x8D77;&#x6765;&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x5C31;&#x9700;&#x8981;&#x5C06;&#x8FD9;&#x4E9B;&#x4FE1;&#x606F;&#x4E00;&#x5207;&#x63D0;&#x4EA4;&#x5230;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x5C06;&#x5176;&#x62C6;&#x5206;&#x4E3A;&#x4E24;&#x4E2A;API&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x9700;&#x8981;&#x53BB;&#x82B1;&#x7CBE;&#x529B;&#x7EF4;&#x62A4;&#x8FD9;&#x4E2A;&#x5173;&#x8054;&#x7684;id&#x5566;&#x3002;&#x7B54;&#x6848;&#x81EA;&#x7136;&#x662F;&#x53EF;&#x4EE5;&#x7684;&#xFF0C;&#x53EA;&#x8981;&#x628A;&#x6587;&#x4EF6;&#x89C6;&#x4E3A;&#x4E00;&#x79CD;&#x7279;&#x6B8A;&#x7684;&#x952E;&#x503C;&#x5BF9;&#x5373;&#x53EF;&#x3002;</p>
+<h1 id="HTTP&#x4E0E;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;"><a href="#HTTP&#x4E0E;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;" class="headerlink" title="HTTP&#x4E0E;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;"></a>HTTP&#x4E0E;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;</h1><p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x8BF4;&#x4E86;&#x8FD9;&#x591A;&#x4E48;&#x5185;&#x5BB9;&#xFF0C;&#x662F;&#x65F6;&#x5019;&#x6765;&#x8BF4;&#x8BF4;HTTP&#x4E0E;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x5566;&#xFF01;&#x73B0;&#x5728;&#x5927;&#x5BB6;&#x90FD;&#x77E5;&#x9053;&#x4E86;&#xFF0C;HTTP&#x4E0A;&#x4F20;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x5728;multipart/form-data&#x57FA;&#x7840;&#x4E0A;&#x6269;&#x5C55;&#x800C;&#x6765;&#x7684;&#x3002;&#x65E9;&#x671F;&#x4EBA;&#x4EEC;&#x5728;&#x5236;&#x5B9A;HTTP&#x534F;&#x8BAE;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5E76;&#x6CA1;&#x6709;&#x60F3;&#x5230;&#x7528;&#x5B83;&#x6765;&#x4F5C;&#x4E3A;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7684;&#x534F;&#x8BAE;&#xFF0C;&#x56E0;&#x4E3A;&#x4E8B;&#x5B9E;&#x4E0A;TPC/IP&#x6216;&#x8005;FTP&#x90FD;&#x53EF;&#x4EE5;&#x63D0;&#x4F9B;&#x66F4;&#x597D;&#x7684;&#x4E0A;&#x4F20;&#x652F;&#x6301;&#x3002;&#x5F53;&#x6211;&#x4EEC;&#x56DE;&#x987E;Form&#x8868;&#x5355;&#x4E2D;&#x5173;&#x4E8E;HTTP&#x7684;&#x90E8;&#x5206;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x4F1A;&#x53D1;&#x73B0;&#xFF0C;HTTP&#x4E2D;&#x5177;&#x5907;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#x53EF;&#x80FD;&#x6027;&#x7684;&#x65B9;&#x5F0F;&#x53EA;&#x6709;&#x4E24;&#x79CD;&#xFF0C;&#x5373;multipart/form-data&#x548C;x-www-form-urlencode&#x3002;&#x8FD9;&#x91CC;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x8003;&#x8651;text/plain&#x5462;&#xFF1F;&#x5C3D;&#x7BA1;&#x4ECE;&#x7406;&#x8BBA;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x4F5C;&#x4E3A;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7684;&#x4E00;&#x79CD;&#x65B9;&#x5F0F;&#xFF0C;&#x6B64;&#x65F6;&#xFF0C;&#x5B83;&#x76F8;&#x5F53;&#x4E8E;&#x628A;&#x6574;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x5168;&#x90E8;&#x653E;&#x5728;&#x8BF7;&#x6C42;&#x4F53;(body)&#x4E2D;&#x3002;&#x4ECE;&#x5B9E;&#x7528;&#x6027;&#x89D2;&#x5EA6;&#x6765;&#x8BB2;&#xFF0C;text/pain&#x5728;&#x5B9E;&#x9645;&#x5E94;&#x7528;&#x4E2D;&#x5E76;&#x4E0D;&#x591A;&#x89C1;&#xFF0C;&#x56E0;&#x4E3A;&#x91C7;&#x7528;&#x7EAF;&#x6587;&#x672C;&#x610F;&#x5473;&#x7740;&#x5BA2;&#x6237;&#x7AEF;&#x4E0E;&#x670D;&#x52A1;&#x7AEF;&#x5FC5;&#x987B;&#x6309;&#x7167;&#x67D0;&#x79CD;&#x89C4;&#x5219;&#x53BB;&#x89E3;&#x6790;&#x62A5;&#x6587;&#x3002;&#x800C;&#x4ECE;&#x529F;&#x80FD;&#x6027;&#x89D2;&#x5EA6;&#x6765;&#x8BB2;&#xFF0C;&#x628A;&#x6574;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x5168;&#x90E8;&#x653E;&#x5728;&#x8BF7;&#x6C42;&#x4F53;&#x4E2D;&#xFF0C;&#x5219;&#x4F1A;&#x9020;&#x6210;&#x6587;&#x4EF6;&#x4FE1;&#x606F;&#x7684;&#x4E0D;&#x5B8C;&#x6574;&#xFF0C;&#x56E0;&#x4E3A;&#x6B64;&#x65F6;&#x6587;&#x4EF6;&#x540D;&#x7B49;&#x4FE1;&#x606F;&#x662F;&#x6CA1;&#x6709;&#x529E;&#x6CD5;&#x4F20;&#x8F93;&#x5230;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x6837;&#x7EFC;&#x5408;&#x4E0B;&#x6765;&#x518D;&#x770B;&#x7684;&#x8BDD;&#xFF0C;HTTP&#x534F;&#x8BAE;&#x672C;&#x8EAB;&#x7559;&#x7ED9;&#x6211;&#x4EEC;&#x7684;&#x9009;&#x62E9;&#x7684;&#x7A7A;&#x95F4;&#x5E76;&#x4E0D;&#x5927;&#xFF0C;&#x6211;&#x4EEC;&#x80FD;&#x591F;&#x9009;&#x62E9;&#x7684;&#x5C31;&#x53EA;&#x6709;multipart/form-data&#x548C;x-www-form-urlencode&#x8FD9;&#x4E24;&#x79CD;&#x5566;&#xFF0C;&#x4E0B;&#x9762;&#x7740;&#x91CD;&#x6765;&#x5206;&#x6790;&#x4E0B;&#x8FD9;&#x79CD;&#x6570;&#x636E;&#x52A0;&#x5BC6;&#x65B9;&#x5F0F;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz05f46qf1j20rv0dvjso.jpg" alt="HTTP_Upload_07" title>
+                </div>
+                <div class="image-caption">HTTP_Upload_07</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x5BF9;&#x4E8E;Content-Type&#x4E3A;multipart/form-data&#x800C;&#x8A00;&#xFF0C;&#x9996;&#x5148;&#xFF0C;&#x5B83;&#x4F1A;&#x5728;&#x8BF7;&#x6C42;&#x5934;&#x90E8;&#x7684;Content-Type&#x5B57;&#x6BB5;&#x4E2D;&#xFF0C;&#x58F0;&#x660E;&#x5F53;&#x524D;&#x7684;&#x5185;&#x5BB9;&#x7C7B;&#x578B;&#x4E3A;multipart/form-data&#xFF0C;&#x5E76;&#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x540D;&#x4E3A;boundary&#x7684;&#x968F;&#x673A;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x5B83;&#x7684;&#x542B;&#x4E49;&#x662F;&#x8BF4;&#xFF0C;&#x4ECE;&#x73B0;&#x5728;&#x5F00;&#x59CB;&#xFF0C;&#x8BF7;&#x6C42;&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x4E2A;&#x201C;&#x5B57;&#x6BB5;&#x201D;&#x90FD;&#x4F1A;&#x7528;&#x8FD9;&#x4E2A;&#x540D;&#x4E3A;boundary&#x7684;&#x968F;&#x673A;&#x5B57;&#x7B26;&#x4E32;&#x8FDB;&#x884C;&#x5206;&#x5272;&#x3002;&#x800C;&#x5BF9;&#x4E8E;&#x6BCF;&#x4E00;&#x4E2A;&#x201C;&#x5B57;&#x6BB5;&#x201D;&#x800C;&#x8A00;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x62E5;&#x6709;&#x90E8;&#x5206;&#x5B50;&#x5934;&#x90E8;&#x5B57;&#x6BB5;&#xFF0C;&#x4E00;&#x4E2A;&#x6700;&#x4E3A;&#x5E38;&#x89C1;&#x7684;&#x5934;&#x90E8;&#x5B57;&#x6BB5;&#x662F;Content-Disposition&#xFF0C;&#x5176;&#x53D6;&#x503C;&#x4E3A;form-data&#x3002;&#x9664;&#x6B64;&#x4E4B;&#x5916;&#xFF0C;&#x6BCF;&#x4E00;&#x4E2A;&#x201C;&#x5B57;&#x6BB5;&#x201D;&#x53EF;&#x4EE5;&#x5728;<strong>Content-Disposition: form-data;</strong>&#x540E;&#x8FFD;&#x52A0;&#x82E5;&#x5E72;&#x4E2A;&#x5B57;&#x6BB5;&#xFF0C;&#x8B6C;&#x5982;name&#x3001;filename&#x4EE5;&#x53CA;&#x7528;&#x4EE5;&#x6307;&#x5B9A;&#x6587;&#x4EF6;&#x7C7B;&#x578B;&#x7684;Content-Type(&#x5047;&#x5982;&#x8FD9;&#x4E2A;&#x201C;&#x5B57;&#x6BB5;&#x201D;&#x662F;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x8BDD;)&#x3002;HTTP&#x534F;&#x8BAE;&#x4E2D;&#x8FD8;&#x89C4;&#x5B9A;&#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x652F;&#x6301;&#x6269;&#x5C55;&#x5B57;&#x6BB5;&#x3002;&#x6211;&#x4EEC;&#x901A;&#x8FC7;type&#x4E3A;file &#x7684;Input&#x63A7;&#x4EF6;&#x8FDB;&#x884C;&#x4E0A;&#x4F20;&#x65F6;&#xFF0C;&#x9ED8;&#x8BA4;&#x7684;name&#x4E3A;multipartfile&#xFF0C;&#x5F53;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x63A5;&#x53D7;&#x5230;&#x7C7B;&#x4F3C;&#x7684;&#x5B57;&#x6BB5;&#x65F6;&#xFF0C;&#x5C31;&#x4F1A;&#x6839;&#x636E;&#x62A5;&#x6587;&#x5BF9;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x62FC;&#x63A5;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x5BF9;&#x4E8E;HTTP&#x4E0A;&#x4F20;&#x6765;&#x8BF4;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x652F;&#x6301;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#x5E76;&#x53D1;&#x4E0A;&#x4F20;&#xFF0C;&#x4F46;&#x5E76;&#x4E0D;&#x76F4;&#x63A5;&#x652F;&#x6301;&#x65AD;&#x70B9;&#x7EED;&#x4F20;&#x3002;&#x6CE8;&#x610F;&#x8FD9;&#x91CC;&#x6211;&#x8BF4;&#x7684;&#x662F;&#xFF0C;&#x4E0D;&#x76F4;&#x63A5;&#x652F;&#x6301;&#x65AD;&#x70B9;&#x7EED;&#x4F20;&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#x5B83;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8BF7;&#x6C42;&#x5934;&#x90E8;&#x4E2D;&#x7684;Range&#x5B57;&#x6BB5;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x5F53;&#x7136;&#x8FD9;&#x5DF2;&#x7ECF;&#x8D85;&#x51FA;&#x4E86;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x7684;&#x8303;&#x7574;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz020zu3ooj20t90903zd.jpg" alt="HTTP_Upload_08" title>
+                </div>
+                <div class="image-caption">HTTP_Upload_08</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x5BF9;&#x4E8E;Content-Type&#x4E3A;x-www-form-urlencode&#x800C;&#x8A00;&#xFF0C;&#x5B83;&#x4F1A;&#x5C06;&#x8BF7;&#x6C42;&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x4E2A;&#x5B57;&#x6BB5;&#x4EE5;key1=value1&amp;key2=value2&#x2026;&#x2026;&#x7684;&#x5F62;&#x5F0F;&#x4E32;&#x8054;&#x8D77;&#x6765;&#xFF0C;&#x5E76;&#x5BF9;&#x6BCF;&#x4E00;&#x4E2A;value&#x8FDB;&#x884C;&#x7F16;&#x7A0B;&#xFF0C;&#x8FD9;&#x79CD;&#x4F20;&#x503C;&#x65B9;&#x5F0F;&#x6211;&#x4EEC;&#x4E00;&#x822C;&#x79F0;&#x4E3A;QueryString&#xFF0C;&#x800C;&#x66F4;&#x4E3A;&#x4E00;&#x822C;&#x7684;&#x573A;&#x666F;&#x662F;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x901A;&#x8FC7;GET&#x65B9;&#x5F0F;&#x8BF7;&#x6C42;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;QueryString&#x662F;&#x552F;&#x4E00;&#x7684;&#x4F20;&#x53C2;&#x65B9;&#x5F0F;&#xFF0C;&#x4E0D;&#x540C;&#x4E4B;&#x5904;&#x662F;GET&#x8BF7;&#x6C42;&#x7684;&#x53C2;&#x6570;&#x662F;&#x9644;&#x52A0;&#x5728;URL&#x4E0A;&#xFF0C;&#x800C;POST&#x8BF7;&#x6C42;&#x7684;&#x53C2;&#x6570;&#x662F;&#x9644;&#x52A0;&#x5728;body&#x91CC;&#x3002;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x7528;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6765;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#x4F1A;&#x600E;&#x4E48;&#x6837;&#x5462;&#xFF1F;&#x7B54;&#x6848;&#x662F;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x8BD5;&#x56FE;&#x5C06;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x4EE5;x-www-form-urlencode&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x4F20;&#x8F93;&#x65F6;&#xFF0C;&#x6587;&#x4EF6;&#x6D41;&#x4F1A;&#x88AB;&#x5F7B;&#x5E95;&#x5FFD;&#x7565;&#xFF0C;&#x5B83;&#x5B9E;&#x9645;&#x4F20;&#x8F93;&#x7684;&#x662F;&#x5BF9;&#x5E94;&#x6587;&#x4EF6;&#x7684;&#x540D;&#x79F0;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x4ECE;&#x8FD9;&#x4E2A;&#x89D2;&#x5EA6;&#x6765;&#x8BB2;&#xFF0C;&#x5B83;&#x4E0D;&#x80FD;&#x7528;&#x4E8E;&#x6587;&#x4EF6;&#x7684;&#x4E0A;&#x4F20;&#x3002;&#x4E8B;&#x5B9E;&#x4E0A;&#xFF0C;&#x5B83;&#x662F;&#x88AB;&#x8BBE;&#x8BA1;&#x7528;&#x6765;&#x4F20;&#x8F93;&#x975E;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x53EF;&#x80FD;&#x6709;&#x4EBA;&#x8981;&#x95EE;&#x5566;&#xFF0C;&#x90A3;&#x6211;&#x5982;&#x679C;&#x6709;JSON&#x6765;&#x4F20;&#x8F93;&#x6587;&#x4EF6;&#x53EF;&#x4E0D;&#x53EF;&#x4EE5;&#x5462;&#xFF1F;&#x7406;&#x8BBA;&#x4E0A;&#x5E94;&#x8BE5;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#xFF0C;&#x66FE;&#x7ECF;&#x6211;&#x4EEC;&#x5728;&#x4E00;&#x4E2A;&#x9879;&#x76EE;&#x4E2D;&#x7528;JSON&#x63CF;&#x8FF0;&#x56FE;&#x7247;&#xFF0C;&#x5F53;&#x7136;&#x8FD9;&#x662F;&#x7ECF;&#x8FC7;Base64&#x7F16;&#x7801;&#x4EE5;&#x540E;&#x7684;&#x56FE;&#x7247;&#x3002;&#x56DE;&#x8FC7;&#x5934;&#x6765;&#x770B;text/plain&#xFF0C;&#x6211;&#x4EEC;&#x628A;JSON&#x5B57;&#x7B26;&#x4E32;&#x76F4;&#x63A5;&#x653E;&#x5230;body&#x91CC;&#x53EF;&#x4E0D;&#x53EF;&#x4EE5;&#x5462;&#xFF1F;&#x5F53;&#x7136;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#xFF0C;&#x56E0;&#x4E3A;&#x95EE;&#x9898;&#x5168;&#x90E8;&#x8F6C;&#x79FB;&#x5230;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x5B98;&#x65B9;&#x5EFA;&#x8BAE;&#x7528;&#x5B83;&#x6765;&#x4F5C;&#x4E3A;&#x8C03;&#x8BD5;&#x7684;&#x4E00;&#x79CD;&#x9009;&#x62E9;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x73B0;&#x5728;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6765;&#x603B;&#x7ED3;&#x4E0B;Form&#x8868;&#x5355;&#x548C;HTTP&#x534F;&#x8BAE;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#x5566;&#xFF01;&#x9996;&#x5148;&#xFF0C;Form&#x8868;&#x5355;&#x53EF;&#x4EE5;&#x63D0;&#x4EA4;&#x975E;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x548C;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x3002;&#x975E;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#xFF0C;&#x6BD4;&#x5982;&#x4E00;&#x822C;&#x8868;&#x5355;&#x4E2D;&#x63D0;&#x4EA4;&#x7684;&#x5404;&#x79CD;&#x6587;&#x672C;&#x4FE1;&#x606F;&#xFF0C;&#x7528;&#x6237;&#x540D;&#x3001;&#x5BC6;&#x7801;&#x8FD9;&#x4E00;&#x7C7B;&#x7B49;&#x7B49;&#x3002;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#xFF0C;&#x4E3B;&#x8981;&#x6307;&#x5404;&#x79CD;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x7684;&#x6587;&#x4EF6;&#x7B49;&#x7B49;&#x3002;&#x5BF9;&#x4E8E;&#x975E;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;x-www-form-urlencode&#x6216;&#x8005;multipart/form-data&#x4E24;&#x79CD;&#x7F16;&#x7801;&#x65B9;&#x5F0F;&#x6765;&#x63D0;&#x4EA4;&#x3002;&#x5BF9;&#x4E8E;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#xFF0C;&#x53EA;&#x80FD;&#x901A;&#x8FC7;multipart/form-data&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6765;&#x63D0;&#x4EA4;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6DF7;&#x5408;&#x63D0;&#x4EA4;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x548C;&#x975E;&#x4E8C;&#x8FDB;&#x5236;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EA;&#x6709;multipart/form-data&#x8FD9;&#x4E00;&#x79CD;&#x9009;&#x62E9;&#x5566;&#xFF01;&#x66F4;&#x4E00;&#x822C;&#x7684;&#x7ED3;&#x8BBA;&#x662F;&#xFF0C;&#x53EA;&#x8981;&#x6211;&#x4EEC;&#x7684;Form&#x8868;&#x5355;&#x91CC;&#x6709;&#x4E00;&#x4E2A;type&#x4E3A;file&#x7684;Input&#x63A7;&#x4EF6;&#xFF0C;&#x5BF9;&#x5E94;POST&#x8BF7;&#x6C42;&#x7684;Content-Type&#x5C31;&#x4F1A;&#x53D8;&#x4E3A;multipart/form-data&#x3002;&#x6211;&#x4E0D;&#x559C;&#x6B22;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x7684;&#x539F;&#x56E0;&#x4E4B;&#x4E00;&#xFF0C;&#x5C31;&#x662F;&#x6784;&#x9020;&#x5B83;&#x7684;HTTP&#x62A5;&#x6587;&#x975E;&#x5E38;&#x96BE;&#x53D7;&#x3002;&#x5982;&#x679C;&#x7528;HttpClient&#xFF0C;&#x75DB;&#x82E6;&#x4F1A;&#x964D;&#x4F4E;&#x5F88;&#x591A;&#xFF1B;&#x800C;&#x5982;&#x679C;&#x7528;HttpWebRequest&#xFF0C;&#x6211;&#x4F1A;&#x611F;&#x5230;&#x7EDD;&#x671B;&#x3002;&#x5F53;&#x7136;&#xFF0C;&#x4F60;&#x6B64;&#x65F6;&#x5DF2;&#x660E;&#x767D;&#x4E86;&#x8FD9;&#x4E2A;&#x539F;&#x7406;&#xFF0C;&#x76F8;&#x4FE1;Postman&#x53EF;&#x4EE5;&#x5E2E;&#x5230;&#x4F60;&#x7684;&#x5FD9;&#x3002;</p>
+<h1 id="Form&#x8868;&#x5355;&#x6D88;&#x5931;&#x4EE5;&#x540E;"><a href="#Form&#x8868;&#x5355;&#x6D88;&#x5931;&#x4EE5;&#x540E;" class="headerlink" title="Form&#x8868;&#x5355;&#x6D88;&#x5931;&#x4EE5;&#x540E;"></a>Form&#x8868;&#x5355;&#x6D88;&#x5931;&#x4EE5;&#x540E;</h1><p>&#x2003;&#x2003;&#x719F;&#x6089;&#x524D;&#x7AEF;&#x6F14;&#x53D8;&#x5386;&#x7A0B;&#x7684;&#x670B;&#x53CB;&#xFF0C;&#x5E94;&#x8BE5;&#x5BF9;&#x6211;&#x4E0B;&#x9762;&#x8981;&#x8BF4;&#x7684;&#x5386;&#x53F2;&#x8868;&#x793A;&#x6000;&#x5FF5;&#x3002;&#x5728;&#x5F88;&#x4E45;&#x5F88;&#x4E45;&#x4EE5;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x7F51;&#x9875;&#x4E09;&#x5251;&#x5BA2;&#x5206;&#x522B;&#x662F;Dreamwave&#x3001;Fireworks&#x548C;Flash&#x3002;&#x90A3;&#x4E2A;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x7528;Dreamwave&#x5236;&#x4F5C;&#x7684;&#x7F51;&#x9875;&#x5145;&#x65A5;&#x7740;&#x5927;&#x91CF;&#x7684;Form&#x8868;&#x5355;&#xFF0C;&#x901A;&#x8FC7;JS&#x5B9E;&#x73B0;&#x5BF9;&#x6570;&#x636E;&#x7684;&#x6821;&#x9A8C;&#xFF0C;&#x5C31;&#x50CF;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x91CC;&#x63CF;&#x8FF0;&#x7684;&#x4E00;&#x6837;&#xFF0C;&#x6211;&#x4EEC;&#x505A;&#x51E0;&#x4E2A;type&#x4E3A;submit&#x7684;&#x6309;&#x94AE;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x628A;&#x6570;&#x636E;&#x63D0;&#x4EA4;&#x5230;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x3002;&#x6309;&#x7406;&#x8BF4;&#xFF0C;&#x8FD9;&#x6837;&#x5B50;&#x5F88;&#x6CA1;&#x5B8C;&#x7F8E;&#x554A;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x63D0;&#x4EA4;&#x7528;&#x6237;&#x8F93;&#x5165;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x53EF;&#x4EE5;&#x4E0A;&#x4F20;&#x7528;&#x6237;&#x9009;&#x62E9;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x4F55;&#x4E50;&#x800C;&#x4E0D;&#x4E3A;&#x5462;&#xFF1F;&#x4E3A;&#x4EC0;&#x4E48;&#x5927;&#x5BB6;&#x8981;&#x7528;Div + CSS&#x6DD8;&#x6C70;Form&#x8868;&#x5355;&#x5462;&#xFF1F;&#x6211;&#x8BA4;&#x4E3A;&#x4E3B;&#x8981;&#x6709;&#x4E24;&#x70B9;&#xFF0C;&#x4F20;&#x7EDF;&#x7684;&#x57FA;&#x4E8E;&#x8868;&#x683C;&#x7684;&#x5E03;&#x5C40;&#x65E0;&#x6CD5;&#x6EE1;&#x8DB3;&#x73B0;&#x4EE3;Web&#x7A0B;&#x5E8F;&#x7684;&#x5E03;&#x5C40;&#x8981;&#x6C42;&#xFF0C;RESTful&#x98CE;&#x683C;Web API&#x7684;&#x51FA;&#x73B0;&#x8BA9;&#x5F00;&#x53D1;&#x8005;&#x5E0C;&#x671B;&#x524D;&#x540E;&#x7AEF;&#x4EA4;&#x4E92;&#x53EF;&#x63A7;&#x3002;&#x6362;&#x8A00;&#x4E4B;&#xFF0C;&#x5F00;&#x53D1;&#x8005;&#x5E0C;&#x671B;&#x901A;&#x8FC7;FormData&#x8FD9;&#x6837;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x7CBE;&#x7EC6;&#x5730;&#x63A7;&#x5236;&#x6574;&#x4E2A;&#x8BF7;&#x6C42;&#x7684;&#x7EC6;&#x8282;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x4EA4;&#x7ED9;&#x4E00;&#x4E2A;&#x7531;&#x6D4F;&#x89C8;&#x5668;&#x53D1;&#x51FA;&#x7684;POST&#x8BF7;&#x6C42;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x6211;&#x4EEC;&#x770B;&#x5230;&#x4E86;&#x524D;&#x7AEF;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7684;&#x65B0;&#x601D;&#x8DEF;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x9996;&#x5148;&#xFF0C;&#x6700;&#x5E38;&#x89C1;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x662F;&#x901A;&#x8FC7;&#x76D1;&#x542C;Input&#x63A7;&#x4EF6;&#x7684;onchange&#x65B9;&#x6CD5;&#xFF0C;&#x901A;&#x8FC7;files&#x5C5E;&#x6027;&#x5373;&#x53EF;&#x83B7;&#x5F97;&#x5F53;&#x524D;&#x7528;&#x6237;&#x9009;&#x62E9;&#x7684;&#x6587;&#x4EF6;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#xFF0C;&#x5728;&#x5927;&#x591A;&#x6570;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x524D;&#x7AEF;&#x662F;&#x65E0;&#x6CD5;&#x548C;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x8FDB;&#x884C;&#x4EA4;&#x4E92;&#x7684;&#x3002;&#x56E0;&#x6B64;&#x901A;&#x8FC7;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x83B7;&#x5F97;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x672C;&#x5730;&#x6570;&#x636E;&#x7684;blob&#xFF0C;&#x524D;&#x7AEF;&#x5C06;&#x6587;&#x4EF6;&#x76F8;&#x5173;&#x7684;type&#x548C;size&#x7EC4;&#x7EC7;&#x5230;&#x4E00;&#x4E2A;FormData&#x5BF9;&#x8C61;&#x7684;&#x5B9E;&#x9645;&#x4E2D;&#xFF0C;&#x5373;&#x53EF;&#x5B8C;&#x6210;&#x5BF9;&#x6587;&#x4EF6;&#x7684;&#x4E0A;&#x4F20;&#x3002;&#x5176;&#x6B21;&#xFF0C;&#x53EF;&#x4EE5;&#x5229;&#x7528;HTML5&#x4E2D;&#x7684;&#x201C;&#x62D6;&#x62FD;&#x201D;&#x548C;&#x201C;&#x7C98;&#x8D34;&#x201D;&#xFF0C;&#x5176;&#x6838;&#x5FC3;&#x4F9D;&#x7136;&#x662F;&#x76D1;&#x542C;&#x76F8;&#x5173;&#x7684;&#x4E8B;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x4ECE;&#x4E2D;&#x83B7;&#x53D6;File&#x5BF9;&#x8C61;&#x6216;&#x8005;blob&#x5BF9;&#x8C61;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x4E00;&#x65E6;&#x83B7;&#x5F97;&#x4E86;&#x8FD9;&#x4E9B;&#x5B9E;&#x4F8B;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x5C06;&#x5176;&#x6DFB;&#x52A0;&#x5230;FormData&#x4E2D;&#x3002;&#x5230;&#x4E86;&#x8FD9;&#x4E00;&#x6B65;&#xFF0C;&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x5C31;&#x548C;&#x7B2C;&#x4E00;&#x79CD;&#x65B9;&#x6CD5;&#x5B8C;&#x5168;&#x4E00;&#x6837;&#x5566;&#xFF01;&#x6700;&#x540E;&#xFF0C;&#x662F;&#x7C7B;&#x4F3C;&#x767E;&#x5EA6;&#x51FA;&#x54C1;&#x7684;WebUploader&#x8FD9;&#x7C7B;HTML5&#x548C;Flash&#x6DF7;&#x5408;&#x7684;&#x63D2;&#x4EF6;&#xFF0C;&#x4E3B;&#x6253;&#x517C;&#x5BB9;&#x6027;&#xFF0C;&#x4E0D;&#x8FC7;&#x968F;&#x7740;&#x5927;&#x5BB6;&#x5BF9;IE8&#x4EE5;&#x4E0B;&#x7248;&#x672C;&#x517C;&#x5BB9;&#x95EE;&#x9898;&#x7684;&#x9010;&#x6B65;&#x653E;&#x5F03;&#xFF0C;&#x8FD9;&#x7C7B;&#x4EA7;&#x54C1;&#x7684;&#x4F7F;&#x7528;&#x573A;&#x666F;&#x4F1A;&#x8D8A;&#x6765;&#x8D8A;&#x5C11;&#xFF0C;&#x6211;&#x4EEC;&#x5927;&#x6982;&#x77E5;&#x9053;&#x5C31;&#x53EF;&#x4EE5;&#x5566;&#xFF01;&#x5F52;&#x6839;&#x5230;&#x5E95;&#x4E00;&#x53E5;&#x8BDD;&#xFF0C;Form&#x8868;&#x5355;&#x548C;FormData&#x5BF9;&#x8C61;&#xFF0C;&#x5176;&#x5B9E;&#x662F;&#x53EF;&#x4EE5;&#x76F8;&#x4E92;&#x8F6C;&#x5316;&#x7684;&#xFF0C;Form&#x8868;&#x5355;&#x91CC;&#x6BCF;&#x4E00;&#x4E2A;Input&#x63A7;&#x4EF6;&#x7684;name&#xFF0C;&#x5176;&#x5B9E;&#x5C31;&#x662F;FormData&#x91CC;&#x7684;key&#x5566;&#xFF0C;&#x5230;&#x4E86;&#x8FD9;&#x4E00;&#x6B65;&#xFF0C;&#x6211;&#x60F3;HTTP&#x4E0A;&#x4F20;&#x5C31;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x597D;&#x795E;&#x79D8;&#x4E86;&#x7684;&#x5427;&#xFF01;</p>
+<h1 id="&#x672C;&#x6587;&#x5C0F;&#x7ED3;"><a href="#&#x672C;&#x6587;&#x5C0F;&#x7ED3;" class="headerlink" title="&#x672C;&#x6587;&#x5C0F;&#x7ED3;"></a>&#x672C;&#x6587;&#x5C0F;&#x7ED3;</h1><p>&#x2003;&#x2003;&#x672C;&#x6587;&#x4ECE;Form&#x8868;&#x5355;&#x8BF4;&#x8D77;&#xFF0C;&#x9996;&#x5148;&#x63A2;&#x8BA8;&#x4E86;Form&#x8868;&#x5355;&#x548C;HTTP&#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#xFF0C;&#x5373;Form&#x8868;&#x5355;&#x5728;&#x63D0;&#x4EA4;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x80CC;&#x540E;&#x7684;&#x672C;&#x8D28;&#x5176;&#x5B9E;&#x662F;&#x4E00;&#x6761;HTTP&#x8BF7;&#x6C42;&#xFF0C;&#x76F8;&#x5BF9;&#x5E94;&#x5730;&#xFF0C;Form&#x8868;&#x5355;&#x9ED8;&#x8BA4;&#x7684;&#x8BF7;&#x6C42;&#x65B9;&#x5F0F;&#x662F;GET&#xFF0C;&#x5728;&#x7B2C;&#x4E00;&#x4E2A;&#x793A;&#x4F8B;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x5206;&#x522B;&#x5C55;&#x793A;&#x4E86;&#x4F7F;&#x7528;x-www-form-urlencode&#x548C;multipart/form-data&#x65F6;&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#x5B9E;&#x9645;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x63A5;&#x4E0B;&#x6765;&#xFF0C;&#x6211;&#x4EEC;&#x63D0;&#x5230;&#x4E86;HTML&#x4E2D;&#x7684;Input&#x63A7;&#x4EF6;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x6307;&#x5B9A;&#x4E0D;&#x540C;&#x7684;type&#x8FBE;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x6548;&#x679C;&#xFF0C;&#x4F5C;&#x4E3A;&#x7B2C;&#x4E00;&#x4E2A;&#x793A;&#x4F8B;&#x7684;&#x5EF6;&#x4F38;&#xFF0C;&#x6211;&#x4EEC;&#x5C1D;&#x8BD5;&#x901A;&#x8FC7;Form&#x8868;&#x5355;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#x5E76;&#x91CD;&#x70B9;&#x5173;&#x6CE8;&#x5176;&#x62A5;&#x6587;&#x7684;&#x7ED3;&#x6784;&#x3002;&#x63A5;&#x4E0B;&#x6765;&#xFF0C;&#x6211;&#x4EEC;&#x4ECE;&#x534F;&#x8BAE;&#x7684;&#x89D2;&#x5EA6;&#x5206;&#x6790;&#x4E86;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x9009;&#x7528;multipart/form-data&#x6765;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#x4EE5;&#x53CA;&#x5B83;&#x7684;&#x539F;&#x7406;&#x662F;&#x4EC0;&#x4E48;&#x3002;&#x6700;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x4ECE;&#x524D;&#x7AEF;&#x5E38;&#x89C1;&#x7684;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x65B9;&#x5F0F;&#x5165;&#x624B;&#xFF0C;&#x7B80;&#x8981;&#x5206;&#x6790;&#x4E86;Form&#x8868;&#x5355;&#x548C;FormData&#x5BF9;&#x8C61;&#x95F4;&#x7684;&#x5185;&#x5728;&#x8054;&#x7CFB;&#xFF0C;&#x5373;Form&#x8868;&#x5355;&#x548C;FormData&#x5BF9;&#x8C61;&#xFF0C;&#x5176;&#x5B9E;&#x662F;&#x53EF;&#x4EE5;&#x76F8;&#x4E92;&#x8F6C;&#x5316;&#x7684;&#xFF0C;Form&#x8868;&#x5355;&#x91CC;&#x6BCF;&#x4E00;&#x4E2A;Input&#x63A7;&#x4EF6;&#x7684;name&#xFF0C;&#x5176;&#x5B9E;&#x5C31;&#x662F;FormData&#x91CC;&#x7684;key&#x3002;&#x597D;&#x5566;&#xFF0C;&#x53C8;&#x662F;&#x4E00;&#x4E2A;&#x96BE;&#x4EE5;&#x5165;&#x7720;&#x7684;&#x591C;&#x665A;&#xFF0C;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#x5148;&#x5199;&#x5230;&#x8FD9;&#x91CC;&#xFF0C;&#x5927;&#x5BB6;&#x665A;&#x5B89;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/2734896333/">使用C#开发HTTP服务器之支持HTTPS</a></li><li><a href="https://qinyuanpei.github.io/posts/1700650235/">使用C#开发HTTP服务器系列之实现Get和Post</a></li><li><a href="https://qinyuanpei.github.io/posts/3603924376/">使用C#开发HTTP服务器系列之更简单的实现方式</a></li><li><a href="https://alili.tech/archive/84afbeeb/">HTTP的URI格式说明</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/2463121881/" rel="external">漫谈前端进化史之从Form表单到文件上传</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/2463121881/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/2463121881/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Form/">Form</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP/">HTTP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RFC/">RFC</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/2463121881/&title=《漫谈前端进化史之从Form表单到文件上传》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/2463121881/&title=《漫谈前端进化史之从Form表单到文件上传》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/2463121881/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《漫谈前端进化史之从Form表单到文件上传》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/2463121881/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/2463121881/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/795474045/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">记通过EF生成不同数据库SQL脚本的一次尝试</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3269605707/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">基于WebSocket和Redis实现Bilibili弹幕效果</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/2463121881/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/2463121881/&title=《漫谈前端进化史之从Form表单到文件上传》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/2463121881/&title=《漫谈前端进化史之从Form表单到文件上传》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/2463121881/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《漫谈前端进化史之从Form表单到文件上传》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/2463121881/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/2463121881/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/2463121881/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

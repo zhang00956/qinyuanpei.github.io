@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        浅析WPF中MVVM模式下命令与委托的关系 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是Payne，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目上的原因开始接触WPF，或许这样一个在现在来讲显得过时的东西，我猜大家不会有兴趣去了解，可是你不会明白对某些保守的项目来讲，安全性比先进性更为重要，所以当你发现银行这类机构还在使用各种“复古”的软件系统的时候，你应该相信这类东西的确有它们存在的意义。与">
+<meta name="keywords" content="MVVM,委托,命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析WPF中MVVM模式下命令与委托的关系">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/569337285/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是Payne，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目上的原因开始接触WPF，或许这样一个在现在来讲显得过时的东西，我猜大家不会有兴趣去了解，可是你不会明白对某些保守的项目来讲，安全性比先进性更为重要，所以当你发现银行这类机构还在使用各种“复古”的软件系统的时候，你应该相信这类东西的确有它们存在的意义。与">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixzarx7ij20ll0bt0sx.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixbsy01jj20n90bfjrl.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix99unr9j20on0bvweo.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.524Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅析WPF中MVVM模式下命令与委托的关系">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是Payne，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目上的原因开始接触WPF，或许这样一个在现在来讲显得过时的东西，我猜大家不会有兴趣去了解，可是你不会明白对某些保守的项目来讲，安全性比先进性更为重要，所以当你发现银行这类机构还在使用各种“复古”的软件系统的时候，你应该相信这类东西的确有它们存在的意义。与">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixzarx7ij20ll0bt0sx.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">浅析WPF中MVVM模式下命令与委托的关系</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">浅析WPF中MVVM模式下命令与委托的关系</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-07-21T14:27:07.000Z" itemprop="datePublished" class="page-time">
+  2016-07-21
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#什么是MVVM"><span class="post-toc-number">1.</span> <span class="post-toc-text">什么是MVVM?</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#更像MVC的MVVM"><span class="post-toc-number">2.</span> <span class="post-toc-text">更像MVC的MVVM</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#委托与命令"><span class="post-toc-number">3.</span> <span class="post-toc-text">委托与命令</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#小结"><span class="post-toc-number">4.</span> <span class="post-toc-text">小结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">5.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-浅析WPF中MVVM模式下命令与委托的关系" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">浅析WPF中MVVM模式下命令与委托的关系</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-07-21 14:27:07" datetime="2016-07-21T14:27:07.000Z" itemprop="datePublished">2016-07-21</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        32 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;Payne&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x6700;&#x8FD1;&#x56E0;&#x4E3A;&#x9879;&#x76EE;&#x4E0A;&#x7684;&#x539F;&#x56E0;&#x5F00;&#x59CB;&#x63A5;&#x89E6;WPF&#xFF0C;&#x6216;&#x8BB8;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x5728;&#x73B0;&#x5728;&#x6765;&#x8BB2;&#x663E;&#x5F97;&#x8FC7;&#x65F6;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x6211;&#x731C;&#x5927;&#x5BB6;&#x4E0D;&#x4F1A;&#x6709;&#x5174;&#x8DA3;&#x53BB;&#x4E86;&#x89E3;&#xFF0C;&#x53EF;&#x662F;&#x4F60;&#x4E0D;&#x4F1A;&#x660E;&#x767D;&#x5BF9;&#x67D0;&#x4E9B;&#x4FDD;&#x5B88;&#x7684;&#x9879;&#x76EE;&#x6765;&#x8BB2;&#xFF0C;&#x5B89;&#x5168;&#x6027;&#x6BD4;&#x5148;&#x8FDB;&#x6027;&#x66F4;&#x4E3A;&#x91CD;&#x8981;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;&#x4F60;&#x53D1;&#x73B0;&#x94F6;&#x884C;&#x8FD9;&#x7C7B;&#x673A;&#x6784;&#x8FD8;&#x5728;&#x4F7F;&#x7528;&#x5404;&#x79CD;&#x201C;&#x590D;&#x53E4;&#x201D;&#x7684;&#x8F6F;&#x4EF6;&#x7CFB;&#x7EDF;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x5E94;&#x8BE5;&#x76F8;&#x4FE1;&#x8FD9;&#x7C7B;&#x4E1C;&#x897F;&#x7684;&#x786E;&#x6709;&#x5B83;&#x4EEC;&#x5B58;&#x5728;&#x7684;&#x610F;&#x4E49;&#x3002;&#x4E0E;&#x6B64;&#x540C;&#x65F6;&#xFF0C;&#x4F60;&#x4F1A;&#x66F4;&#x52A0;&#x6DF1;&#x523B;&#x5730;&#x660E;&#x767D;&#x4E00;&#x4E2A;&#x9053;&#x7406;&#xFF1A;&#x6280;&#x672F;&#x662F;&#x5426;&#x5148;&#x8FDB;&#x6027;&#x548C;&#x5176;&#x6D41;&#x884C;&#x7A0B;&#x5EA6;&#x672C;&#x8EAB;&#x5E76;&#x65E0;&#x76F4;&#x63A5;&#x8054;&#x7CFB;&#x3002;&#x7531;&#x6B64;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x63A8;&#x8BBA;&#x51FA;&#xFF1A;&#x4E00;&#x9879;&#x4E0D;&#x6D41;&#x884C;&#x7684;&#x6280;&#x672F;&#x4E0D;&#x4E00;&#x5B9A;&#x662F;&#x56E0;&#x4E3A;&#x5B83;&#x672C;&#x8EAB;&#x6280;&#x672F;&#x4E0D;&#x5148;&#x8FDB;&#xFF0C;&#x6216;&#x8BB8;&#x4EC5;&#x4EC5;&#x662F;&#x56E0;&#x4E3A;&#x5B83;&#x65E0;&#x6CD5;&#x6EE1;&#x8DB3;&#x5546;&#x4E1A;&#x5316;&#x7684;&#x9700;&#x6C42;&#x800C;&#x5DF2;&#x3002;&#x6211;&#x8FD9;&#x91CC;&#x7684;&#x786E;&#x662F;&#x5728;&#x8BF4;WPF,MVVM&#x601D;&#x60F3;&#x6700;&#x65E9;&#x7531;WPF&#x63D0;&#x51FA;&#xFF0C;&#x7136;&#x800C;&#x5176;&#x53D1;&#x626C;&#x5149;&#x5927;&#x5374;&#x662F;&#x56E0;&#x4E3A;&#x524D;&#x7AEF;&#x9886;&#x57DF;&#x8FD1;&#x5E74;&#x6765;&#x6BD4;&#x8F83;&#x70ED;&#x7684;AngularJS&#x548C;Vue.js&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x8868;&#x8FBE;&#x7684;&#x4E00;&#x4E2A;&#x89C2;&#x70B9;&#x662F;&#xFF1A;&#x5F88;&#x591A;&#x4F60;&#x4EE5;&#x4E3A;&#x975E;&#x5E38;&#x65B0;&#x6F6E;&#x7684;&#x6982;&#x5FF5;&#xFF0C;&#x6216;&#x8BB8;&#x4EC5;&#x4EC5;&#x662F;&#x88AB;&#x4EBA;&#x4EEC;&#x91CD;&#x65B0;&#x8D4B;&#x4E88;&#x4E86;&#x65B0;&#x7684;&#x540D;&#x5B57;&#xFF0C;&#x5F53;&#x4F60;&#x7406;&#x6E05;&#x8FD9;&#x4E00;&#x5207;&#x7684;&#x6765;&#x9F99;&#x53BB;&#x8109;&#x4EE5;&#x540E;&#xFF0C;&#x4F60;&#x4F1A;&#x53D1;&#x73B0;&#x8FD9;&#x4E00;&#x5207;&#x5E76;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x4E0D;&#x540C;&#x3002;&#x8FD9;&#x7B26;&#x5408;&#x6211;&#x4E00;&#x8D2F;&#x7684;&#x4E3B;&#x5F20;&#xFF1A;&#x53BB;&#x53D1;&#x73B0;&#x95EE;&#x9898;&#x7684;&#x5B9E;&#x8D28;&#x3001;&#x4E0D;&#x8981;&#x88AB;&#x6846;&#x67B6;&#x675F;&#x7F1A;&#x3001;&#x901A;&#x8FC7;&#x5171;&#x6027;&#x6765;&#x6D88;&#x9664;&#x5DEE;&#x5F02;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x4ECA;&#x5929;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x91CC;&#xFF0C;&#x6211;&#x60F3;&#x8BF4;&#x8BF4;WPF&#x4E2D;MVVM&#x6A21;&#x5F0F;&#x4E0B;&#x547D;&#x4EE4;&#x4E0E;&#x59D4;&#x6258;&#x7684;&#x5173;&#x7CFB;&#x3002;</p>
+<a id="more"></a>
+<h1 id="&#x4EC0;&#x4E48;&#x662F;MVVM"><a href="#&#x4EC0;&#x4E48;&#x662F;MVVM" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;MVVM?"></a>&#x4EC0;&#x4E48;&#x662F;MVVM?</h1><p>&#x2003;&#x2003;&#x65E2;&#x7136;&#x63D0;&#x53CA;MVVM&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x5C31;&#x65E0;&#x53EF;&#x907F;&#x514D;&#x7684;&#x9700;&#x8981;&#x77E5;&#x9053;&#x4EC0;&#x4E48;&#x662F;MVVM&#x3002;&#x6211;&#x4EEC;&#x5728;&#x672C;&#x6587;&#x5F00;&#x7BC7;&#x5DF2;&#x7ECF;&#x63D0;&#x5230;&#xFF0C;MVVM&#x8FD9;&#x4E2A;&#x6982;&#x5FF5;&#x6700;&#x65E9;&#x7531;&#x5FAE;&#x8F6F;&#x63D0;&#x51FA;&#xFF0C;&#x5177;&#x4F53;&#x6765;&#x8BB2;&#x662F;&#x7531;&#x5FAE;&#x8F6F;&#x67B6;&#x6784;&#x5E08;John Gossman&#x63D0;&#x51FA;&#x7684;&#x3002;&#x6211;&#x4E2A;&#x4EBA;&#x66F4;&#x559C;&#x6B22;&#x901A;&#x8FC7;&#x5C06;MVC&#x3001;MVP&#x548C;MVVM&#x8FD9;&#x4E09;&#x8005;&#x6A2A;&#x5411;&#x5BF9;&#x6BD4;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x52A0;&#x5F3A;&#x7406;&#x89E3;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x4ECE;&#x67D0;&#x79CD;&#x610F;&#x4E49;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x9010;&#x6B65;&#x6539;&#x8FDB;&#x548C;&#x6F14;&#x5316;&#x7684;&#x8FC7;&#x7A0B;&#x3002;&#x6211;&#x4EEC;&#x5E38;&#x5E38;&#x8C08;&#x53CA;&#x8F6F;&#x4EF6;&#x7684;&#x4E09;&#x5C42;&#x67B6;&#x6784;&#xFF0C;&#x6211;&#x4EEC;&#x5E38;&#x5E38;&#x5BF9;MVC&#x8033;&#x6FE1;&#x76EE;&#x67D3;&#x4EE5;&#x81F4;&#x5C06;&#x5176;&#x795E;&#x5316;&#xFF0C;&#x53EF;&#x4E8B;&#x5B9E;&#x4E0A;&#x5B83;&#x4EEC;&#x662F;&#x67D0;&#x79CD;&#x5728;&#x601D;&#x60F3;&#x4E0A;&#x65E0;&#x9650;&#x63A5;&#x8FD1;&#x7684;&#x7406;&#x5FF5;&#x800C;&#x5DF2;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzixzarx7ij20ll0bt0sx.jpg" alt="MVC&#x6A21;&#x5F0F;&#x793A;&#x610F;&#x56FE;" title>
+                </div>
+                <div class="image-caption">MVC&#x6A21;&#x5F0F;&#x793A;&#x610F;&#x56FE;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x9996;&#x5148;&#xFF0C;&#x6211;&#x4EEC;&#x4ECE;&#x6700;&#x7B80;&#x5355;&#x7684;MVC&#x5F00;&#x59CB;&#x8BF4;&#x8D77;&#xFF0C;&#x4F5C;&#x4E3A;&#x6700;&#x5E38;&#x7528;&#x7684;&#x8F6F;&#x4EF6;&#x67B6;&#x6784;&#x4E4B;&#x4E00;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4ECE;&#x4E0A;&#x9762;&#x7684;&#x56FE;&#x793A;&#x4E2D;&#x770B;&#x5230;&#xFF0C;MVC&#x5176;&#x5B9E;&#x662F;&#x975E;&#x5E38;&#x7B80;&#x5355;&#x7684;&#x4E00;&#x4E2A;&#x6982;&#x5FF5;&#xFF0C;&#x5B83;&#x7531;&#x6A21;&#x578B;(Model)&#x3001;&#x89C6;&#x56FE;(View)&#x548C;&#x63A7;&#x5236;&#x5668;(Controller)&#x4E09;&#x90E8;&#x5206;&#x7EC4;&#x6210;&#xFF0C;&#x5EFA;&#x7ACB;&#x5728;&#x4E00;&#x4E2A;&#x5355;&#x5411;&#x6D41;&#x52A8;&#x7684;&#x901A;&#x4FE1;&#x57FA;&#x7840;&#x4E0A;&#xFF0C;&#x5373;View&#x901A;&#x77E5;Controller&#x54CD;&#x5E94;&#x7528;&#x6237;&#x8BF7;&#x6C42;&#xFF0C;Controller&#x5728;&#x63A5;&#x5230;View&#x7684;&#x901A;&#x77E5;&#x540E;&#x4F1A;&#x66F4;&#x65B0;Model&#x5185;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x7136;&#x540E;Model&#x4F1A;&#x5C06;&#x65B0;&#x7684;&#x6570;&#x636E;&#x53CD;&#x9988;&#x7ED9;View&#x3002;&#x6211;&#x4EEC;&#x53D1;&#x73B0;&#x8FD9;&#x4E2A;&#x8BBE;&#x8BA1;&#x53EF;&#x4EE5;&#x4F7F;&#x8F6F;&#x4EF6;&#x5DE5;&#x7A0B;&#x4E2D;&#x7684;&#x5173;&#x6CE8;&#x70B9;&#x5206;&#x79BB;&#xFF0C;&#x6211;&#x4EEC;&#x6CE8;&#x610F;&#x5230;&#x901A;&#x8FC7;MVC&#x6A21;&#x5F0F;&#xFF0C;&#x6211;&#x4EEC;&#x5B9E;&#x73B0;&#x4E86;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x7684;&#x5206;&#x79BB;&#xFF0C;&#x901A;&#x8FC7;&#x63A7;&#x5236;&#x5668;&#x8FD9;&#x4E2A;&#x80F6;&#x6C34;&#x5C42;&#x8BA9;&#x4E24;&#x8005;&#x95F4;&#x63A5;&#x8054;&#x7CFB;&#x8D77;&#x6765;&#xFF0C;&#x6240;&#x4EE5;MVC&#x7684;&#x4F18;&#x70B9;&#x662F;&#x8BA9;&#x5404;&#x4E2A;&#x6A21;&#x5757;&#x66F4;&#x597D;&#x7684;&#x534F;&#x4F5C;&#x3002;&#x90A3;&#x4E48;&#xFF0C;&#x5B83;&#x7684;&#x7F3A;&#x70B9;&#x662F;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;&#x663E;&#x7136;&#xFF0C;&#x89C6;&#x56FE;&#x548C;&#x63A7;&#x5236;&#x5668;&#x662F;&#x9AD8;&#x5EA6;&#x8026;&#x5408;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x63A7;&#x5236;&#x5668;&#x4E2D;&#x65E0;&#x53EF;&#x907F;&#x514D;&#x5730;&#x8981;&#x8BBF;&#x95EE;&#x89C6;&#x56FE;&#x5185;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x6240;&#x4EE5;&#x63A7;&#x5236;&#x5668;&#x6CE8;&#x5B9A;&#x65E0;&#x6CD5;&#x5728;&#x8FD9;&#x5C18;&#x4E16;&#x95F4;&#x72EC;&#x5584;&#x5176;&#x8EAB;&#x3002;&#x8981;&#x77E5;&#x9053;&#x6700;&#x65E9;&#x7684;MVC&#x67B6;&#x6784;&#x662F;&#x57FA;&#x4E8E;&#x89C2;&#x5BDF;&#x8005;&#x6A21;&#x5F0F;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x5373;&#x5F53;Model&#x53D1;&#x751F;&#x53D8;&#x5316;&#x65F6;&#x4F1A;&#x540C;&#x65F6;&#x901A;&#x77E5;View&#x548C;Controller&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5F88;&#x5FEB;&#x5C31;&#x53EF;&#x4EE5;&#x8BA4;&#x8BC6;&#x5230;&#xFF1A;&#x6211;&#x4EEC;&#x4ECE;&#x53E4;&#x81F3;&#x4ECA;&#x7684;&#x6240;&#x6709;&#x52AA;&#x529B;&#xFF0C;&#x90FD;&#x662F;&#x4E3A;&#x4E86;&#x8BA9;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x5F7C;&#x6B64;&#x5206;&#x79BB;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x8FD9;&#x6761;&#x8DEF;&#x4E0A;&#x8D8A;&#x8D70;&#x8D8A;&#x8FDC;&#xFF0C;&#x5E78;&#x8FD0;&#x7684;&#x662F;&#x4E00;&#x76F4;&#x90FD;&#x4E0D;&#x5FD8;&#x521D;&#x5FC3;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzixbsy01jj20n90bfjrl.jpg" alt="MVP&#x6A21;&#x5F0F;&#x793A;&#x610F;&#x56FE;" title>
+                </div>
+                <div class="image-caption">MVP&#x6A21;&#x5F0F;&#x793A;&#x610F;&#x56FE;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x63A5;&#x4E0B;&#x6765;&#xFF0C;&#x6211;&#x4EEC;&#x4E3A;&#x4E86;&#x5F7B;&#x5E95;&#x5730;&#x8BA9;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x5206;&#x79BB;&#xFF0C;&#x6211;&#x4EEC;&#x53D1;&#x660E;&#x4E86;&#x65B0;&#x7684;&#x8F6F;&#x4EF6;&#x67B6;&#x6784;&#xFF1A;MVP&#x3002;&#x867D;&#x7136;&#x4ECE;&#x611F;&#x6027;&#x7684;&#x8BA4;&#x8BC6;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x5B83;&#x662F;&#x5C06;Controller&#x6539;&#x540D;&#x4E3A;Presenter&#xFF0C;&#x7136;&#x800C;&#x4ECE;&#x7406;&#x6027;&#x7684;&#x8BA4;&#x8BC6;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x5B83;&#x5728;&#x8BA9;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x5206;&#x79BB;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x4E0A;&#x505A;&#x5F97;&#x66F4;&#x4E3A;&#x51B3;&#x7EDD;&#x679C;&#x65AD;&#x3002;&#x901A;&#x8FC7;&#x56FE;&#x793A;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#xFF0C;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x4E0D;&#x518D;&#x53D1;&#x751F;&#x76F4;&#x63A5;&#x8054;&#x7CFB;&#xFF0C;&#x5B83;&#x4EEC;&#x90FD;&#x901A;&#x8FC7;Presenter&#x76F8;&#x4E92;&#x8054;&#x7CFB;&#xFF0C;&#x800C;&#x4E14;&#x5404;&#x4E2A;&#x90E8;&#x5206;&#x95F4;&#x7684;&#x901A;&#x4FE1;&#x90FD;&#x53D8;&#x6210;&#x4E86;&#x53CC;&#x5411;&#x6D41;&#x52A8;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5F88;&#x5FEB;&#x610F;&#x8BC6;&#x5230;&#xFF0C;&#x73B0;&#x5728;&#x5168;&#x65B0;&#x7684;&#x63A7;&#x5236;&#x5668;&#x5373;Presenter&#x4F1A;&#x53D8;&#x5F97;&#x8D8A;&#x6765;&#x8D8A;&#x201C;&#x91CD;&#x201D;&#xFF0C;&#x56E0;&#x4E3A;&#x6240;&#x6709;&#x7684;&#x903B;&#x8F91;&#x90FD;&#x5728;&#x8FD9;&#x91CC;&#xFF0C;&#x800C;&#x89C6;&#x56FE;&#x4F1A;&#x53D8;&#x5F97;&#x8D8A;&#x6765;&#x8D8A;&#x201C;&#x8F7B;&#x201D;&#xFF0C;&#x5B83;&#x4E0D;&#x518D;&#x9700;&#x8981;&#x4E3B;&#x52A8;&#x53BB;&#x83B7;&#x53D6;&#x6A21;&#x578B;&#x63D0;&#x4F9B;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x5B83;&#x5C06;&#x88AB;&#x52A8;&#x5730;&#x63A5;&#x62E5;&#x62B1;&#x53D8;&#x5316;&#xFF0C;&#x56E0;&#x4E3A;&#x73B0;&#x5728;&#x5728;&#x89C6;&#x56FE;&#x91CC;&#x57FA;&#x672C;&#x4E0A;&#x6CA1;&#x6709;&#x4EFB;&#x4F55;&#x4E1A;&#x52A1;&#x903B;&#x8F91;&#x3002;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x9884;&#x89C1;&#xFF0C;&#x4EBA;&#x7C7B;&#x4F1A;&#x5728;&#x9694;&#x7EDD;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x4E0A;&#x4E58;&#x80DC;&#x8FFD;&#x51FB;&#xFF0C;&#x4EBA;&#x4EEC;&#x4F1A;&#x5C1D;&#x8BD5;&#x8BA9;Controller/Presenter/ViewModel&#x53D8;&#x5F97;&#x8D8A;&#x6765;&#x8D8A;&#x81C3;&#x80BF;&#xFF0C;&#x6211;&#x60F3;&#x8BF4;&#x7684;&#x662F;&#xFF0C;&#x6C42;&#x5B83;&#x4EEC;&#x5728;&#x5F97;&#x77E5;&#x8FD9;&#x4E00;&#x5207;&#x771F;&#x76F8;&#x65F6;&#x7684;&#x5FC3;&#x7406;&#x9634;&#x5F71;&#x9762;&#x79EF;&#xFF0C;&#x6211;&#x4EEC;&#x8BD5;&#x56FE;&#x8BA9;&#x6BCF;&#x4E00;&#x4E2A;&#x6A21;&#x5757;&#x5404;&#x53F8;&#x5176;&#x804C;&#x3001;&#x901A;&#x529B;&#x534F;&#x4F5C;&#xFF0C;&#x7ED3;&#x679C;&#x810F;&#x6D3B;&#x7D2F;&#x6D3B;&#x513F;&#x90FD;&#x4EA4;&#x7ED9;&#x4E86;Controller/Presenter/ViewModel&#xFF0C;&#x6211;&#x60F3;&#x8BF4;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x505A;&#x7684;&#x771F;&#x662F;&#x6F02;&#x4EAE;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzix99unr9j20on0bvweo.jpg" alt="MVVM&#x6A21;&#x5F0F;&#x793A;&#x610F;&#x56FE;" title>
+                </div>
+                <div class="image-caption">MVVM&#x6A21;&#x5F0F;&#x793A;&#x610F;&#x56FE;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x5386;&#x53F2;&#x603B;&#x662F;&#x5982;&#x6B64;&#x7684;&#x76F8;&#x4F3C;&#xFF0C;&#x4EBA;&#x7C7B;&#x5728;&#x4F5C;&#x6B7B;&#x7684;&#x9053;&#x8DEF;&#x4E0A;&#x530D;&#x5310;&#x524D;&#x8FDB;&#xFF0C;&#x7EE7;&#x7EED;&#x53D1;&#x626C;&#x6539;&#x540D;&#x7684;&#x4F18;&#x826F;&#x4F20;&#x7EDF;&#xFF0C;&#x8FD9;&#x4E00;&#x6B21;&#x662F;Presenter&#x88AB;&#x6539;&#x540D;&#x4E3A;ViewModel&#xFF0C;&#x5728;&#x547D;&#x540D;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x4E0A;&#xFF0C;&#x6211;&#x8BA4;&#x4E3A;&#x7A0B;&#x5E8F;&#x5458;&#x90FD;&#x662F;&#x6709;&#x67D0;&#x79CD;&#x5F3A;&#x8FEB;&#x75C7;&#x56E0;&#x7D20;&#x5728;&#x91CC;&#x9762;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;&#x4F60;&#x53D1;&#x73B0;&#x4E00;&#x4E2A;&#x4E8B;&#x7269;&#x4EE5;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x540D;&#x5B57;&#x51FA;&#x73B0;&#x5728;&#x4F60;&#x7684;&#x89C6;&#x91CE;&#x4E2D;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x901A;&#x5E38;&#x5B83;&#x4F1A;&#x6709;&#x4E24;&#x79CD;&#x4E0D;&#x540C;&#x7684;&#x7ED3;&#x5C40;&#xFF0C;&#x7B2C;&#x4E00;&#xFF0C;&#x9648;&#x9152;&#x6362;&#x65B0;&#x74F6;&#xFF0C;&#x6211;&#x4EEC;&#x8D29;&#x5356;&#x7684;&#x4E0D;&#x662F;&#x9152;&#x662F;&#x60C5;&#x6000;&#xFF1B;&#x7B2C;&#x4E8C;&#xFF0C;&#x770B;&#x4ECA;&#x5929;&#x7684;&#x4F60;&#x6211;&#x600E;&#x6837;&#x91CD;&#x590D;&#x6628;&#x5929;&#x7684;&#x6545;&#x4E8B;&#xFF0C;&#x6211;&#x8FD9;&#x5F20;&#x65E7;&#x8239;&#x7968;&#x8FD8;&#x80FD;&#x5426;&#x767B;&#x4E0A;&#x4F60;&#x7684;&#x5BA2;&#x8239;&#x3002;&#x5E78;&#x8FD0;&#x7684;&#x662F;&#xFF0C;MVVM&#x76F8;&#x5BF9;MVP&#x7684;&#x786E;&#x53D1;&#x751F;&#x4E86;&#x4E9B;&#x8BB8;&#x6539;&#x53D8;&#xFF0C;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x7684;&#x7279;&#x6027;&#x662F;&#x53CC;&#x5411;&#x7ED1;&#x5B9A;&#xFF0C;View&#x7684;&#x53D8;&#x5316;&#x5C06;&#x81EA;&#x52A8;&#x53CD;&#x6620;&#x5728;ViewModel&#x4E2D;&#xFF0C;&#x800C;&#x663E;&#x7136;ViewModel&#x662F;&#x4E00;&#x4E2A;&#x4E3A;View&#x6253;&#x9020;&#x7684;Model&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x5BB9;&#x7EB3;&#x66F4;&#x591A;&#x7684;&#x666E;&#x901A;&#x7684;Model&#xFF0C;&#x56E0;&#x6B64;&#x4ECE;&#x67D0;&#x79CD;&#x610F;&#x4E49;&#x4E0A;&#x6765;&#x8BF4;&#xFF0C;ViewModel&#x4F9D;&#x7136;&#x4F5C;&#x4E3A;&#x8FDE;&#x63A5;View&#x548C;Model&#x7684;&#x6865;&#x6881;&#x800C;&#x51FA;&#x73B0;&#xFF0C;&#x5B83;&#x662F;&#x5BF9;View&#x7684;&#x4E00;&#x79CD;&#x62BD;&#x8C61;&#xFF0C;&#x800C;&#x62BD;&#x8C61;&#x6709;&#x4E24;&#x5C42;&#x542B;&#x4E49;&#xFF0C;&#x5373;&#x6570;&#x636E;(Property)&#x548C;&#x884C;&#x4E3A;(Command)&#xFF0C;&#x4E00;&#x65E6;&#x4F60;&#x660E;&#x767D;&#x4E86;&#x8FD9;&#x4E00;&#x70B9;&#xFF0C;ViewModel&#x65E0;&#x975E;&#x662F;&#x4E00;&#x4E2A;&#x7279;&#x6B8A;&#x800C;&#x666E;&#x901A;&#x7684;&#x7C7B;&#x800C;&#x5DF2;&#xFF0C;&#x7279;&#x6B8A;&#x662F;&#x56E0;&#x4E3A;&#x5B83;&#x9700;&#x8981;&#x5B9E;&#x73B0;INotifyPropertyChanged&#x63A5;&#x53E3;&#xFF0C;&#x666E;&#x901A;&#x662F;&#x56E0;&#x4E3A;&#x5B83;&#x7EE7;&#x627F;&#x4E86;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7F16;&#x7A0B;(OOP)&#x7684;&#x57FA;&#x672C;&#x601D;&#x60F3;&#x3002;</p>
+<h1 id="&#x66F4;&#x50CF;MVC&#x7684;MVVM"><a href="#&#x66F4;&#x50CF;MVC&#x7684;MVVM" class="headerlink" title="&#x66F4;&#x50CF;MVC&#x7684;MVVM"></a>&#x66F4;&#x50CF;MVC&#x7684;MVVM</h1><p>&#x2003;&#x2003;&#x5230;&#x73B0;&#x5728;&#x4E3A;&#x6B62;&#xFF0C;&#x6211;&#x4EEC;&#x57FA;&#x672C;&#x4E0A;&#x7406;&#x89E3;&#x4E86;MVC&#x3001;MVP&#x548C;MVVM&#x8FD9;&#x4E09;&#x8005;&#x95F4;&#x7684;&#x8054;&#x7CFB;&#x548C;&#x533A;&#x522B;&#xFF0C;&#x53EF;&#x662F;&#x8FD9;&#x6837;&#x771F;&#x7684;&#x5C31;&#x662F;&#x6700;&#x597D;&#x7684;&#x7ED3;&#x679C;&#x5417;&#xFF1F;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x6765;&#x601D;&#x8003;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x5373;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x4EE3;&#x7801;&#x5E94;&#x8BE5;&#x5199;&#x5728;&#x63A7;&#x5236;&#x5668;&#x91CC;&#x3002;&#x6BD4;&#x5982;&#x6211;&#x4EEC;&#x5728;&#x5BF9;&#x9879;&#x76EE;&#x8FDB;&#x884C;&#x5206;&#x5C42;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5230;&#x5E95;&#x5E94;&#x8BE5;&#x8BA9;&#x63A7;&#x5236;&#x5668;&#x8D1F;&#x8D23;&#x54EA;&#x4E9B;&#x4EFB;&#x52A1;&#xFF1F;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8BA9;Controller&#x5904;&#x7406;&#x5355;&#x72EC;&#x7684;&#x8DEF;&#x7531;&#xFF0C;&#x540C;&#x6837;&#x53EF;&#x4EE5;&#x8BA9;Controller&#x53C2;&#x4E0E;&#x89C6;&#x56FE;&#x903B;&#x8F91;&#xFF0C;&#x751A;&#x81F3;&#x6211;&#x4EEC;&#x5728;&#x7F16;&#x5199;Model&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6709;&#x4E24;&#x79CD;&#x4E0D;&#x540C;&#x7684;&#x9009;&#x62E9;&#xFF0C;&#x7B2C;&#x4E00;&#xFF0C;&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x6570;&#x636E;&#x805A;&#x5408;&#x5B9E;&#x4F53;&#xFF0C;&#x5177;&#x4F53;&#x903B;&#x8F91;&#x90FD;&#x4EA4;&#x7ED9;&#x63A7;&#x5236;&#x5668;&#x6765;&#x5904;&#x7406;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x79F0;&#x4E3A;&#x8D2B;&#x8840;&#x6A21;&#x578B;&#xFF1B;&#x7B2C;&#x4E8C;&#xFF0C;&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x6301;&#x6709;&#x884C;&#x4E3A;&#x7684;&#x6570;&#x636E;&#x805A;&#x5408;&#x5B9E;&#x4F53;&#xFF0C;&#x63A7;&#x5236;&#x5668;&#x5728;&#x4E1A;&#x52A1;&#x903B;&#x8F91;&#x4E2D;&#x8C03;&#x7528;&#x8FD9;&#x4E9B;&#x65B9;&#x6CD5;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x79F0;&#x4E3A;&#x5145;&#x8840;&#x6A21;&#x578B;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x5728;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x7EA0;&#x7ED3;&#x7684;&#x5730;&#x65B9;&#xFF0C;&#x5176;&#x5B9E;&#x662F;&#x9009;&#x62E9;&#x8BA9;&#x63A7;&#x5236;&#x5668;&#x66F4;&#x201C;&#x91CD;&#x201D;&#x8FD8;&#x662F;&#x8BA9;&#x6A21;&#x578B;&#x66F4;&#x201C;&#x91CD;&#x201D;&#xFF0C;&#x6211;&#x66FE;&#x7ECF;&#x63A5;&#x89E6;&#x8FC7;1&#x5E74;&#x5DE6;&#x53F3;&#x7684;Android&#x5F00;&#x53D1;&#xFF0C;&#x6211;&#x8BA4;&#x4E3A;Android&#x5DE5;&#x7A0B;&#x662F;&#x4E00;&#x4E2A;&#x76F8;&#x5BF9;&#x7B26;&#x5408;MVC&#x67B6;&#x6784;&#x7684;&#x8BBE;&#x8BA1;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x4EEC;&#x96BE;&#x514D;&#x4F1A;&#x53D1;&#x73B0;&#xFF0C;&#x4F5C;&#x4E3A;&#x63A7;&#x5236;&#x5668;&#x7684;Activity&#x4E2D;&#x7684;&#x4EE3;&#x7801;&#x975E;&#x5E38;&#x81C3;&#x80BF;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x5728;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x548C;&#x89C6;&#x56FE;&#x3001;&#x6A21;&#x578B;&#x5173;&#x8054;&#x8D77;&#x6765;&#xFF0C;&#x6240;&#x4EE5;&#x7EFC;&#x5408;&#x73B0;&#x6709;&#x7684;&#x8FD9;&#x4E9B;&#x8F6F;&#x4EF6;&#x67B6;&#x6784;&#x601D;&#x60F3;&#xFF0C;&#x6211;&#x4EEC;&#x53D1;&#x73B0;&#x6A21;&#x578B;&#x548C;&#x89C6;&#x56FE;&#x76F8;&#x5BF9;&#x6765;&#x8BB2;&#x90FD;&#x662F;&#x53EF;&#x4EE5;&#x590D;&#x7528;&#x7684;&#xFF0C;&#x53EF;&#x662F;&#x4F5C;&#x4E3A;&#x8FDE;&#x63A5;&#x8FD9;&#x4E24;&#x8005;&#x7684;Controller/Presenter/ViewModel&#x662F;&#x975E;&#x5E38;&#x81C3;&#x80BF;&#x800C;&#x4E14;&#x96BE;&#x4EE5;&#x590D;&#x7528;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x6000;&#x7591;&#x6211;&#x4EEC;&#x662F;&#x5426;&#x662F;&#x5728;&#x771F;&#x6B63;&#x7684;&#x4F7F;&#x7528;MVVM&#x3002;</p>
+<p>&#x2003;&#x2003;&#x6211;&#x4E0D;&#x77E5;&#x9053;MVVM&#x67B6;&#x6784;&#x6B63;&#x786E;&#x7684;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x662F;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x662F;&#x6211;&#x7B2C;&#x4E00;&#x6B21;&#x63A5;&#x89E6;&#x5230;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x6982;&#x5FF5;&#xFF0C;&#x5C31;&#x5982;&#x540C;&#x5F88;&#x591A;&#x5E74;&#x524D;&#xFF0C;&#x6211;&#x5728;&#x5B66;&#x6821;&#x56FE;&#x4E66;&#x9986;&#x91CC;&#x770B;&#x5230;&#x7684;&#x4E00;&#x672C;&#x8BB2;Web&#x5F00;&#x53D1;&#x7684;&#x4E66;&#x4E2D;&#x63CF;&#x5199;&#x7684;&#x90A3;&#x6837;&#xFF1A;&#x5F53;&#x6211;&#x4EEC;&#x4E0D;&#x4E86;&#x89E3;MVC&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x7406;&#x6240;&#x5F53;&#x7136;&#x5730;&#x8BA4;&#x4E3A;&#x901A;&#x8FC7;&#x6587;&#x4EF6;&#x5939;&#x5C06;&#x9879;&#x76EE;&#x5212;&#x5206;&#x4E3A;Model&#x3001;View&#x3001;Controller&#xFF0C;&#x8FD9;&#x6837;&#x597D;&#x50CF;&#x5C31;&#x662F;MVC&#x5566;&#x3002;&#x53EF;&#x662F;&#x4E8B;&#x5B9E;&#x771F;&#x7684;&#x662F;&#x8FD9;&#x6837;&#x5417;&#xFF1F;&#x4EE5;&#x6211;&#x76EE;&#x524D;&#x516C;&#x53F8;&#x9879;&#x76EE;&#x7684;&#x60C5;&#x51B5;&#x800C;&#x5DF2;&#xFF0C;&#x6211;&#x8BA4;&#x4E3A;&#x5B83;&#x66F4;&#x50CF;&#x662F;&#x4F7F;&#x7528;&#x4E86;&#x53CC;&#x5411;&#x7ED1;&#x5B9A;&#x7684;MVC&#xFF0C;&#x56E0;&#x4E3A;&#x4F60;&#x7ECF;&#x5E38;&#x53EF;&#x4EE5;&#x5728;ViewModel&#x4E2D;&#x770B;&#x5230;&#xFF0C;&#x67D0;&#x4E2A;&#x5C5E;&#x6027;&#x7684;Get&#x8BBF;&#x95EE;&#x5668;&#x4E2D;&#x5404;&#x79CD;&#x88AB;if-else&#x6298;&#x78E8;&#x7684;&#x201C;&#x810F;&#x201D;&#x4EE3;&#x7801;&#xFF0C;&#x800C;&#x5728;ViewModel&#x4E2D;&#x6211;&#x57FA;&#x672C;&#x4E0A;&#x770B;&#x4E0D;&#x5230;Model&#x7684;&#x8EAB;&#x5F71;&#xFF0C;&#x5E76;&#x4E14;&#x56E0;&#x4E3A;&#x4F7F;&#x7528;&#x4E86;Binding&#x7684;&#x6982;&#x5FF5;&#x4E25;&#x91CD;&#x5F31;&#x5316;&#x4E86;ViewModel&#x4F5C;&#x4E3A;&#x7C7B;&#x7684;&#x57FA;&#x672C;&#x5C5E;&#x6027;&#xFF0C;&#x56E0;&#x6B64;&#x5B83;&#x6CA1;&#x6709;&#x6784;&#x9020;&#x51FD;&#x6570;&#x3001;&#x6CA1;&#x6709;&#x521D;&#x59CB;&#x5316;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;Get&#x8BBF;&#x95EE;&#x5668;&#x4E2D;&#x770B;&#x5230;&#x5404;&#x79CD;&#x786C;&#x7F16;&#x7801;&#xFF0C;&#x56E0;&#x4E3A;&#x89C6;&#x56FE;&#x4E0A;&#x7684;&#x9700;&#x6C42;&#x7ECF;&#x5E38;&#x53D8;&#x52A8;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;&#x6574;&#x4E2A;&#x9879;&#x76EE;&#x7ED3;&#x675F;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x672C;&#x4EBA;&#x662F;&#x975E;&#x5E38;&#x4E0D;&#x613F;&#x610F;&#x53BB;&#x770B;ViewModel&#x8FD9;&#x90E8;&#x5206;&#x7684;&#x4EE3;&#x7801;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x9879;&#x76EE;&#x4E0A;&#x8981;&#x6C42;&#x907F;&#x514D;&#x5199;Code-Behind&#x4EE3;&#x7801;&#xFF0C;&#x6240;&#x4EE5;&#x5927;&#x91CF;&#x7684;&#x4E8B;&#x4EF6;&#x88AB;Command&#x548C;UIEventToCommand&#x4EE3;&#x66FF;&#xFF0C;&#x8FD9;&#x6837;&#x8BA9;ViewModel&#x53D8;&#x5F97;&#x66F4;&#x201C;&#x91CD;&#x201D;&#x4E86;&#x3002;&#x539F;&#x672C;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x7684;&#x662F;&#x8BA9;&#x8FD9;&#x4E09;&#x8005;&#x5404;&#x53F8;&#x5176;&#x804C;&#xFF0C;&#x7ED3;&#x679C;&#x73B0;&#x5728;&#x810F;&#x6D3B;&#x7D2F;&#x6D3B;&#x513F;&#x5168;&#x90E8;&#x53D8;&#x6210;&#x4E86;ViewModel&#x4E00;&#x4E2A;&#x4EBA;&#x7684;&#x3002;&#x867D;&#x7136;&#x53CC;&#x5411;&#x7ED1;&#x5B9A;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x53BB;&#x5199;&#x5927;&#x91CF;&#x8D4B;&#x503C;&#x8BED;&#x53E5;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x77E5;&#x9053;ViewModel&#x5185;&#x5FC3;&#x6DF1;&#x5904;&#x4F1A;&#x8868;&#x793A;&#xFF1A;&#x5B9D;&#x5B9D;&#x5FC3;&#x91CC;&#x82E6;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x5982;&#x679C;&#x8BF4;WPF&#x5BF9;&#x6280;&#x672F;&#x5708;&#x6700;&#x5927;&#x7684;&#x8D21;&#x732E;&#xFF0C;&#x6211;&#x8BA4;&#x4E3A;&#x8FD9;&#x4E2A;&#x8D21;&#x732E;&#x4E0D;&#x5728;&#x53CC;&#x5411;&#x7ED1;&#x5B9A;&#xFF0C;&#x800C;&#x662F;&#x5B83;&#x771F;&#x6B63;&#x610F;&#x4E49;&#x4E0A;&#x5B9E;&#x73B0;&#x4E86;&#x8BBE;&#x8BA1;&#x548C;&#x7F16;&#x7A0B;&#x5206;&#x79BB;&#xFF0C;&#x6211;&#x4EEC;&#x5FC5;&#x987B;&#x627F;&#x8BA4;&#x8BBE;&#x8BA1;&#x548C;&#x7F16;&#x7A0B;&#x90FD;&#x662F;&#x4E00;&#x9879;&#x521B;&#x9020;&#x6027;&#x6D3B;&#x52A8;&#xFF0C;&#x524D;&#x8005;&#x8D8B;&#x5411;&#x611F;&#x6027;&#xFF0C;&#x800C;&#x540E;&#x8005;&#x8D8B;&#x5411;&#x7406;&#x60F3;&#xFF0C;&#x5728;&#x6CA1;&#x6709;&#x5B9E;&#x73B0;&#x8FD9;&#x4E24;&#x8005;&#x5206;&#x79BB;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x7A0B;&#x5E8F;&#x5458;&#x9700;&#x8981;&#x82B1;&#x8D39;&#x5927;&#x91CF;&#x65F6;&#x95F4;&#x53BB;&#x8FD8;&#x539F;&#x8BBE;&#x8BA1;&#x5E08;&#x7684;&#x8BBE;&#x8BA1;&#xFF0C;&#x53EF;&#x662F;&#x5BF9;&#x7A0B;&#x5E8F;&#x5458;&#x6765;&#x8BB2;&#xFF0C;&#x4E00;&#x6BB5;&#x7A0B;&#x5E8F;&#x6709;&#x6CA1;&#x6709;&#x754C;&#x9762;&#x8BBE;&#x8BA1;&#x5728;&#x67D0;&#x4E9B;&#x573A;&#x5408;&#x4E0B;&#x662F;&#x5B8C;&#x5168;&#x4E0D;&#x91CD;&#x8981;&#x7684;&#xFF0C;&#x5728;&#x6CA1;&#x6709;&#x754C;&#x9762;&#x8BBE;&#x8BA1;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5355;&#x5143;&#x6D4B;&#x8BD5;&#x6765;&#x6D4B;&#x8BD5;&#x4EE3;&#x7801;&#x7684;&#x53EF;&#x9760;&#x7A0B;&#x5EA6;&#xFF0C;&#x76F8;&#x53CD;&#x5730;&#x5728;&#x6709;&#x4E86;&#x754C;&#x9762;&#x8BBE;&#x8BA1;&#x4EE5;&#x540E;&#x6211;&#x4EEC;&#x53CD;&#x800C;&#x4E0D;&#x5BB9;&#x6613;&#x505A;&#x5230;&#x8FD9;&#x4E00;&#x70B9;&#xFF0C;&#x6240;&#x4EE5;&#x4F60;&#x95EE;&#x6211;WPF&#x5BF9;&#x6280;&#x672F;&#x5708;&#x6700;&#x5927;&#x7684;&#x8D21;&#x732E;&#x662F;&#x4EC0;&#x4E48;&#xFF0C;&#x6211;&#x4F1A;&#x56DE;&#x7B54;&#x5B83;&#x89E3;&#x653E;&#x4E86;&#x7A0B;&#x5E8F;&#x5458;&#xFF0C;&#x53EF;&#x4EE5;&#x8BA9;&#x7406;&#x6027;&#x601D;&#x7EF4;&#x53BB;&#x505A;&#x7406;&#x6027;&#x601D;&#x7EF4;&#x66F4;&#x9002;&#x5408;&#x7684;&#x4E8B;&#x60C5;&#x3002;&#x6211;&#x4E0D;&#x592A;&#x559C;&#x6B22;&#x58F0;&#x660E;&#x5F0F;&#x7F16;&#x7A0B;&#xFF0C;&#x8FD9;&#x91CC;&#x662F;&#x6307;WPF&#x4E2D;XAML&#x8FD9;&#x79CD;&#x7EE7;&#x627F;&#x81EA;XML&#x7684;&#x6807;&#x8BB0;&#x8BED;&#x8A00;&#xFF0C;&#x56E0;&#x4E3A;Visual Studio&#x5BF9;XAML&#x6CA1;&#x6709;&#x63D0;&#x4F9B;&#x8C03;&#x8BD5;&#x7684;&#x652F;&#x6301;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;&#x4F60;&#x53D1;&#x73B0;&#x89C6;&#x56FE;&#x663E;&#x793A;&#x51FA;&#x73B0;&#x95EE;&#x9898;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x5F88;&#x96BE;&#x5206;&#x6E05;&#x695A;&#x662F;&#x524D;&#x53F0;&#x89C6;&#x56FE;&#x7ED1;&#x5B9A;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#x8FD8;&#x662F;&#x540E;&#x53F0;ViewModel&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#xFF0C;&#x53EA;&#x8981;&#x4F60;&#x8F93;&#x5165;&#x7B26;&#x5408;XML&#x89C4;&#x8303;&#x7684;&#x5185;&#x5BB9;&#x7A0B;&#x5E8F;&#x90FD;&#x4F1A;&#x7F16;&#x8BD1;&#x901A;&#x8FC7;&#x800C;&#x975E;&#x5F15;&#x53D1;&#x5F02;&#x5E38;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x662F;&#x7528;&#x53CD;&#x5C04;&#x6240;&#x4EE5;&#x6027;&#x80FD;&#x95EE;&#x9898;&#x5E7F;&#x4E3A;&#x4EBA;&#x6240;&#x8BDF;&#x75C5;&#xFF0C;&#x5176;&#x6B21;ViewModel&#x4E2D;&#x901A;&#x77E5;&#x524D;&#x53F0;&#x5C5E;&#x6027;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x65F6;&#x9700;&#x8981;&#x4F7F;&#x7528;OnPropertyChanged&#xFF0C;&#x8BE5;&#x65B9;&#x6CD5;&#x9700;&#x8981;&#x4F20;&#x5165;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;&#x7684;&#x503C;&#xFF0C;&#x901A;&#x5E38;&#x662F;&#x6307;&#x5C5E;&#x6027;&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x53EF;&#x662F;&#x5982;&#x679C;&#x4F60;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;&#x7684;&#x5C5E;&#x6027;&#xFF0C;&#x5F53;&#x4F60;&#x5728;&#x8FD9;&#x91CC;&#x4F20;&#x5165;&#x8FD9;&#x4E2A;&#x5C5E;&#x6027;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x662F;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;&#x6240;&#x4EE5;&#x4E0D;&#x4F1A;&#x5F15;&#x53D1;&#x7F16;&#x8BD1;&#x9519;&#x8BEF;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x89C9;&#x5F97;&#x8FD9;&#x4E2A;&#x4E1C;&#x897F;&#x8FD8;&#x662F;&#x6BD4;&#x8F83;&#x5751;&#x3002;</p>
+<h1 id="&#x59D4;&#x6258;&#x4E0E;&#x547D;&#x4EE4;"><a href="#&#x59D4;&#x6258;&#x4E0E;&#x547D;&#x4EE4;" class="headerlink" title="&#x59D4;&#x6258;&#x4E0E;&#x547D;&#x4EE4;"></a>&#x59D4;&#x6258;&#x4E0E;&#x547D;&#x4EE4;</h1><p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x60F3;&#x8BF4;&#x8BF4;WPF&#x4E2D;&#x7684;&#x547D;&#x4EE4;&#x548C;&#x59D4;&#x6258;&#xFF0C;&#x4E8B;&#x5B9E;&#x4E0A;&#x5728;&#x6211;&#x8BA1;&#x5212;&#x5199;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x524D;&#xFF0C;&#x6211;&#x5BF9;&#x8FD9;&#x91CC;&#x65E0;&#x6BD4;&#x597D;&#x5947;&#xFF0C;&#x53EF;&#x5F53;&#x6211;&#x53D1;&#x73B0;&#x8FD9;&#x4E1C;&#x897F;&#x7684;&#x5B9E;&#x8D28;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x5FFD;&#x7136;&#x89C9;&#x5F97;&#x82B1;&#x8D39;&#x5982;&#x6B64;&#x5927;&#x7684;&#x7BC7;&#x5E45;&#x6765;&#x8BB2;&#x89E3;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x6982;&#x5FF5;&#xFF0C;&#x8FD9;&#x662F;&#x4E0D;&#x662F;&#x4F1A;&#x663E;&#x5F97;&#x7279;&#x522B;&#x65E0;&#x804A;&#x3002;&#x6211;&#x4EEC;&#x7684;&#x9879;&#x76EE;&#x4E0A;&#x4F7F;&#x7528;&#x7684;&#x662F;&#x4E00;&#x4E2A;&#x53EB;&#x505A;MVVM light&#x7684;&#x6846;&#x67B6;&#xFF0C;&#x5F53;&#x7136;&#x6211;&#x4EEC;&#x6CA1;&#x6709;&#x4F7F;&#x7528;&#x5B83;&#x7684;&#x5168;&#x90E8;&#x529F;&#x80FD;&#xFF0C;&#x516C;&#x53F8;&#x7684;&#x524D;&#x8F88;&#x4EEC;&#x975E;&#x5E38;&#x7325;&#x7410;&#x5730;&#x4ECE;&#x8FD9;&#x4E2A;&#x5F00;&#x6E90;&#x9879;&#x76EE;&#x4E2D;&#x6311;&#x4E86;&#x4E9B;&#x6E90;&#x4EE3;&#x7801;&#x51FA;&#x6765;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4E0D;&#x60F3;&#x63D0;&#x53CA;&#x5173;&#x4E8E;&#x8FD9;&#x4E2A;&#x6846;&#x67B6;&#x672C;&#x8EAB;&#x5730;&#x76F8;&#x5173;&#x7EC6;&#x8282;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x8BA4;&#x4E3A;&#x7406;&#x89E3;&#x95EE;&#x9898;&#x7684;&#x5B9E;&#x8D28;&#x6BD4;&#x5B66;&#x4F1A;&#x4E00;&#x4E2A;&#x6846;&#x67B6;&#x66F4;&#x52A0;&#x91CD;&#x8981;&#x3002;&#x9996;&#x5148;&#xFF0C;WPF&#x4E3A;&#x6BCF;&#x4E00;&#x4E2A;&#x63A7;&#x4EF6;&#x90FD;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;Command&#x7684;&#x4F9D;&#x8D56;&#x5C5E;&#x6027;&#xFF0C;&#x56E0;&#x4E3A;&#x4EFB;&#x4F55;&#x5B9E;&#x73B0;&#x4E86;ICommand&#x63A5;&#x53E3;&#x7684;&#x7C7B;&#x90FD;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x7ED1;&#x5B9A;&#x7684;&#x65B9;&#x5F0F;&#x548C;&#x524D;&#x53F0;&#x5173;&#x8054;&#x8D77;&#x6765;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5BF9;&#x6BD4;&#x4E0B;&#x547D;&#x4EE4;&#x548C;&#x8DEF;&#x7531;&#x4E8B;&#x4EF6;&#x7684;&#x533A;&#x522B;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#xFF0C;&#x8DEF;&#x7531;&#x4E8B;&#x4EF6;&#x5FC5;&#x987B;&#x5199;&#x5728;Code-Behind&#x4EE3;&#x7801;&#x4E2D;&#xFF0C;&#x800C;&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x5199;&#x5728;ViewModel&#x91CC;&#xFF0C;&#x6240;&#x4EE5;&#x76F4;&#x89C2;&#x4E0A;&#x6765;&#x8BB2;&#x547D;&#x4EE4;&#x66F4;&#x52A0;&#x81EA;&#x7531;&#x7075;&#x6D3B;&#x3002;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x4EE5;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x4F8B;&#x5B50;&#x6765;&#x5256;&#x6790;&#x8FD9;&#x4E24;&#x8005;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x4F7F;&#x7528;Command&#x9700;&#x8981;&#x5B9E;&#x73B0;ICommand&#x63A5;&#x53E3;&#xFF0C;&#x6240;&#x4EE5;&#x5B9E;&#x73B0;&#x8D77;&#x6765;&#x662F;&#x76F8;&#x5BF9;&#x5BB9;&#x6613;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x7EE7;&#x7EED;&#x6CBF;&#x7528;MVVM light&#x4E2D;&#x7684;RelayCommand&#x8FD9;&#x4E2A;&#x540D;&#x5B57;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RelayCommand</span> : <span class="title">ICommand</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Action&lt;<span class="keyword">object</span>&gt; m_execute;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Predicate&lt;<span class="keyword">object</span>&gt; m_canExecute;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RelayCommand</span>(<span class="params">Action&lt;<span class="keyword">object</span>&gt; execute</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">this</span>.m_execute = execute;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RelayCommand</span>(<span class="params">Action&lt;<span class="keyword">object</span>&gt; execute, Predicate&lt;<span class="keyword">object</span>&gt; canExecute</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">this</span>.m_execute = execute;</span><br><span class="line">        <span class="keyword">this</span>.m_canExecute = canExecute;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">bool</span> <span class="title">CanExecute</span>(<span class="params"><span class="keyword">object</span> parameter</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">if</span> (m_canExecute == <span class="literal">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> m_canExecute(parameter);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler CanExecuteChanged</span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">add</span> { CommandManager.RequerySuggested += <span class="keyword">value</span>; }</span><br><span class="line">        <span class="keyword">remove</span> { CommandManager.RequerySuggested -= <span class="keyword">value</span>; }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Execute</span>(<span class="params"><span class="keyword">object</span> parameter</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">this</span>.m_execute(parameter);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x8FD9;&#x91CC;&#x6709;&#x4E24;&#x4E2A;&#x91CD;&#x8981;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;Execute&#x548C;CanExecute&#xFF0C;&#x524D;&#x8005;&#x662F;&#x4E00;&#x4E2A;void&#x7C7B;&#x578B;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x540E;&#x8005;&#x662F;&#x4E00;&#x4E2A;bool&#x7C7B;&#x578B;&#x7684;&#x65B9;&#x6CD5;&#x3002;&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5224;&#x65AD;&#x63A7;&#x4EF6;&#x662F;&#x5426;&#x5E94;&#x8BE5;&#x6267;&#x884C;&#x67D0;&#x4E00;&#x4E2A;&#x8FC7;&#x7A0B;&#x7684;&#x65F6;&#x5019;&#xFF0C;CanExecute&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x5C31;&#x53EF;&#x4EE5;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x5B8C;&#x6210;&#x5224;&#x65AD;&#xFF0C;&#x800C;Execute&#x65B9;&#x6CD5;&#x663E;&#x7136;&#x662F;&#x6267;&#x884C;&#x67D0;&#x4E00;&#x4E2A;&#x8FC7;&#x7A0B;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x53EF;&#x4EE5;&#x6CE8;&#x610F;&#x5230;&#x901A;&#x8FC7;&#x59D4;&#x6258;&#x6211;&#x4EEC;&#x8BA9;&#x8C03;&#x7528;&#x8005;&#x66F4;&#x52A0;&#x81EA;&#x7531;&#x548C;&#x7075;&#x6D3B;&#x5730;&#x4F20;&#x5165;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x662F;&#x6211;&#x559C;&#x6B22;&#x8FD9;&#x79CD;&#x8BBE;&#x8BA1;&#x7684;&#x4E00;&#x4E2A;&#x5730;&#x65B9;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x7684;&#x4E00;&#x4F4D;&#x540C;&#x4E8B;&#x5C31;&#x5BF9;&#x666E;&#x901A;&#x7684;&#x8DEF;&#x7531;&#x4E8B;&#x4EF6;&#x8868;&#x793A;&#x65E0;&#x6CD5;&#x7406;&#x89E3;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x8BF4;&#x660E;&#x7684;&#x662F;CanExecuteChanged&#x8FD9;&#x4E2A;&#x4E8B;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E2A;&#x548C;INotifyPropertyChanged&#x63A5;&#x53E3;&#x4E2D;&#x7684;PropertyChanged&#x6210;&#x5458;&#x7C7B;&#x4F3C;&#xFF0C;&#x662F;&#x5728;&#x5F53;CanExecute&#x53D1;&#x751F;&#x53D8;&#x5316;&#x7684;&#x65F6;&#x5019;&#x901A;&#x77E5;&#x89C6;&#x56FE;&#x7684;&#xFF0C;&#x6211;&#x5BF9;&#x8FD9;&#x91CC;&#x7684;&#x7406;&#x89E3;&#x662F;CanExecute&#x672C;&#x8EAB;&#x5C31;&#x5177;&#x5907;&#x5BF9;&#x67D0;&#x4E00;&#x4E2A;&#x8FC7;&#x7A0B;&#x662F;&#x5426;&#x5E94;&#x8BE5;&#x88AB;&#x6267;&#x884C;&#x7684;&#x652F;&#x6301;&#xFF0C;&#x53EF;&#x662F;&#x9057;&#x61BE;&#x7684;&#x662F;&#x5728;&#xFF0C;&#x5728;&#x6211;&#x53C2;&#x4E0E;&#x7684;&#x9879;&#x76EE;&#x4E2D;&#xFF0C;&#x4EBA;&#x4EEC;&#x66F4;&#x559C;&#x6B22;&#x58F0;&#x660E;&#x5927;&#x91CF;&#x7684;&#x5E03;&#x5C14;&#x7C7B;&#x578B;&#x53D8;&#x91CF;&#x6765;&#x5904;&#x7406;&#x8FD9;&#x91CC;&#x7684;&#x76F8;&#x5173;&#x903B;&#x8F91;&#xFF0C;&#x56E0;&#x6B64;&#x65E0;&#x8BBA;&#x662F;&#x5BF9;Property&#x8FD8;&#x662F;Command&#x800C;&#x8A00;&#xFF0C;&#x5728;ViewModel&#x91CC;&#x90FD;&#x662F;&#x770B;&#x8D77;&#x6765;&#x975E;&#x5E38;&#x4E11;&#x964B;&#x7684;&#x4EE3;&#x7801;&#x5B9E;&#x73B0;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x5BF9;&#x6211;&#x4EEC;&#x800C;&#x8A00;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x975E;&#x5E38;&#x6109;&#x5FEB;&#x7684;&#x65C5;&#x7A0B;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x5B8C;&#x6210;&#x5BF9;RelayCommand&#x7684;&#x5B9A;&#x4E49;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x7ED1;&#x5B9A;&#x547D;&#x4EE4;&#x548C;&#x5B9A;&#x4E49;&#x547D;&#x4EE4;&#x7684;&#x8FC7;&#x7A0B;&#x662F;&#x975E;&#x5E38;&#x7B80;&#x5355;&#x7684;&#x3002;&#x9664;&#x6B64;&#x4EE5;&#x5916;&#xFF0C;WPF&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;RoutedCommand&#x7C7B;&#xFF0C;&#x8BE5;&#x7C7B;&#x5B9E;&#x73B0;&#x4E86;ICommand&#x63A5;&#x53E3;&#xFF0C;&#x6211;&#x6000;&#x7591;MVVM light&#x4E2D;&#x7684;EventToCommand&#x6B63;&#x662F;&#x901A;&#x8FC7;&#x8FD9;&#x79CD;&#x601D;&#x8DEF;&#x5B9E;&#x73B0;&#x4E86;&#x8DEF;&#x7531;&#x4E8B;&#x4EF6;&#x5230;&#x547D;&#x4EE4;&#x7684;&#x8F6C;&#x6362;&#xFF0C;&#x56E0;&#x4E3A;&#x53EA;&#x6709;RoutedCommand&#x5177;&#x5907;&#x8BBF;&#x95EE;UI&#x4E8B;&#x4EF6;&#x7684;&#x80FD;&#x529B;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4EC5;&#x4EC5;&#x63D0;&#x51FA;&#x95EE;&#x9898;&#xFF0C;&#x8FDB;&#x4E00;&#x6B65;&#x7684;&#x601D;&#x8003;&#x548C;&#x9A8C;&#x8BC1;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7559;&#x5230;&#x4EE5;&#x540E;&#x53BB;&#x505A;&#x3002;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x770B;&#x5982;&#x4F55;&#x58F0;&#x660E;&#x548C;&#x7ED1;&#x5B9A;&#x547D;&#x4EE4;&#xFF1A;</p>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public RelayCommand ClickCommand</span><br><span class="line">{</span><br><span class="line">    <span class="keyword">get</span></span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RelayCommand(<span class="function">(<span class="params">arg</span>)=&gt;</span></span><br><span class="line">        {</span><br><span class="line">            MessageBox.Show(<span class="string">&quot;Click&quot;</span>);</span><br><span class="line">        });</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x663E;&#x7136;&#x8FD9;&#x4E2A;ClickCommand&#x5C06;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x51FA;&#x73B0;&#x5728;ViewModel&#x4E2D;&#xFF0C;&#x6211;&#x9009;&#x62E9;&#x4E86;&#x4E00;&#x4E2A;&#x6211;&#x6700;&#x559C;&#x6B22;&#x7528;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x6216;&#x8BB8;&#x8FD9;&#x6837;&#x770B;&#x8D77;&#x6765;&#x975E;&#x5E38;&#x4F4E;&#x7AEF;&#x3002;&#x53EF;&#x662F;&#x5728;&#x8C03;&#x8BD5;&#x754C;&#x9762;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF0C;&#x5B83;&#x8981;&#x6BD4;&#x65AD;&#x70B9;&#x8C03;&#x8BD5;&#x66F4;&#x4E3A;&#x76F4;&#x63A5;&#x548C;&#x76F4;&#x89C2;&#x3002;&#x5F53;&#x6211;&#x4EEC;&#x7684;ViewModel&#x4E2D;&#x51FA;&#x73B0;&#x8FD9;&#x6837;&#x7684;&#x53EA;&#x8BFB;&#x5C5E;&#x6027;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x76F4;&#x63A5;&#x5728;Get&#x8BBF;&#x95EE;&#x5668;&#x4E2D;&#x5B9A;&#x4E49;&#x5B83;&#x7684;&#x8FD4;&#x56DE;&#x503C;&#x4F3C;&#x4E4E;&#x662F;&#x6700;&#x76F4;&#x63A5;&#x6709;&#x6548;&#x7684;&#x65B9;&#x6848;&#xFF0C;&#x53EF;&#x95EE;&#x9898;&#x662F;Get&#x8BBF;&#x95EE;&#x5668;&#x5E94;&#x8BE5;&#x662F;&#x975E;&#x5E38;&#x201C;&#x8F7B;&#x201D;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x5927;&#x91CF;&#x4E1A;&#x52A1;&#x903B;&#x8F91;&#x7684;&#x6E17;&#x900F;&#xFF0C;&#x73B0;&#x5728;&#x8FDE;&#x8FD9;&#x91CC;&#x90FD;&#x4E0D;&#x80FD;&#x4FDD;&#x7559;&#x5176;&#x7EAF;&#x7CB9;&#x6027;&#x4E86;&#x5417;&#xFF1F;&#x8FD9;&#x8BA9;&#x6211;&#x8868;&#x793A;&#x975E;&#x5E38;&#x90C1;&#x95F7;&#x554A;&#x3002;</p>
+<figure class="highlight dust"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">Window</span> <span class="attr">x:Class</span>=<span class="string">&quot;WPFLearning.Window1&quot;</span></span></span></span><br><span class="line"><span class="xml">        xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</span></span><br><span class="line"><span class="xml">        xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;</span></span><br><span class="line"><span class="xml">        Title=&quot;Window&quot; Height=&quot;300&quot; Width=&quot;300&quot;&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">Grid</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">Button</span> <span class="attr">Content</span>=<span class="string">&quot;Button&quot;</span> <span class="attr">HorizontalAlignment</span>=<span class="string">&quot;Center&quot;</span> </span></span></span><br><span class="line"><span class="xml">        	VerticalAlignment=&quot;Center&quot; Command=&quot;</span><span class="template-variable">{Binding ClickCommand }</span><span class="xml">&quot;/&gt;  </span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">Grid</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">Window</span>&gt;</span></span></span><br></pre></td></tr></tbody></table></figure>
+<p>&#x73B0;&#x5728;&#x4F60;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#xFF0C;&#x59D4;&#x6258;&#x548C;&#x547D;&#x4EE4;&#x7ED3;&#x5408;&#x5F97;&#x975E;&#x5E38;&#x597D;&#xFF0C;&#x5F53;&#x4F60;&#x53D1;&#x73B0;&#x8FD9;&#x4E00;&#x5207;&#x5982;&#x6B64;&#x7F8E;&#x5999;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x56DE;&#x5F52;&#x672C;&#x8D28;&#x6216;&#x8BB8;&#x662F;&#x6211;&#x4EEC;&#x6700;&#x559C;&#x6B22;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x5C31;&#x50CF;&#x7EAF;&#x7CB9;&#x7684;&#x4F60;&#x6211;&#x4E00;&#x6837;&#xFF0C;&#x5728;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x4E0A;&#xFF0C;&#x6211;&#x4EEC;&#x5F7C;&#x6B64;&#x88C5;&#x70B9;&#x7740;&#x5404;&#x81EA;&#x751F;&#x547D;&#x91CC;&#x7F8E;&#x597D;&#x7684;&#x98CE;&#x666F;&#xFF0C;&#x6267;&#x8457;&#x800C;&#x52C7;&#x6562;&#x3001;&#x6E29;&#x6696;&#x800C;&#x660E;&#x5A9A;&#xFF0C;&#x90A3;&#x4E9B;&#x5468;&#x800C;&#x590D;&#x59CB;&#x7684;&#x65E5;&#x5B50;&#x91CC;&#xFF0C;&#x603B;&#x80FD;&#x542C;&#x5230;&#x68A6;&#x60F3;&#x5F00;&#x82B1;&#x7684;&#x58F0;&#x97F3;&#x3002;</p>
+<h1 id="&#x5C0F;&#x7ED3;"><a href="#&#x5C0F;&#x7ED3;" class="headerlink" title="&#x5C0F;&#x7ED3;"></a>&#x5C0F;&#x7ED3;</h1><p>&#x2003;&#x2003;&#x5728;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x91CC;&#x6211;&#x4EEC;&#x8BA8;&#x8BBA;&#x4E86;MVC&#x3001;MVP&#x3001;MVVM&#x5404;&#x81EA;&#x67B6;&#x6784;&#x53D8;&#x8FC1;&#x7684;&#x524D;&#x56E0;&#x540E;&#x679C;&#xFF0C;&#x7531;&#x6B64;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x4E86;&#x8F6F;&#x4EF6;&#x8BBE;&#x8BA1;&#x4E2D;&#xFF0C;&#x4E00;&#x4E2A;&#x5178;&#x578B;&#x7684;&#x8BBE;&#x8BA1;&#x76EE;&#x6807;&#x662F;&#x8BA9;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x5206;&#x79BB;&#xFF0C;&#x53EF;&#x6211;&#x4EEC;&#x540C;&#x6837;&#x53D1;&#x73B0;&#xFF0C;&#x5E26;&#x7740;&#x8FD9;&#x4E2A;&#x76EE;&#x6807;&#x53BB;&#x8BBE;&#x8BA1;&#x8F6F;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x57FA;&#x672C;&#x9C9C;&#x6709;&#x66F4;&#x6362;&#x89C6;&#x56FE;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x867D;&#x7136;&#x4ECE;&#x7406;&#x8BBA;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x4E1A;&#x52A1;&#x903B;&#x8F91;&#x90FD;&#x662F;&#x5728;ViewModel&#x4E2D;&#xFF0C;&#x89C6;&#x56FE;&#x548C;&#x6A21;&#x578B;&#x5E94;&#x8BE5;&#x662F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x66F4;&#x6362;&#x7684;&#xFF0C;&#x53EF;&#x662F;&#x4F60;&#x544A;&#x8BC9;&#x6211;&#xFF0C;&#x6709;&#x8C01;&#x4F1A;&#x4E3A;&#x540C;&#x4E00;&#x4E2A;&#x8F6F;&#x4EF6;&#x5236;&#x4F5C;&#x4E0D;&#x540C;&#x7684;&#x754C;&#x9762;&#x5462;&#xFF1F;&#x96BE;&#x9053;&#x6211;&#x4EEC;&#x8FD8;&#x80FD;&#x671F;&#x671B;&#x901A;&#x8FC7;&#x4E00;&#x4E2A;&#x9759;&#x6001;&#x5DE5;&#x5382;&#xFF0C;&#x6765;&#x4E3A;&#x4E0D;&#x540C;&#x7684;&#x5E73;&#x53F0;&#x8FD4;&#x56DE;&#x4E0D;&#x540C;&#x7684;&#x89C6;&#x56FE;&#xFF0C;&#x7136;&#x540E;&#x7406;&#x8BBA;&#x4E0A;&#x53EA;&#x8981;&#x9002;&#x914D;&#x6B63;&#x786E;&#x7684;&#x63A7;&#x5236;&#x5668;&#x5C31;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x8F6F;&#x4EF6;&#x5BF9;&#x4E0D;&#x540C;&#x5E73;&#x53F0;&#x7684;&#x201C;&#x81EA;&#x9002;&#x5E94;&#x201D;&#xFF0C;&#x53EF;&#x662F;&#x8F6F;&#x4EF6;&#x5F00;&#x53D1;&#x9886;&#x57DF;&#x53D1;&#x5C55;&#x81F3;&#x4ECA;&#xFF0C;&#x6700;&#x6709;&#x53EF;&#x80FD;&#x63D0;&#x4F9B;&#x5B8C;&#x6574;&#x8DE8;&#x5E73;&#x53F0;&#x65B9;&#x6848;&#x7684;Web&#x6280;&#x672F;&#x76EE;&#x524D;&#x90FD;&#x65E0;&#x6CD5;&#x6EE1;&#x8DB3;&#x8FD9;&#x4E2A;&#x9700;&#x6C42;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x662F;&#x5426;&#x5E94;&#x8BE5;&#x53BB;&#x6000;&#x7591;&#x8FD9;&#x4E2A;&#x8BBE;&#x8BA1;&#x7684;&#x6B63;&#x786E;&#x6027;&#x5462;&#xFF1F;&#x540C;&#x6837;&#x7684;&#xFF0C;&#x4EE5;Java&#x7684;SSH&#x4E09;&#x5927;&#x6846;&#x67B6;&#x4E3A;&#x4EE3;&#x8868;&#x7684;&#x201C;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x201D;&#x6D41;&#x6D3E;&#xFF0C;&#x8BA4;&#x4E3A;&#x5E94;&#x8BE5;&#x5C06;&#x6570;&#x636E;&#x5E93;&#x7684;&#x76F8;&#x5173;&#x4FE1;&#x606F;&#x5199;&#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x91CC;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x6EE1;&#x8DB3;&#x6211;&#x4EEC;&#x968F;&#x65F6;&#x5207;&#x6362;&#x5230;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x5E93;&#x4EA7;&#x54C1;&#x4E0A;&#x7684;&#x9700;&#x8981;&#xFF0C;&#x53EF;&#x662F;&#x4F60;&#x544A;&#x8BC9;&#x6211;&#xFF0C;&#x8FD9;&#x6837;&#x7684;&#x5E94;&#x7528;&#x573A;&#x666F;&#x591A;&#x5417;&#xFF1F;&#x6240;&#x4EE5;&#xFF0C;&#x6280;&#x672F;&#x672C;&#x8EAB;&#x7684;&#x8BBE;&#x8BA1;&#x5E76;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x601D;&#x8003;&#x7684;&#x662F;&#xFF0C;&#x662F;&#x5426;&#x5E94;&#x8BE5;&#x88AB;&#x6846;&#x67B6;&#x548C;&#x67B6;&#x6784;&#x675F;&#x7F1A;&#xFF0C;&#x8BF4;&#x5230;&#x5E95;&#x6211;&#x4EEC;&#x662F;&#x4E3A;&#x4E86;&#x8BBE;&#x8BA1;&#x51FA;&#x66F4;&#x68D2;&#x7684;&#x8F6F;&#x4EF6;&#x4EA7;&#x54C1;&#xFF0C;&#x4EE5;&#x6B64;&#x4E3A;&#x76EE;&#x6807;&#xFF0C;&#x5176;&#x5B9E;&#x6846;&#x67B6;&#x548C;&#x67B6;&#x6784;&#x66F4;&#x5E94;&#x8BE5;&#x884D;&#x751F;&#x4E3A;&#x4E00;&#x79CD;&#x54F2;&#x5B66;&#x610F;&#x4E49;&#x4E0A;&#x7684;&#x601D;&#x60F3;&#xFF0C;&#x6211;&#x4EEC;&#x60F3;&#x8BA9;&#x6BCF;&#x4E00;&#x884C;&#x4EE3;&#x7801;&#x90FD;&#x5145;&#x6EE1;&#x667A;&#x6167;&#x7684;&#x5149;&#x8292;&#xFF0C;&#x5B83;&#x9A84;&#x50B2;&#x5374;&#x4E0D;&#x5B64;&#x72EC;&#xFF0C;&#x56E0;&#x4E3A;&#x603B;&#x6709;&#x4EBA;&#x7406;&#x89E3;&#x5B83;&#x3001;&#x61C2;&#x5B83;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="http://blog.xaoxuu.com/cocoa-dev/2015-07-21-mvc-mvvm/">认识MVC、MVVM设计模式 [转载]</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/569337285/" rel="external">浅析WPF中MVVM模式下命令与委托的关系</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/569337285/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/569337285/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVVM/">MVVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/命令/">命令</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/委托/">委托</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/569337285/&title=《浅析WPF中MVVM模式下命令与委托的关系》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/569337285/&title=《浅析WPF中MVVM模式下命令与委托的关系》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是Payne，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目上的原..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/569337285/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《浅析WPF中MVVM模式下命令与委托的关系》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/569337285/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/569337285/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/21112647/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">一见钟情，无疾而终</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1150143610/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">在Unity3D中使用uGUI实现3D旋转特效</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/569337285/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/569337285/&title=《浅析WPF中MVVM模式下命令与委托的关系》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/569337285/&title=《浅析WPF中MVVM模式下命令与委托的关系》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是Payne，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。最近因为项目上的原..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/569337285/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《浅析WPF中MVVM模式下命令与委托的关系》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/569337285/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/569337285/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/569337285/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

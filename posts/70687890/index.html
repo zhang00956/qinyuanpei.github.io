@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        Unity3D游戏开发之编辑器扩展程序开发实例 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友大家好，欢迎关注我的博客，我的博客地址是http://www.qinyuanpei.com。今天我们来说说如何在Unity3D中为编辑器开发扩展程序。提到扩展程序，相信大家都不会陌生了。不管是Google的Chrome浏览器还是经典的FireFox，这些浏览器最为人所称道的就是它支持各种各样的扩展。扩展程序是一种插件，它遵循插件式设计的原则，可以随时在宿主程序中安装">
+<meta name="keywords" content="Unity3D,编辑器,扩展">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity3D游戏开发之编辑器扩展程序开发实例">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/70687890/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，欢迎关注我的博客，我的博客地址是http://www.qinyuanpei.com。今天我们来说说如何在Unity3D中为编辑器开发扩展程序。提到扩展程序，相信大家都不会陌生了。不管是Google的Chrome浏览器还是经典的FireFox，这些浏览器最为人所称道的就是它支持各种各样的扩展。扩展程序是一种插件，它遵循插件式设计的原则，可以随时在宿主程序中安装">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fyzcvrvdgej20kx0ejaak.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fyzcue77dpj20ky0e5weu.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity3D游戏开发之编辑器扩展程序开发实例">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，欢迎关注我的博客，我的博客地址是http://www.qinyuanpei.com。今天我们来说说如何在Unity3D中为编辑器开发扩展程序。提到扩展程序，相信大家都不会陌生了。不管是Google的Chrome浏览器还是经典的FireFox，这些浏览器最为人所称道的就是它支持各种各样的扩展。扩展程序是一种插件，它遵循插件式设计的原则，可以随时在宿主程序中安装">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fyzcvrvdgej20kx0ejaak.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Unity3D游戏开发之编辑器扩展程序开发实例</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Unity3D游戏开发之编辑器扩展程序开发实例</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-03-31T00:53:22.000Z" itemprop="datePublished" class="page-time">
+  2015-03-31
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏开发/">游戏开发</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#常用的命名空间和类"><span class="post-toc-number">1.</span> <span class="post-toc-text">常用的命名空间和类</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Unity3D编辑器扩展程序开发实例"><span class="post-toc-number">2.</span> <span class="post-toc-text">Unity3D编辑器扩展程序开发实例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#案例1-快速修改贴图类型"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">案例1 快速修改贴图类型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#案例2-动态生成Prefab"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">案例2 动态生成Prefab</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#案例3-快速为Sprite设置图集tag"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">案例3 快速为Sprite设置图集tag</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">3.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Unity3D游戏开发之编辑器扩展程序开发实例" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Unity3D游戏开发之编辑器扩展程序开发实例</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-03-31 00:53:22" datetime="2015-03-31T00:53:22.000Z" itemprop="datePublished">2015-03-31</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/游戏开发/">游戏开发</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        21 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6B22;&#x8FCE;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://www.qinyuanpei.com" target="_blank" rel="noopener">http://www.qinyuanpei.com</a>&#x3002;&#x4ECA;&#x5929;&#x6211;&#x4EEC;&#x6765;&#x8BF4;&#x8BF4;&#x5982;&#x4F55;&#x5728;Unity3D&#x4E2D;&#x4E3A;&#x7F16;&#x8F91;&#x5668;&#x5F00;&#x53D1;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x3002;&#x63D0;&#x5230;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#xFF0C;&#x76F8;&#x4FE1;&#x5927;&#x5BB6;&#x90FD;&#x4E0D;&#x4F1A;&#x964C;&#x751F;&#x4E86;&#x3002;&#x4E0D;&#x7BA1;&#x662F;Google&#x7684;Chrome&#x6D4F;&#x89C8;&#x5668;&#x8FD8;&#x662F;&#x7ECF;&#x5178;&#x7684;FireFox&#xFF0C;&#x8FD9;&#x4E9B;&#x6D4F;&#x89C8;&#x5668;&#x6700;&#x4E3A;&#x4EBA;&#x6240;&#x79F0;&#x9053;&#x7684;&#x5C31;&#x662F;&#x5B83;&#x652F;&#x6301;&#x5404;&#x79CD;&#x5404;&#x6837;&#x7684;&#x6269;&#x5C55;&#x3002;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x662F;&#x4E00;&#x79CD;&#x63D2;&#x4EF6;&#xFF0C;&#x5B83;&#x9075;&#x5FAA;&#x63D2;&#x4EF6;&#x5F0F;&#x8BBE;&#x8BA1;&#x7684;&#x539F;&#x5219;&#xFF0C;&#x53EF;&#x4EE5;&#x968F;&#x65F6;&#x5728;&#x5BBF;&#x4E3B;&#x7A0B;&#x5E8F;&#x4E2D;&#x5B89;&#x88C5;&#x3001;&#x5378;&#x8F7D;&#x800C;&#x4E0D;&#x4F1A;&#x5F71;&#x54CD;&#x5BBF;&#x4E3B;&#x7A0B;&#x5E8F;&#x7684;&#x6B63;&#x5E38;&#x8FD0;&#x884C;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5728;Unity3D&#x4E2D;&#x6709;&#x5404;&#x79CD;&#x5404;&#x6837;&#x7684;&#x63D2;&#x4EF6;&#xFF0C;&#x5982;NGUI&#x3001;2DToolKit&#x3001;EasyTouch&#x7B49;&#x7B49;&#x90FD;&#x662F;&#x4E00;&#x79CD;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x3002;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x5728;&#x4E30;&#x5BCC;&#x5BBF;&#x4E3B;&#x7A0B;&#x5E8F;&#x529F;&#x80FD;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#xFF0C;&#x53EF;&#x4EE5;&#x5E2E;&#x52A9;&#x5BBF;&#x4E3B;&#x7A0B;&#x5E8F;&#x5B8C;&#x6210;&#x5927;&#x91CF;&#x989D;&#x5916;&#x7684;&#x5DE5;&#x4F5C;&#x3002;&#x53EF;&#x4EE5;&#x8BF4;&#x6B63;&#x662F;&#x56E0;&#x4E3A;Unity3D&#x62E5;&#x6709;&#x5927;&#x91CF;&#x7684;&#x63D2;&#x4EF6;&#x548C;&#x8D44;&#x6E90;&#x652F;&#x6301;&#xFF0C;Unity3D&#x624D;&#x80FD;&#x591F;&#x53D7;&#x5230;&#x5927;&#x5BB6;&#x5982;&#x6B64;&#x7684;&#x8FFD;&#x6367;&#x3002;&#x53EF;&#x662F;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x6709;&#x8282;&#x64CD;&#x7684;&#x7A0B;&#x5E8F;&#x5458;&#xFF0C;&#x5982;&#x679C;&#x4EC5;&#x4EC5;&#x4F1A;&#x4F7F;&#x7528;&#x5DE5;&#x5177;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x548C;&#x666E;&#x901A;&#x7528;&#x6237;&#x6709;&#x4EC0;&#x4E48;&#x533A;&#x522B;&#x554A;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x4ECA;&#x5929;&#x7684;&#x6587;&#x7AE0;&#x4E2D;&#x535A;&#x4E3B;&#x5C06;&#x901A;&#x8FC7;&#x4E09;&#x4E2A;&#x5177;&#x4F53;&#x7684;&#x5B9E;&#x4F8B;&#x6765;&#x6559;&#x5927;&#x5BB6;&#x5982;&#x4F55;&#x4E3A;Unity3D&#x7684;&#x7F16;&#x8F91;&#x5668;&#x5F00;&#x53D1;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#xFF0C;&#x5E0C;&#x671B;&#x5BF9;&#x5927;&#x5BB6;&#x5B66;&#x4E60;Unity3D&#x6280;&#x672F;&#x6709;&#x6240;&#x5E2E;&#x52A9;&#xFF01;</p>
+<a id="more"></a>
+<h1 id="&#x5E38;&#x7528;&#x7684;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x548C;&#x7C7B;"><a href="#&#x5E38;&#x7528;&#x7684;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x548C;&#x7C7B;" class="headerlink" title="&#x5E38;&#x7528;&#x7684;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x548C;&#x7C7B;"></a>&#x5E38;&#x7528;&#x7684;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x548C;&#x7C7B;</h1><p>&#x2003;&#x2003;&#x5F00;&#x53D1;Unity3D&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x7684;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x4E3B;&#x8981;&#x662F;UnityEditor&#xFF0C;&#x5728;&#x8BE5;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x4E0B;&#x5E38;&#x7528;&#x7684;&#x7C7B;&#x6709;EditorGUI&#x3001;EditorGUILayout&#x3001;EditorWindow(&#x53EF;&#x80FD;&#x8FD8;&#x6709;&#x5176;&#x5B83;&#x7684;&#x7C7B;&#xFF0C;&#x4E0D;&#x8FC7;&#x5230;&#x76EE;&#x524D;&#x4E3A;&#x6B62;&#x535A;&#x4E3B;&#x5C31;&#x7528;&#x8FC7;&#x8FD9;&#x4E9B;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x5176;&#x5B83;&#x7684;&#x7C7B;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x6765;&#x8865;&#x5145;&#x554A;)&#x3002;&#x4E3A;Unity3D&#x7F16;&#x8F91;&#x5668;&#x5F00;&#x53D1;&#x7684;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x540C;&#x6837;&#x662F;&#x4E00;&#x79CD;&#x811A;&#x672C;&#xFF0C;&#x901A;&#x5E38;&#x9700;&#x8981;&#x5C06;&#x811A;&#x672C;&#x6587;&#x4EF6;&#x653E;&#x5728;&#x9879;&#x76EE;&#x8D44;&#x6E90;&#x6587;&#x5939;&#x4E0B;&#x7684;Editor&#x6587;&#x4EF6;&#x5939;&#x4E2D;&#xFF0C;&#x5373;Assets/Editor&#x3002;&#x4E0D;&#x8FC7;&#x8BE5;&#x811A;&#x672C;&#x4E0D;&#x518D;&#x7EE7;&#x627F;&#x81EA;MonoBehaviour&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x5185;&#x5BB9;&#x6211;&#x4EEC;&#x4F1A;&#x653E;&#x5230;&#x540E;&#x9762;&#x7684;&#x5B9E;&#x4F8B;&#x4E2D;&#x6765;&#x8BB2;Unity3D&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x7684;&#x5F62;&#x5F0F;&#x901A;&#x5E38;&#x6709;&#x4E24;&#x79CD;&#xFF0C;&#x4E00;&#x79CD;&#x662F;&#x6CA1;&#x6709;&#x754C;&#x9762;&#x7684;(&#x5982;&#x6848;&#x4F8B;1)&#x3001;&#x4E00;&#x79CD;&#x662F;&#x6709;&#x754C;&#x9762;&#x7684;(&#x5982;&#x6848;&#x4F8B;2&#x3001;&#x6848;&#x4F8B;3)&#x3002;&#x5BF9;&#x4E8E;&#x6CA1;&#x6709;&#x754C;&#x9762;&#x7684;&#x8FD9;&#x79CD;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#xFF0C;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x7C7B;(&#x65E0;&#x9700;&#x7EE7;&#x627F;&#x4EFB;&#x4F55;&#x7236;&#x7C7B;)&#x7136;&#x540E;&#x518D;&#x8FD9;&#x4E2A;&#x7C7B;&#x4E2D;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x9759;&#x6001;&#x7684;&#x65B9;&#x6CD5;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;;&#x800C;&#x5BF9;&#x4E8E;&#x6709;&#x754C;&#x9762;&#x7684;&#x8FD9;&#x79CD;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x8BA9;&#x5B9A;&#x4E49;&#x7684;&#x8FD9;&#x4E2A;&#x7C7B;&#x7EE7;&#x627F;EditorWindow&#x5E76;&#x5B9E;&#x73B0;OnGUI()&#x65B9;&#x6CD5;,&#x56E0;&#x4E3A;&#x5728;OnGUI()&#x65B9;&#x6CD5;&#x4E2D;&#x6211;&#x4EEC;&#x5C06;&#x4F1A;&#x5BF9;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x7684;&#x754C;&#x9762;&#x8FDB;&#x884C;&#x7ED8;&#x5236;&#xFF0C;&#x4E0D;&#x8FC7;&#x65E0;&#x9700;&#x62C5;&#x5FC3;&#x5566;&#xFF0C;&#x56E0;&#x6B64;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x7684;&#x754C;&#x9762;&#x7ED8;&#x5236;&#x548C;Unity3D&#x811A;&#x672C;&#x4E2D;&#x7684;OnGUI()&#x65B9;&#x6CD5;&#x662F;&#x76F8;&#x4F3C;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x8981;&#x505A;&#x7684;&#x5C31;&#x662F;&#x8981;&#x719F;&#x6089;&#x5E38;&#x89C1;&#x7684;&#x63A7;&#x4EF6;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x8FDB;&#x5165;&#x4ECA;&#x5929;&#x7684;&#x5B9E;&#x6218;&#x73AF;&#x8282;&#xFF0C;&#x5927;&#x5BB6;&#x51C6;&#x5907;&#x597D;&#x4E86;&#x5417;&#xFF1F;</p>
+<h1 id="Unity3D&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x5B9E;&#x4F8B;"><a href="#Unity3D&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x5B9E;&#x4F8B;" class="headerlink" title="Unity3D&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x5B9E;&#x4F8B;"></a>Unity3D&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x5B9E;&#x4F8B;</h1><h2 id="&#x6848;&#x4F8B;1-&#x5FEB;&#x901F;&#x4FEE;&#x6539;&#x8D34;&#x56FE;&#x7C7B;&#x578B;"><a href="#&#x6848;&#x4F8B;1-&#x5FEB;&#x901F;&#x4FEE;&#x6539;&#x8D34;&#x56FE;&#x7C7B;&#x578B;" class="headerlink" title="&#x6848;&#x4F8B;1 &#x5FEB;&#x901F;&#x4FEE;&#x6539;&#x8D34;&#x56FE;&#x7C7B;&#x578B;"></a>&#x6848;&#x4F8B;1 &#x5FEB;&#x901F;&#x4FEE;&#x6539;&#x8D34;&#x56FE;&#x7C7B;&#x578B;</h2><p>&#x2003;&#x2003;Unity3D4.6&#x7248;&#x672C;&#x7684;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x66F4;&#x65B0;&#x5C31;&#x662F;UGUI&#x548C;Unity2D&#x7684;&#x652F;&#x6301;&#xFF0C;&#x56E0;&#x4E3A;&#x6709;&#x4E86;&#x5BF9;Unity2D&#x7684;&#x652F;&#x6301;&#xFF0C;&#x6240;&#x4EE5;Unity3D&#x7684;&#x8D34;&#x56FE;&#x7C7B;&#x578B;&#x5C31;&#x589E;&#x52A0;&#x4E86;&#x4E00;&#x4E2A;Sprite&#x7684;&#x7C7B;&#x578B;&#x3002;&#x5982;&#x679C;&#x5BFC;&#x5165;&#x5230;Unity3D&#x4E2D;&#x7684;&#x8D34;&#x56FE;&#x662F;&#x90A3;&#x79CD;&#x6253;&#x597D;&#x7684;&#x5C0F;&#x56FE;&#x7684;&#x56FE;&#x96C6;&#xFF0C;&#x90A3;&#x4E48;Unity3D&#x80FD;&#x591F;&#x81EA;&#x52A8;&#x8BC6;&#x522B;&#x4E3A;Sprite&#x7C7B;&#x578B;&#x3002;&#x53EF;&#x662F;&#x5BF9;&#x4E8E;&#x90A3;&#x79CD;&#x5355;&#x5F20;&#x7684;&#x8D34;&#x56FE;&#xFF0C;Unity3D&#x9ED8;&#x8BA4;&#x8FD8;&#x662F;&#x6309;&#x7167;&#x9ED8;&#x8BA4;&#x7684;&#x8BBE;&#x7F6E;&#x6765;&#x5904;&#x7406;&#xFF0C;&#x56E0;&#x6B64;&#x5982;&#x679C;&#x6BCF;&#x6B21;&#x9700;&#x8981;&#x7528;&#x5230;&#x8FD9;&#x4E9B;&#x56FE;&#x7247;&#xFF0C;&#x5C31;&#x5FC5;&#x987B;&#x624B;&#x52A8;&#x5730;&#x5C06;&#x5176;TextureType&#x8BBE;&#x4E3A;sprite&#xFF0C;&#x5982;&#x679C;&#x8D34;&#x56FE;&#x6570;&#x91CF;&#x6BD4;&#x8F83;&#x5C11;&#xFF0C;&#x90A3;&#x4E48;&#x624B;&#x52A8;&#x4FEE;&#x6539;&#x4E5F;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x4E86;&#x3002;&#x53EF;&#x662F;&#x5982;&#x679C;&#x9879;&#x76EE;&#x4E2D;&#x7684;&#x8D34;&#x56FE;&#x6570;&#x91CF;&#x8F83;&#x591A;&#x7684;&#x8BDD;&#xFF0C;&#x8FD9;&#x6837;&#x4E00;&#x5F20;&#x4E00;&#x5F20;&#x5730;&#x53BB;&#x8C03;&#x6574;TextureType&#x53EF;&#x80FD;&#x4F1A;&#x6D6A;&#x8D39;&#x5927;&#x91CF;&#x7684;&#x65F6;&#x95F4;&#x554A;&#xFF01;&#x600E;&#x4E48;&#x529E;&#x5462;&#xFF1F;&#x7B80;&#x5355;&#xFF01;&#x5199;&#x4EE3;&#x7801;&#xFF01;<br></p><figure class="highlight c#"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ImportSprite</span></span><br><span class="line">{</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6279;&#x91CF;&#x5C06;&#x8D34;&#x56FE;&#x683C;&#x5F0F;&#x8F6C;&#x6362;&#x4E3A;Sprite</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">&quot;Tools/ConvertToSprite&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ConvertToSprite</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x83B7;&#x53D6;&#x6240;&#x6709;&#x88AB;&#x9009;&#x4E2D;&#x7684;&#x7269;&#x4F53;</span></span><br><span class="line">        Object[] selection=(Object[])Selection.objects;</span><br><span class="line">        <span class="comment">//&#x5408;&#x6CD5;&#x6027;&#x5904;&#x7406;</span></span><br><span class="line">        <span class="keyword">if</span>(selection.Length==<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="comment">//&#x6279;&#x91CF;&#x5BFC;&#x5165;&#x8D34;&#x56FE;</span></span><br><span class="line">        <span class="keyword">foreach</span>(Object obj <span class="keyword">in</span> selection)</span><br><span class="line">        {</span><br><span class="line">            <span class="comment">//&#x53D6;&#x5F97;&#x6BCF;&#x4E00;&#x5F20;&#x8D34;&#x56FE;</span></span><br><span class="line">            Texture texture=(Texture)obj;</span><br><span class="line">            <span class="comment">//&#x83B7;&#x5F97;&#x8D34;&#x56FE;&#x8DEF;&#x5F84;</span></span><br><span class="line">            <span class="keyword">string</span> localpath=AssetDatabase.GetAssetPath(texture);</span><br><span class="line">            <span class="comment">//&#x8D34;&#x56FE;&#x5BFC;&#x5165;</span></span><br><span class="line">            TextureImporter importer=(TextureImporter)AssetImporter.GetAtPath(localpath);</span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;&#x8D34;&#x56FE;&#x7C7B;&#x578B;</span></span><br><span class="line">            importer.textureType=TextureImporterType.Sprite;</span><br><span class="line">            <span class="comment">//&#x5BFC;&#x5165;&#x9879;&#x76EE;&#x8D44;&#x6E90;</span></span><br><span class="line">            AssetDatabase.ImportAsset(localpath);</span><br><span class="line">        }</span><br><span class="line">        <span class="comment">//&#x5237;&#x65B0;&#x9879;&#x76EE;&#x8D44;&#x6E90;</span></span><br><span class="line">        AssetDatabase.Refresh();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x6211;&#x4EEC;&#x5C06;&#x8FD9;&#x4E2A;&#x811A;&#x672C;&#x653E;&#x5230;Editor&#x6587;&#x4EF6;&#x5939;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x51FA;&#x73B0;&#x4EC0;&#x4E48;&#x610F;&#x5916;&#x7684;&#x8BDD;&#xFF0C;Unity3D&#x7684;&#x83DC;&#x5355;&#x680F;&#x4E2D;&#x4F1A;&#x589E;&#x52A0;&#x4E00;&#x4E2A;Tools&#x7684;&#x83DC;&#x5355;&#x9879;&#xFF0C;&#x8BE5;&#x83DC;&#x5355;&#x9879;&#x76EE;&#x524D;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x5B50;&#x83DC;&#x5355;&#x9879;ConvertToSprite&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x8981;&#x505A;&#x7684;&#x4E8B;&#x60C5;&#x5C31;&#x662F;&#x5728;&#x9879;&#x76EE;&#x8D44;&#x6E90;&#x6587;&#x4EF6;&#x5939;&#x4E2D;&#x9009;&#x4E2D;&#x8981;&#x8F6C;&#x6362;&#x6210;sprite&#x7C7B;&#x578B;&#x7684;&#x8D34;&#x56FE;&#xFF0C;&#x7136;&#x540E;&#x5355;&#x51FB;Tools-&gt;ConvertToSprite&#x3002;&#x5F88;&#x5FEB;(&#x5177;&#x4F53;&#x6709;&#x591A;&#x5FEB;&#x53EF;&#x4EE5;&#x81EA;&#x5DF1;&#x5728;&#x7F16;&#x8F91;&#x5668;&#x7A97;&#x53E3;&#x4E2D;&#x53BB;&#x5C1D;&#x8BD5;&#xFF0C;&#x603B;&#x4E4B;&#x5C31;&#x662F;&#x5F88;&#x5FEB;&#x5C31;&#x5BF9;&#x4E86;&#xFF0C;&#x54C8;&#x54C8;)&#x6240;&#x6709;&#x7684;&#x8D34;&#x56FE;&#x7684;&#x90FD;&#x5982;&#x6211;&#x4EEC;&#x6240;&#x613F;&#x5730;&#x88AB;&#x8F6C;&#x6362;&#x6210;&#x4E86;sprite&#x7C7B;&#x578B;&#xFF0C;&#x6B64;&#x65F6;&#x6B64;&#x523B;&#x4F60;&#x6709;&#x6CA1;&#x6709;&#x61CA;&#x6094;&#x5F53;&#x5E74;&#x624B;&#x52A8;&#x521B;&#x5EFA;&#x7684;92&#x4E2A;&#x7A7A;&#x7269;&#x4F53;&#xFF0C;&#x53CD;&#x6B63;&#x535A;&#x4E3B;&#x662F;&#x540E;&#x6094;&#x5F53;&#x521D;&#x505A;&#x5854;&#x9632;&#x6E38;&#x620F;&#x7684;&#x65F6;&#x5019;&#x624B;&#x52A8;&#x521B;&#x5EFA;&#x4E86;92&#x4E2A;&#x7A7A;&#x7269;&#x4F53;&#xFF0C;&#x5982;&#x679C;&#x90A3;&#x4E2A;&#x65F6;&#x5019;&#x6211;&#x77E5;&#x9053;Unity3D&#x53EF;&#x4EE5;&#x505A;&#x8FD9;&#x4E9B;&#x4E8B;&#x60C5;&#xFF0C;&#x6211;&#x6253;&#x6B7B;&#x90FD;&#x4E0D;&#x4F1A;&#x624B;&#x52A8;&#x53BB;&#x521B;&#x5EFA;92&#x4E2A;&#x7A7A;&#x7269;&#x4F53;&#x7684;&#xFF0C;&#x73B0;&#x5728;&#x60F3;&#x60F3;&#x90FD;&#x4F69;&#x670D;&#x5F53;&#x65F6;&#x81EA;&#x5DF1;&#x7684;&#x52C7;&#x6C14;&#x554A;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x4F5C;&#x4E3A;&#x7B2C;&#x4E00;&#x4E2A;&#x7F16;&#x8F91;&#x5668;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#xFF0C;&#x6211;&#x4EEC;&#x7A0D;&#x5FAE;&#x603B;&#x7ED3;&#x4E0B;&#x4E3B;&#x8981;&#x7684;&#x5185;&#x5BB9;&#xFF1A;</p>
+<ul>
+<li>&#x5728;Unity3D&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;TextureImporter&#x3001;ModelImporter&#x3001;AudioImporter&#x3001;MovieImporter&#x7B49;&#x6765;&#x5206;&#x522B;&#x5411;Unity3D&#x4E2D;&#x5BFC;&#x5165;&#x8D34;&#x56FE;&#x3001;&#x6A21;&#x578B;&#x3001;&#x97F3;&#x9891;&#x3001;&#x89C6;&#x9891;&#x7B49;&#x7B49;&#xFF0C;&#x7ECF;&#x8FC7;&#x8BBE;&#x7F6E;&#x540E;&#x6700;&#x7EC8;&#x901A;&#x8FC7;AssetDatabase.ImportAsset()&#x6765;&#x5C06;&#x5176;&#x6DFB;&#x52A0;&#x5230;&#x9879;&#x76EE;&#x4E2D;&#x70ED;&#x5B8C;&#x5168;&#xFF0C;&#x6700;&#x540E;&#x9700;&#x8981;&#x4F7F;&#x7528;AssetDatabase.Refresh()&#x65B9;&#x6CD5;&#x6765;&#x5237;&#x65B0;&#x672C;&#x5730;&#x8D44;&#x6E90;&#xFF0C;&#x4F7F;&#x5BFC;&#x5165;&#x7684;&#x8D44;&#x6E90;&#x751F;&#x6548;&#x3002;</li>
+<li>Selection.objects&#x53D6;&#x5F97;&#x7684;&#x7269;&#x4F53;&#x65E0;&#x6CD5;&#x533A;&#x5206;&#x662F;&#x4ECE;&#x573A;&#x666F;&#x4E2D;&#x9009;&#x53D6;&#x7684;&#x8FD8;&#x662F;&#x4ECE;&#x9879;&#x76EE;&#x8D44;&#x6E90;&#x6587;&#x4EF6;&#x5939;&#x4E2D;&#x9009;&#x53D6;&#x7684;&#xFF0C;&#x5982;&#x679C;&#x9700;&#x8981;&#x4ECE;&#x573A;&#x666F;&#x4E2D;&#x6765;&#x9009;&#x53D6;&#xFF0C;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;Selection.transforms&#x6765;&#x4EE3;&#x66FF;&#x3002;<h2 id="&#x6848;&#x4F8B;2-&#x52A8;&#x6001;&#x751F;&#x6210;Prefab"><a href="#&#x6848;&#x4F8B;2-&#x52A8;&#x6001;&#x751F;&#x6210;Prefab" class="headerlink" title="&#x6848;&#x4F8B;2 &#x52A8;&#x6001;&#x751F;&#x6210;Prefab"></a>&#x6848;&#x4F8B;2 &#x52A8;&#x6001;&#x751F;&#x6210;Prefab</h2>&#x2003;&#x2003;&#x9996;&#x5148;&#x8BA9;&#x6211;&#x4EEC;&#x6765;&#x56DE;&#x987E;&#x4E00;&#x4E0B;&#x5927;&#x5BB6;&#x5E73;&#x65F6;&#x5236;&#x4F5C;Prefab&#x7684;&#x6D41;&#x7A0B;&#xFF1A;</li>
+<li>&#x5728;&#x9879;&#x76EE;&#x8D44;&#x6E90;&#x6587;&#x4EF6;&#x5939;&#x4E2D;&#x9009;&#x53D6;&#x7D20;&#x6750;&#x62D6;&#x653E;&#x5230;&#x573A;&#x666F;&#x4E2D;</li>
+<li>&#x5728;&#x573A;&#x666F;&#x4E2D;&#x8C03;&#x6574;&#x540D;&#x79F0;&#x3001;&#x4F4D;&#x7F6E;&#x3001;&#x7F29;&#x653E;&#x3001;&#x7EC4;&#x4EF6;&#x7B49;&#x7B49;</li>
+<li>&#x5C06;&#x7269;&#x4F53;&#x62D6;&#x653E;&#x5230;Prefabs&#x6587;&#x4EF6;&#x5939;&#x4E0B;&#x751F;&#x6210;Prefab<br>&#x5C3D;&#x7BA1;&#x8FD9;&#x662F;Unity3D&#x5B98;&#x65B9;&#x63A8;&#x8350;&#x7684;&#x4E00;&#x79CD;&#x505A;&#x6CD5;&#xFF0C;&#x53EF;&#x662F;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x73B0;&#x5728;&#x6709;&#x5927;&#x91CF;&#x7684;Prefab&#x8981;&#x5236;&#x4F5C;&#x600E;&#x4E48;&#x529E;&#x5462;&#xFF1F;&#x4E00;&#x4E2A;&#x6700;&#x76F4;&#x89C2;&#x7684;&#x4F8B;&#x5B50;&#x5C31;&#x662F;&#x6E38;&#x620F;&#x91CC;&#x7684;&#x654C;&#x4EBA;&#x3002;&#x5728;&#x4E00;&#x4E2A;&#x4E2D;&#x7B49;&#x89C4;&#x6A21;&#x7684;&#x6E38;&#x620F;&#x4E2D;&#xFF0C;&#x654C;&#x4EBA;&#x7684;&#x79CD;&#x7C7B;&#x901A;&#x5E38;&#x5F88;&#x591A;&#xFF0C;&#x800C;&#x4E14;&#x6BCF;&#x4E00;&#x4E2A;&#x654C;&#x4EBA;&#x7684;&#x884C;&#x4E3A;&#x53EF;&#x80FD;&#x90FD;&#x4E0D;&#x76F8;&#x540C;&#x3002;&#x7136;&#x540E;&#x4ECE;&#x5B8F;&#x89C2;&#x7684;&#x89D2;&#x5EA6;&#x6765;&#x770B;&#xFF0C;&#x654C;&#x4EBA;&#x7684;&#x5927;&#x90E8;&#x5206;&#x7279;&#x5F81;&#x90FD;&#x662F;&#x76F8;&#x540C;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x8003;&#x8651;&#x4F7F;&#x7528;&#x7A0B;&#x5E8F;&#x52A8;&#x6001;&#x751F;&#x6210;Prefab&#xFF0C;&#x8FD9;&#x91CC;&#x5047;&#x5B9A;Prefab&#x4E0D;&#x9700;&#x8981;&#x9644;&#x52A0;&#x811A;&#x672C;&#xFF0C;&#x56E0;&#x4E3A;&#x5982;&#x4F55;&#x7ED9;Prefab&#x9644;&#x52A0;&#x811A;&#x672C;&#x535A;&#x4E3B;&#x8FD8;&#x6CA1;&#x6709;&#x7814;&#x7A76;&#x51FA;&#x6765;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x4EE3;&#x7801;&#xFF1A;<figure class="highlight c#"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PrefabWrap</span> : <span class="title">EditorWindow</span> {</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x9884;&#x8BBE;&#x7269;&#x4F53;&#x540D;&#x79F0;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">string</span> prefabName;</span><br><span class="line">    <span class="comment">//&#x9884;&#x8BBE;&#x7269;&#x4F53;tag</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">string</span> prefabTag;</span><br><span class="line">    <span class="comment">//&#x9884;&#x8BBE;&#x7269;&#x4F53;Layer</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span>  prefabLayer;</span><br><span class="line">    <span class="comment">//&#x5F53;&#x524D;&#x63D2;&#x4EF6;&#x7A97;&#x53E3;&#x5B9E;&#x4F8B;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> PrefabWrap instance;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x663E;&#x793A;&#x63D2;&#x4EF6;&#x7A97;&#x53E3;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">&quot;Tools/PrefabWrapTool&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">PrefabWrapTool</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x83B7;&#x53D6;&#x5F53;&#x524D;&#x7A97;&#x53E3;&#x5B9E;&#x4F8B;</span></span><br><span class="line">        instance=EditorWindow.GetWindow&lt;PrefabWrap&gt;();</span><br><span class="line">        <span class="comment">//&#x663E;&#x793A;&#x7A97;&#x53E3;</span></span><br><span class="line">        instance.Show();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5728;OnGUI&#x65B9;&#x6CD5;&#x4E2D;&#x5B9E;&#x73B0;&#x754C;&#x9762;&#x5B9A;&#x5236;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnGUI</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x7ED8;&#x5236;&#x4E00;&#x4E2A;&#x6587;&#x672C;&#x6846;</span></span><br><span class="line">        prefabName=EditorGUILayout.TextField(<span class="string">&quot;&#x9884;&#x8BBE;&#x7269;&#x4F53;&#x540D;&#x79F0;:&quot;</span>,prefabName);</span><br><span class="line">        <span class="comment">//&#x7ED8;&#x5236;&#x9884;&#x8BBE;&#x7269;&#x4F53;&#x6807;&#x7B7E;&#x9009;&#x62E9;&#x6846;</span></span><br><span class="line">        prefabTag=EditorGUILayout.TagField(<span class="string">&quot;&#x9884;&#x8BBE;&#x7269;&#x4F53;tag:&quot;</span>,prefabTag);</span><br><span class="line">        <span class="comment">//&#x7ED8;&#x5236;&#x9884;&#x8BBE;&#x7269;&#x4F53;&#x5C42;&#x7EA7;&#x9009;&#x62E9;&#x6846;</span></span><br><span class="line">        prefabLayer=EditorGUILayout.LayerField(<span class="string">&quot;&#x9884;&#x8BBE;&#x7269;&#x4F53;Layer:&quot;</span>,prefabLayer);</span><br><span class="line">        <span class="comment">//&#x7ED8;&#x5236;&#x4E00;&#x4E2A;&#x6309;&#x94AE;</span></span><br><span class="line">        <span class="keyword">if</span>(GUILayout.Button(<span class="string">&quot;&#x751F;&#x6210;&#x9884;&#x8BBE;&#x7269;&#x4F53;&quot;</span>,GUILayout.Height(<span class="number">20</span>)))</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">if</span>(prefabName!=<span class="keyword">string</span>.Empty)</span><br><span class="line">            {</span><br><span class="line">                CreatePrefab(prefabName);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x6279;&#x91CF;&#x521B;&#x5EFA;Prefab</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreatePrefab</span>(<span class="params"><span class="keyword">string</span> name</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x83B7;&#x53D6;&#x6240;&#x6709;&#x88AB;&#x9009;&#x4E2D;&#x7684;&#x7269;&#x4F53;</span></span><br><span class="line">        Object[] selection=(Object[])Selection.objects;</span><br><span class="line">        <span class="comment">//&#x5408;&#x6CD5;&#x6027;&#x5904;&#x7406;</span></span><br><span class="line">        <span class="keyword">if</span>(selection.Length==<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="comment">//&#x6279;&#x91CF;&#x5904;&#x7406;</span></span><br><span class="line">        <span class="keyword">foreach</span>(Object obj <span class="keyword">in</span> selection)</span><br><span class="line">        {</span><br><span class="line">            <span class="comment">//&#x751F;&#x6210;&#x9884;&#x8BBE;</span></span><br><span class="line">            GameObject prefab=(GameObject)PrefabUtility.CreatePrefab(<span class="string">&quot;Assets/Prefabs/&quot;</span>+name+<span class="string">&quot;.prefab&quot;</span>,(GameObject)obj);</span><br><span class="line">            <span class="comment">//&#x8BBE;&#x7F6E;tag&#x548C;Layer</span></span><br><span class="line">            prefab.tag=prefabTag;</span><br><span class="line">            prefab.layer=prefabLayer;</span><br><span class="line">            <span class="comment">//&#x5BFC;&#x5165;&#x9879;&#x76EE;</span></span><br><span class="line">            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(prefab));</span><br><span class="line">        }</span><br><span class="line">        <span class="comment">//&#x5237;&#x65B0;&#x672C;&#x5730;&#x8D44;&#x6E90;</span></span><br><span class="line">        AssetDatabase.Refresh();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x5F53;&#x754C;&#x9762;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x65F6;&#x91CD;&#x7ED8;</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnInspectorUpdate</span>(<span class="params"></span>) </span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        Repaint();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<p>&#x2003;&#x2003;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x8BA9;&#x8FD9;&#x4E2A;&#x811A;&#x672C;&#x7EE7;&#x627F;&#x81EA;EditorWindow&#xFF0C;&#x8FD9;&#x6837;&#x5B83;&#x5C06;&#x5728;Unity3D&#x4E2D;&#x663E;&#x793A;&#x4E00;&#x4E2A;&#x7A97;&#x53E3;&#x3002;&#x5728;OnGUI()&#x65B9;&#x6CD5;&#x4E2D;&#x6211;&#x4EEC;&#x5B9A;&#x4E49;&#x4E86;&#x7A97;&#x53E3;&#x9700;&#x8981;&#x7ED8;&#x5236;&#x7684;&#x5185;&#x5BB9;&#x4E3A;&#x4E00;&#x4E2A;&#x6587;&#x672C;&#x6846;&#x3001;&#x4E24;&#x4E2A;&#x9009;&#x62E9;&#x6846;&#x548C;&#x4E00;&#x4E2A;&#x6309;&#x94AE;&#xFF0C;&#x5F53;&#x5355;&#x51FB;&#x6309;&#x94AE;&#x540E;&#x4F1A;&#x6267;&#x884C;CreatePrefab()&#x65B9;&#x6CD5;&#x3002;&#x5F53;&#x754C;&#x9762;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x9700;&#x8981;&#x5BF9;&#x7A97;&#x53E3;&#x8FDB;&#x884C;&#x91CD;&#x7ED8;&#x3002;&#x6700;&#x7EC8;&#x7684;&#x7A0B;&#x5E8F;&#x6F14;&#x793A;&#x6548;&#x679C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fyzcvrvdgej20kx0ejaak.jpg" alt="&#x52A8;&#x6001;&#x751F;&#x6210;Prefab&#x6548;&#x679C;&#x6F14;&#x793A;" title>
+                </div>
+                <div class="image-caption">&#x52A8;&#x6001;&#x751F;&#x6210;Prefab&#x6548;&#x679C;&#x6F14;&#x793A;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x5F53;&#x6211;&#x4EEC;&#x5728;&#x573A;&#x666F;&#x4E2D;&#x9009;&#x62E9;&#x597D;&#x7269;&#x4F53;&#x540E;&#xFF0C;&#x53EA;&#x8981;&#x586B;&#x597D;&#x9884;&#x8BBE;&#x7269;&#x4F53;&#x7684;&#x540D;&#x79F0;&#x3001;tag&#x3001;Layer&#x5C31;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x751F;&#x6210;Prefab&#x4E86;&#xFF0C;&#x4E0D;&#x8FC7;&#x8FD9;&#x91CC;&#x6709;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x56E0;&#x4E3A;&#x751F;&#x6210;Prefab&#x5FC5;&#x987B;&#x8981;&#x4F20;&#x5165;&#x4E00;&#x4E2A;GameObject&#xFF0C;&#x56E0;&#x6B64;&#x5982;&#x679C;&#x76F4;&#x63A5;&#x9009;&#x62E9;&#x9879;&#x76EE;&#x8D44;&#x6E90;&#x6587;&#x4EF6;&#x5939;&#x91CC;&#x7684;&#x5185;&#x5BB9;&#x53EF;&#x80FD;&#x4F1A;&#x62A5;&#x9519;&#xFF0C;&#x56E0;&#x4E3A;&#x4F60;&#x9009;&#x62E9;&#x7684;&#x4E0D;&#x662F;&#x4E00;&#x4E2A;GameObject&#x3002;&#x535A;&#x4E3B;&#x505A;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x529F;&#x80FD;&#x7684;&#x521D;&#x8877;&#x539F;&#x672C;&#x662F;&#x60F3;&#x76F4;&#x63A5;&#x4E3A;&#x6BCF;&#x4E00;&#x4E2A;&#x7CBE;&#x7075;&#x56FE;&#x7247;&#x751F;&#x6210;&#x9884;&#x8BBE;&#x6587;&#x4EF6;&#xFF0C;&#x73B0;&#x5728;&#x770B;&#x6765;&#x9700;&#x8981;&#x5BFB;&#x627E;&#x5176;&#x5B83;&#x7684;&#x65B9;&#x6CD5;&#x4E86;&#xFF0C;&#x4E0D;&#x8FC7;&#x57FA;&#x672C;&#x601D;&#x8DEF;&#x662F;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7A7A;&#x7269;&#x4F53;&#xFF0C;&#x7136;&#x540E;&#x5411;&#x8FD9;&#x4E2A;&#x7A7A;&#x7269;&#x4F53;&#x4E2D;&#x589E;&#x52A0;&#x5B50;&#x7269;&#x4F53;&#xFF0C;&#x5982;&#x679C;&#x5927;&#x5BB6;&#x5BF9;&#x6B64;&#x6709;&#x5174;&#x8DA3;&#x7684;&#x8BDD;&#xFF0C;&#x53EF;&#x4EE5;&#x7ED3;&#x5408;&#x672C;&#x6587;&#x7684;&#x65B9;&#x6CD5;&#x81EA;&#x884C;&#x53BB;&#x5C1D;&#x8BD5;&#x3002;</p>
+<h2 id="&#x6848;&#x4F8B;3-&#x5FEB;&#x901F;&#x4E3A;Sprite&#x8BBE;&#x7F6E;&#x56FE;&#x96C6;tag"><a href="#&#x6848;&#x4F8B;3-&#x5FEB;&#x901F;&#x4E3A;Sprite&#x8BBE;&#x7F6E;&#x56FE;&#x96C6;tag" class="headerlink" title="&#x6848;&#x4F8B;3 &#x5FEB;&#x901F;&#x4E3A;Sprite&#x8BBE;&#x7F6E;&#x56FE;&#x96C6;tag"></a>&#x6848;&#x4F8B;3 &#x5FEB;&#x901F;&#x4E3A;Sprite&#x8BBE;&#x7F6E;&#x56FE;&#x96C6;tag</h2><p>&#x2003;&#x2003;&#x63A5;&#x4E0B;&#x6765;&#x8FD9;&#x4E2A;&#x6848;&#x4F8B;&#x5462;&#xFF0C;&#x540C;&#x6837;&#x662F;&#x548C;&#x8D34;&#x56FE;&#x6709;&#x5173;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5728;&#x6CA1;&#x6709;UGUI&#x4EE5;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;NGUI&#x7684;&#x65F6;&#x5019;&#x8981;&#x505A;&#x7684;&#x7B2C;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#x5C31;&#x662F;&#x628A;&#x8981;&#x7528;&#x5230;&#x7684;&#x8D34;&#x56FE;&#x6253;&#x6210;&#x56FE;&#x96C6;&#xFF0C;&#x73B0;&#x5728;&#x5728;Unity3D&#x91CC;&#x9762;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8D34;&#x56FE;&#x7684;Packing Tag&#x6765;&#x5B9E;&#x73B0;&#x56FE;&#x96C6;&#x6253;&#x5305;&#xFF0C;&#x5C31;&#x662F;&#x8BF4;&#x5177;&#x6709;&#x76F8;&#x540C;Packing Tag&#x7684;&#x7269;&#x4F53;&#x4F1A;&#x88AB;&#x6253;&#x5230;&#x4E00;&#x5F20;&#x5927;&#x56FE;&#x4E0A;&#xFF0C;&#x8FD9;&#x6837;&#x505A;&#x7684;&#x597D;&#x5904;&#x662F;&#x8282;&#x7701;&#x8D44;&#x6E90;&#x3002;&#x5982;&#x679C;&#x5927;&#x5BB6;&#x5BF9;&#x8FD9;&#x90E8;&#x5206;&#x5185;&#x5BB9;&#x4E0D;&#x592A;&#x719F;&#x6089;&#xFF0C;&#x53EF;&#x4EE5;&#x4E86;&#x89E3;&#x4E0B;&#x6211;&#x7684;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;<a href></a>&#x3002;&#x65E2;&#x7136;&#x660E;&#x767D;&#x4E86;&#x539F;&#x7406;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x4E3A;&#x4EC0;&#x4E48;&#x4E0D;&#x6765;&#x5C1D;&#x8BD5;&#x7740;&#x901A;&#x8FC7;&#x7A0B;&#x5E8F;&#x5C06;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x4E00;&#x6B21;&#x5B8C;&#x6210;&#x5462;&#xFF1F;&#x597D;&#x4E86;&#xFF0C;&#x76F4;&#x63A5;&#x7ED9;&#x51FA;&#x4EE3;&#x7801;&#xFF1A;<br></p><figure class="highlight c#"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PackageTools</span> : <span class="title">EditorWindow</span> </span><br><span class="line">{</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x56FE;&#x96C6;&#x6807;&#x7B7E;    </span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">string</span> tagName;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5F53;&#x524D;&#x5B9E;&#x4F8B;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> PackageTools instance;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5728;OnGUI&#x65B9;&#x6CD5;&#x4E2D;&#x5B9E;&#x73B0;&#x754C;&#x9762;&#x5B9A;&#x5236;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnGUI</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x7ED8;&#x5236;&#x4E00;&#x4E2A;&#x6587;&#x672C;&#x6846;</span></span><br><span class="line">        tagName=EditorGUILayout.TextField(<span class="string">&quot;PackageTagName:&quot;</span>,tagName);</span><br><span class="line">        <span class="comment">//&#x7ED8;&#x5236;&#x4E00;&#x4E2A;&#x6309;&#x94AE;</span></span><br><span class="line">        <span class="keyword">if</span>(GUILayout.Button(<span class="string">&quot;Package&quot;</span>,GUILayout.Height(<span class="number">20</span>)))</span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">if</span>(tagName!=<span class="keyword">string</span>.Empty)</span><br><span class="line">            {</span><br><span class="line">                PackgeTextureWidthTag(tagName);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x663E;&#x793A;&#x63D2;&#x4EF6;&#x7A97;&#x53E3;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">&quot;Tools/ShowPackageTools&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowPackageTools</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x83B7;&#x53D6;&#x5F53;&#x524D;&#x7A97;&#x53E3;&#x5B9E;&#x4F8B;</span></span><br><span class="line">        instance=EditorWindow.GetWindow&lt;PackageTools&gt;();</span><br><span class="line">        <span class="comment">//&#x663E;&#x793A;&#x7A97;&#x53E3;</span></span><br><span class="line">        instance.Show();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> &#x5FEB;&#x901F;&#x4E3A;&#x56FE;&#x7247;&#x751F;&#x6210;&#x56FE;&#x96C6;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">PackgeTextureWidthTag</span>(<span class="params"><span class="keyword">string</span> tagName</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="comment">//&#x83B7;&#x53D6;&#x6240;&#x6709;&#x88AB;&#x9009;&#x4E2D;&#x7684;&#x7269;&#x4F53;</span></span><br><span class="line">        Object[] selection=(Object[])Selection.objects;</span><br><span class="line">        <span class="comment">//&#x5408;&#x6CD5;&#x6027;&#x5904;&#x7406;</span></span><br><span class="line">        <span class="keyword">if</span>(selection.Length==<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="comment">//&#x6279;&#x91CF;&#x5904;&#x7406;&#x8D34;&#x56FE;</span></span><br><span class="line">        <span class="keyword">foreach</span>(Object obj <span class="keyword">in</span> selection)</span><br><span class="line">        {</span><br><span class="line">            <span class="comment">//&#x53D6;&#x5F97;&#x6BCF;&#x4E00;&#x5F20;&#x8D34;&#x56FE;</span></span><br><span class="line">            Texture texture=(Texture)obj;</span><br><span class="line">            <span class="comment">//&#x83B7;&#x5F97;&#x8D34;&#x56FE;&#x8DEF;&#x5F84;</span></span><br><span class="line">            <span class="keyword">string</span> localpath=AssetDatabase.GetAssetPath(texture);</span><br><span class="line">            <span class="comment">//&#x8D34;&#x56FE;&#x5BFC;&#x5165;</span></span><br><span class="line">            TextureImporter importer=(TextureImporter)AssetImporter.GetAtPath(localpath);</span><br><span class="line">            <span class="comment">//&#x5224;&#x65AD;&#x8D34;&#x56FE;&#x7C7B;&#x578B;,&#x53EA;&#x6709;&#x8D34;&#x56FE;&#x7C7B;&#x578B;&#x4E3A;Sprite&#x4E14;&#x7CBE;&#x7075;&#x7C7B;&#x578B;&#x4E3A;SpriteMode</span></span><br><span class="line">            <span class="keyword">if</span>(importer.textureType==TextureImporterType.Sprite)</span><br><span class="line">            {</span><br><span class="line">                importer.spritePackingTag=tagName;</span><br><span class="line">                <span class="comment">//&#x5BFC;&#x5165;&#x9879;&#x76EE;&#x8D44;&#x6E90;</span></span><br><span class="line">                AssetDatabase.ImportAsset(localpath);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        <span class="comment">//&#x5237;&#x65B0;&#x672C;&#x5730;&#x8D44;&#x6E90;</span></span><br><span class="line">        AssetDatabase.Refresh();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&#x5F53;&#x754C;&#x9762;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x65F6;&#x91CD;&#x7ED8;</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnInspectorUpdate</span>(<span class="params"></span>) </span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        Repaint();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x2003;&#x2003;&#x56E0;&#x4E3A;&#x6253;&#x5305;&#x56FE;&#x96C6;&#x53EA;&#x9700;&#x8981;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x6253;&#x5305;&#x5DE5;&#x5177;&#x53EA;&#x9700;&#x8981;&#x4E00;&#x4E2A;&#x6587;&#x672C;&#x6846;&#x548C;&#x4E00;&#x4E2A;&#x6309;&#x94AE;&#xFF0C;&#x6574;&#x4E2A;&#x8FC7;&#x7A0B;&#x548C;&#x6848;&#x4F8B;2&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x4E0D;&#x505A;&#x5206;&#x6790;&#x4E86;&#x3002;&#x8FD9;&#x4E2A;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x7684;&#x6F14;&#x793A;&#x6548;&#x679C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fyzcue77dpj20ky0e5weu.jpg" alt="&#x56FE;&#x96C6;&#x6253;&#x5305;&#x6548;&#x679C;&#x6F14;&#x793A;" title>
+                </div>
+                <div class="image-caption">&#x56FE;&#x96C6;&#x6253;&#x5305;&#x6548;&#x679C;&#x6F14;&#x793A;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x4E86;&#xFF0C;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x57FA;&#x672C;&#x4E0A;&#x6DB5;&#x76D6;&#x4E86;&#x4E3A;Unity3D&#x5F00;&#x53D1;&#x6269;&#x5C55;&#x7A0B;&#x5E8F;&#x7684;&#x57FA;&#x672C;&#x5185;&#x5BB9;&#xFF0C;&#x6211;&#x4EEC;&#x63A5;&#x4E0B;&#x6765;&#x8981;&#x505A;&#x7684;&#x5C31;&#x662F;&#x79EF;&#x6781;&#x5730;&#x5728;&#x5E73;&#x65F6;&#x751F;&#x6D3B;&#x3001;&#x5DE5;&#x4F5C;&#x548C;&#x5B66;&#x4E60;&#x4E2D;&#x5BFB;&#x627E;&#x95EE;&#x9898;&#x548C;&#x89E3;&#x51B3;&#x95EE;&#x9898;&#xFF0C;&#x201D;&#x6388;&#x4EBA;&#x4EE5;&#x9C7C;&#x4E0D;&#x5982;&#x6388;&#x4EBA;&#x4EE5;&#x6E14;&#x201D;&#xFF0C;&#x5411;&#x4ED6;&#x4EBA;&#x4F20;&#x6388;&#x77E5;&#x8BC6;&#x548C;&#x6280;&#x80FD;&#xFF0C;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x672C;&#x8EAB;&#x5BF9;&#x535A;&#x4E3B;&#x800C;&#x8A00;&#x5C31;&#x662F;&#x662F;&#x5FEB;&#x4E50;&#x7684;&#xFF0C;&#x535A;&#x4E3B;&#x5E0C;&#x671B;&#x4ECA;&#x5929;&#x7684;&#x5185;&#x5BB9;&#x5927;&#x5BB6;&#x80FD;&#x591F;&#x559C;&#x6B22;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x8C22;&#x8C22;&#x5927;&#x5BB6;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li><li><a href="https://qinyuanpei.github.io/posts/1156673678/">EasyAR尝鲜系列教程之自定义Marker的实现</a></li><li><a href="https://qinyuanpei.github.io/posts/4088452183/">Unity3D游戏开发之MMD For Unity插件研究</a></li><li><a href="https://blog.yuanpei.me/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/70687890/" rel="external">Unity3D游戏开发之编辑器扩展程序开发实例</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/70687890/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/70687890/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Unity3D/">Unity3D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/扩展/">扩展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/70687890/&title=《Unity3D游戏开发之编辑器扩展程序开发实例》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/70687890/&title=《Unity3D游戏开发之编辑器扩展程序开发实例》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，欢迎关注我的博客，我的博客地址是http://www.qinyuanpei.com。今天我们来说说如何在Unity..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/70687890/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Unity3D游戏开发之编辑器扩展程序开发实例》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/70687890/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/70687890/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/2799263488/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Unity3D游戏开发之反编译AssetBundle提取游戏资源</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/3356910090/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">从&quot;复活&quot;和&quot;暂停/恢复&quot;谈游戏数据配置管理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/70687890/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/70687890/&title=《Unity3D游戏开发之编辑器扩展程序开发实例》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/70687890/&title=《Unity3D游戏开发之编辑器扩展程序开发实例》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，欢迎关注我的博客，我的博客地址是http://www.qinyuanpei.com。今天我们来说说如何在Unity..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/70687890/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Unity3D游戏开发之编辑器扩展程序开发实例》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/70687890/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/70687890/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/70687890/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

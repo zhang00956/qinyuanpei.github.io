@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        从React专利事件看开源软件许可 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;#x2003;&amp;#x2003;&amp;#x5404;&amp;#x4F4D;&amp;#x670B;&amp;#x53CB;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#x">
+<meta name="keywords" content="前端,React,开源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从React专利事件看开源软件许可">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/1166840790/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;#x2003;&amp;#x2003;&amp;#x5404;&amp;#x4F4D;&amp;#x670B;&amp;#x53CB;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#x">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://image.beekka.com/blog/201105/free_software_licenses.png">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从React专利事件看开源软件许可">
+<meta name="twitter:description" content="&amp;#x2003;&amp;#x2003;&amp;#x5404;&amp;#x4F4D;&amp;#x670B;&amp;#x53CB;&amp;#xFF0C;&amp;#x6211;&amp;#x662F;Payne&amp;#xFF0C;&amp;#x5927;&amp;#x5BB6;&amp;#x597D;&amp;#xFF0C;&amp;#x6B22;&amp;#x8FCE;&amp;#x5927;&amp;#x5BB6;&amp;#x5173;&amp;#x6CE8;&amp;#x6211;&amp;#x7684;&amp;#x535A;&amp;#x5BA2;&amp;#x">
+<meta name="twitter:image" content="http://image.beekka.com/blog/201105/free_software_licenses.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">从React专利事件看开源软件许可</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">从React专利事件看开源软件许可</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-09-20T23:06:45.000Z" itemprop="datePublished" class="page-time">
+  2017-09-20
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/生活感悟/">生活感悟</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#事件始末"><span class="post-toc-number">1.</span> <span class="post-toc-text">事件始末</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#主流软件许可"><span class="post-toc-number">2.</span> <span class="post-toc-text">主流软件许可</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#何去何从"><span class="post-toc-number">3.</span> <span class="post-toc-text">何去何从</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">4.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-从React专利事件看开源软件许可" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">从React专利事件看开源软件许可</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-09-20 23:06:45" datetime="2017-09-20T23:06:45.000Z" itemprop="datePublished">2017-09-20</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/生活感悟/">生活感悟</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        27 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#xFF0C;&#x6211;&#x662F;Payne&#xFF0C;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="https://qinyuanpei.github.io">https://qinyuanpei.github.io</a>&#x3002;&#x6700;&#x8FD1;&#x524D;&#x7AEF;&#x6280;&#x672F;&#x5708;&#x56E0;&#x4E3A;React&#x4E13;&#x5229;&#x4E8B;&#x4EF6;&#x518D;&#x6B21;&#x88AB;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#xFF0C;&#x5370;&#x8C61;&#x4E2D;Angular&#x548C;Vue&#x7684;&#x7EB7;&#x4E89;&#x521A;&#x521A;&#x8FC7;&#x53BB;&#x4E0D;&#x4E45;&#xFF0C;&#x679C;&#x7136;&#x524D;&#x7AEF;&#x6280;&#x672F;&#x5708;&#x5BF9;&#x201D;&#x9020;&#x8F6E;&#x5B50;&#x201D;&#x548C;&#x201D;&#x641E;&#x4E8B;&#x60C5;&#x201D;&#x6709;&#x7740;&#x8FD1;&#x4E4E;&#x6267;&#x8457;&#x7684;&#x8FFD;&#x6C42;&#x3002;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x5728;&#x77E5;&#x4E4E;&#x5403;&#x74DC;&#x7684;&#x4F2A;&#x524D;&#x7AEF;&#x5DE5;&#x7A0B;&#x5E08;&#xFF0C;&#x6211;&#x5BF9;&#x8FD9;&#x51D1;&#x70ED;&#x95F9;&#x8FD9;&#x79CD;&#x4E8B;&#x60C5;&#x4ECE;&#x6765;&#x90FD;&#x662F;&#x662F;&#x9887;&#x4E3A;&#x559C;&#x6B22;&#x7684;&#x3002;&#x5982;&#x679C;&#x8BF4;Angular&#x548C;Vue&#x51B2;&#x7A81;&#x4E3B;&#x8981;&#x6765;&#x81EA;&#x5927;&#x6F20;&#x7A77;&#x79CB;&#x548C;&#x5C24;&#x5C0F;&#x5C24;&#x7684;&#x4E2A;&#x4EBA;&#x6218;&#x573A;&#xFF0C;&#x90A3;&#x4E48;&#x8FD9;&#x6B21;React&#x4E13;&#x5229;&#x4E8B;&#x4EF6;&#x5219;&#x662F;&#x5546;&#x4E1A;&#x516C;&#x53F8;&#x4E4B;&#x95F4;&#x5BF9;&#x793E;&#x533A;&#x4E3B;&#x5BFC;&#x529B;&#x91CF;&#x7684;&#x4E00;&#x6B21;&#x4E89;&#x593A;&#x548C;&#x6297;&#x8861;&#x3002;&#x5F00;&#x6E90;&#x662F;&#x4E00;&#x79CD;&#x8FD1;&#x4F3C;&#x4E4C;&#x6258;&#x90A6;&#x822C;&#x7684;&#x7406;&#x60F3;&#x793E;&#x4F1A;&#xFF0C;&#x5B83;&#x5021;&#x5BFC;&#x7684;&#x201D;&#x4EBA;&#x4EBA;&#x4E3A;&#x6211;&#xFF0C;&#x6211;&#x4E3A;&#x4EBA;&#x4EBA;&#x201D;&#x8FD9;&#x79CD;&#x8FD1;&#x4E4E;&#x5927;&#x540C;&#x793E;&#x4F1A;&#x7684;&#x89C2;&#x5FF5;&#xFF0C;&#x5728;&#x9762;&#x4E34;&#x5546;&#x4E1A;&#x5316;&#x6D6A;&#x6F6E;&#x6D17;&#x793C;&#x7684;&#x65F6;&#x5019;&#x96BE;&#x4F1A;&#x548C;&#x5546;&#x4E1A;&#x5229;&#x76CA;&#x53D1;&#x751F;&#x51B2;&#x7A81;&#xFF0C;&#x8B6C;&#x5982;Google&#x56E0;&#x4E3A;&#x4F7F;&#x7528;Java&#x800C;&#x548C;&#x7532;&#x9AA8;&#x6587;&#x7EA0;&#x7EB7;&#x4E0D;&#x65AD;&#xFF0C;&#x6700;&#x7EC8;&#x4E0D;&#x5F97;&#x4E0D;&#x9009;&#x62E9;Kotlin&#x4F5C;&#x4E3A;Android&#x5F00;&#x53D1;&#x7684;&#x4E3B;&#x529B;&#x8BED;&#x8A00;&#x3002;&#x6240;&#x4EE5;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x6211;&#x60F3;&#x548C;&#x5927;&#x5BB6;&#x901A;&#x8FC7;React&#x4E13;&#x5229;&#x4E8B;&#x4EF6;&#x6765;&#x804A;&#x804A;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#xFF0C;&#x4EE5;&#x53CA;&#x6211;&#x4EEC;&#x5982;&#x4F55;&#x5728;&#x5546;&#x4E1A;&#x5316;&#x548C;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x95F4;&#x627E;&#x5230;&#x4E00;&#x4E2A;&#x5E73;&#x8861;&#x70B9;&#x3002;</p>
+<h1 id="&#x4E8B;&#x4EF6;&#x59CB;&#x672B;"><a href="#&#x4E8B;&#x4EF6;&#x59CB;&#x672B;" class="headerlink" title="&#x4E8B;&#x4EF6;&#x59CB;&#x672B;"></a>&#x4E8B;&#x4EF6;&#x59CB;&#x672B;</h1><p>&#x2003;&#x2003;&#x5176;&#x5B9E;React&#x4E13;&#x5229;&#x4E8B;&#x4EF6;&#x7531;&#x6765;&#x5DF2;&#x4E45;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x662F;&#x5728;&#x77E5;&#x4E4E;&#x4E0A;&#x770B;&#x5230;<a href>&#x201C;&#x767E;&#x5EA6;&#x8981;&#x6C42;&#x5185;&#x90E8;&#x5168;&#x9762;&#x505C;&#x6B62;&#x4F7F;&#x7528;React/React Native&#x201D;</a>&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x662F;&#x5B8C;&#x5168;&#x6CA1;&#x6709;&#x610F;&#x8BC6;&#x5230;&#x4E8B;&#x6001;&#x5C45;&#x7136;&#x53D1;&#x5C55;&#x5230;&#x5982;&#x6B64;&#x4E25;&#x91CD;&#x7684;&#x3002;&#x6BCF;&#x6B21;&#x524D;&#x7AEF;&#x6280;&#x672F;&#x5708;&#x201D;&#x641E;&#x4E8B;&#x60C5;&#x201D;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x57FA;&#x672C;&#x4E0A;&#x90FD;&#x4F1A;&#x5728;&#x6211;&#x7684;&#x77E5;&#x4E4E;&#x9996;&#x9875;&#x5237;&#x5C4F;&#xFF0C;&#x53EF;&#x662F;&#x5BF9;&#x6211;&#x8FD9;&#x6837;&#x7684;&#x4F2A;&#x524D;&#x7AEF;&#x5DE5;&#x7A0B;&#x5E08;&#x800C;&#x8A00;&#xFF0C;&#x6211;&#x4EC5;&#x4EC5;&#x662F;&#x5173;&#x6CE8;&#x4E86;&#x201D;Web&#x5F00;&#x53D1;&#x201D;&#x8FD9;&#x4E2A;&#x8BDD;&#x9898;&#x800C;&#x5DF2;&#x3002;&#x5FFD;&#x7565;&#x77E5;&#x4E4E;&#x9996;&#x9875;&#x63A8;&#x8350;&#x7B97;&#x6CD5;&#x7684;&#x7F3A;&#x9677;&#xFF0C;&#x8FD9;&#x7684;&#x786E;&#x52A8;&#x4FA7;&#x9762;&#x8BF4;&#x660E;&#x4E86;&#x76EE;&#x524D;&#x524D;&#x7AEF;&#x9886;&#x57DF;&#x975E;&#x5E38;&#x70ED;&#x95E8;&#x7684;&#x4E8B;&#x5B9E;&#xFF0C;&#x53EF;&#x5B83;&#x4E0D;&#x80FD;&#x8BF4;&#x660E;&#x67D0;&#x4E9B;&#x524D;&#x7AEF;&#x5DE5;&#x7A0B;&#x5E08;&#x7684;&#x6280;&#x672F;&#x6C34;&#x5E73;&#x6709;&#x591A;&#x9AD8;&#xFF0C;&#x5728;&#x5F15;&#x5165;&#x524D;&#x540E;&#x7AEF;&#x5206;&#x79BB;&#x548C;&#x524D;&#x7AEF;&#x6784;&#x5EFA;&#x5DE5;&#x5177;&#x4EE5;&#x540E;&#xFF0C;&#x524D;&#x7AEF;&#x5F00;&#x53D1;&#x7684;&#x57FA;&#x7840;&#x8BBE;&#x65BD;&#x6E10;&#x6E10;&#x5730;&#x4E30;&#x5BCC;&#x8D77;&#x6765;&#x4E86;&#xFF0C;&#x53EF;&#x662F;&#x524D;&#x7AEF;&#x5F00;&#x53D1;&#x76EE;&#x524D;&#x7ECF;&#x5386;&#x7740;&#x7684;&#x4E00;&#x5207;&#xFF0C;&#x65E0;&#x4E00;&#x4E0D;&#x5728;&#x540E;&#x7AEF;&#x5F00;&#x53D1;&#x4E2D;&#x6D89;&#x53CA;&#x5230;&#xFF0C;&#x6211;&#x6CA1;&#x6709;&#x60F3;&#x8981;&#x6210;&#x4E3A;&#x5168;&#x6808;&#x5DE5;&#x7A0B;&#x5E08;&#x7684;&#x91CE;&#x5FC3;&#xFF0C;&#x5728;&#x8BA8;&#x8BBA;&#x8FD9;&#x4E2A;&#x4E8B;&#x4EF6;&#x4EE5;&#x524D;&#x6211;&#x8BA4;&#x4E3A;&#x6709;&#x5FC5;&#x8981;&#x4E86;&#x89E3;&#x4E0B;&#x6574;&#x4E2A;&#x4E8B;&#x4EF6;&#x7684;&#x59CB;&#x672B;&#xFF1A;</p>
+<ul>
+<li>2016&#x5E74;7&#x6708;&#xFF0C;Facebook&#x5728;React.js&#x7684;&#x5F00;&#x6E90;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x4E2D;&#x6DFB;&#x52A0;&#x7684;&#x9644;&#x52A0;&#x4E13;&#x5229;&#x6761;&#x6B3E;&#x9996;&#x6B21;&#x5728;&#x793E;&#x533A;&#x4E2D;&#x5F15;&#x53D1;&#x5E7F;&#x6CDB;&#x8BA8;&#x8BBA;&#x3002;</li>
+<li>2016&#x5E74;11&#x6708;&#xFF0C;Facebook&#x53D1;&#x5E03;&#x5B98;&#x65B9;&#x95EE;&#x7B54;&#xFF0C;&#x5BF9;&#x9644;&#x52A0;&#x4E13;&#x5229;&#x6761;&#x6B3E;&#x8FDB;&#x884C;&#x4E86;&#x6F84;&#x6E05;&#xFF0C;&#x5F3A;&#x5316;&#x4E86;&#x5176;BSD&#x8BB8;&#x53EF;&#x8BC1; + &#x4E13;&#x5229;&#x8BB8;&#x53EF;&#x8BC1;&#x7684;&#x6982;&#x5FF5;&#x3002;</li>
+<li>2017&#x5E74;4&#x6708;&#xFF0C;Apache Cassandra&#x9879;&#x76EE;&#x6B63;&#x5728;&#x8003;&#x8651;&#x662F;&#x54DF;&#x8FC7;Facebook&#x5F00;&#x6E90;&#x7684;&#x6570;&#x636E;&#x5E93;RocksDB&#x4F5C;&#x4E3A;&#x5B58;&#x50A8;&#x5F15;&#x64CE;&#xFF0C;&#x53EF;&#x662F;&#x8003;&#x8651;&#x5230;&#x4E13;&#x5229;&#x6388;&#x6743;&#x7684;&#x95EE;&#x9898;&#xFF0C;Jeff Jirsa&#x5411;Apache&#x6CD5;&#x5F8B;&#x793E;&#x533A;&#x5BFB;&#x6C42;&#x5E2E;&#x52A9;&#x3002;</li>
+<li>2017&#x5E74;6&#x6708;&#xFF0C;Apache &#x6CD5;&#x5F8B;&#x793E;&#x533A;&#x5F00;&#x59CB;&#x8BA8;&#x8BBA;Facebook Patents License&#x534F;&#x8BAE;&#x4E13;&#x5229;&#x6388;&#x6743;&#x7684;&#x4E0D;&#x5BF9;&#x79F0;&#x95EE;&#x9898;&#xFF0C;&#x4E14;&#x8BE5;&#x534F;&#x8BAE;&#x4E0E;Apache Software License&#xFF0C;&#x5373;Apache 2.0&#x7B49;&#x4E0D;&#x517C;&#x5BB9;&#x3002;</li>
+<li>2017&#x5E74;7&#x6708;15&#x65E5;&#xFF0C;Apache&#x8F6F;&#x4EF6;&#x57FA;&#x91D1;&#x4F1A;&#x6B63;&#x5F0F;&#x53D1;&#x8868;&#x58F0;&#x660E;&#x79F0;&#xFF1A;Facebook BSD + Patense License&#x6B63;&#x5F0F;&#x88AB;&#x5217;&#x5165;&#x201D;Category X&#x201D;&#x5217;&#x8868;&#xFF0C;&#x56E0;&#x6B64;Apache&#x9879;&#x76EE;&#x4E2D;&#x5C06;&#x4E0D;&#x80FD;&#x542B;&#x6709;&#x6216;&#x8005;&#x4F9D;&#x8D56;&#x4EFB;&#x4F55;&#x8BE5;&#x534F;&#x8BAE;&#x7684;&#x4EE3;&#x7801;&#xFF0C;&#x800C;&#x5DF2;&#x53D1;&#x5E03;&#x7684;&#x4EE3;&#x7801;&#x5FC5;&#x987B;&#x5728;8&#x6708;31&#x65E5;&#x524D;&#x5B8C;&#x6210;&#x66FF;&#x6362;&#x3002;</li>
+<li>2007&#x5E74;8&#x6708;19&#x65E5;&#xFF0C;Facebook&#x5BF9;Facebook BSD + Patense License&#x6709;&#x4E86;&#x65B0;&#x7684;&#x89E3;&#x91CA;&#xFF0C;&#x89E3;&#x91CA;&#x6307;&#x51FA;&#xFF0C;&#x4E13;&#x5229;&#x8BB8;&#x53EF;&#x8BC1;&#x7684;&#x5B58;&#x5728;&#x662F;&#x4E3A;&#x4E86;&#x9632;&#x5FA1;&#x65E0;&#x91CF;&#x7684;&#x4E13;&#x5229;&#x8BC9;&#x8BBC;&#xFF0C;Facebook&#x589E;&#x52A0;&#x4E13;&#x5229;&#x8BB8;&#x53EF;&#x8BC1;&#x662F;&#x4E3A;&#x4E86;&#x4FDD;&#x62A4;&#x6838;&#x5FC3;&#x6280;&#x672F;&#x3002;</li>
+<li>2017&#x5E74;9&#x6708;16&#x65E5;&#xFF0C;&#x767E;&#x5EA6;&#x5185;&#x90E8;&#x5168;&#x9762;&#x7981;&#x6B62;&#x4F7F;&#x7528;React/React Native&#x7684;&#x6D88;&#x606F;&#x5728;&#x77E5;&#x4E4E;&#x4E0A;&#x5F15;&#x53D1;&#x70ED;&#x70C8;&#x8BA8;&#x8BBA;&#x3002;</li>
+<li>2017&#x5E74;9&#x6708;17&#x65E5;&#xFF0C;Wordpress&#x5B98;&#x65B9;&#x79F0;&#x56E0;&#x4E3A;React&#x4E13;&#x5229;&#x95EE;&#x9898;&#x800C;&#x505C;&#x6B62;&#x5728;&#x535A;&#x5BA2;&#x7A0B;&#x5E8F;Wordpress&#x4E2D;&#x4F7F;&#x7528;React&#x6280;&#x672F;&#x3002;</li>
+<li>2017&#x5E74;9&#x6708;23&#x65E5;&#xFF0C;Facebook&#x8FEB;&#x4E8E;&#x793E;&#x533A;&#x538B;&#x529B;&#x5BF9;&#x5916;&#x5BA3;&#x79F0;&#x5C06;&#x5728;&#x6570;&#x5468;&#x540E;&#x5C06;React&#x6388;&#x6743;&#x8BB8;&#x53EF;&#x4FEE;&#x6539;&#x4E3A;MIT&#x3002;</li>
+</ul>
+<h1 id="&#x4E3B;&#x6D41;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;"><a href="#&#x4E3B;&#x6D41;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;" class="headerlink" title="&#x4E3B;&#x6D41;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;"></a>&#x4E3B;&#x6D41;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;</h1><p>&#x2003;&#x2003;&#x5176;&#x5B9E;&#x4F5C;&#x4E3A;&#x4E00;&#x540D;&#x8F6F;&#x4EF6;&#x5DE5;&#x7A0B;&#x5E08;&#xFF0C;&#x8FD9;&#x4E9B;&#x548C;&#x6CD5;&#x5F8B;&#x606F;&#x606F;&#x76F8;&#x5173;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x539F;&#x672C;&#x662F;&#x4E0D;&#x9700;&#x8981;&#x6211;&#x4EEC;&#x53BB;&#x5173;&#x6CE8;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x5373;&#x4F7F;&#x516C;&#x53F8;&#x5728;&#x4F7F;&#x7528;&#x8FD9;&#x4E9B;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x4E2D;&#x53D1;&#x751F;&#x6CD5;&#x5F8B;&#x7EA0;&#x7EB7;&#xFF0C;&#x901A;&#x5E38;&#x90FD;&#x4F1A;&#x6709;&#x6CD5;&#x52A1;&#x4EBA;&#x5458;&#x534F;&#x52A9;&#x516C;&#x53F8;&#x53BB;&#x89E3;&#x51B3;&#x76F8;&#x5173;&#x4E8B;&#x5B9C;&#xFF0C;&#x65E0;&#x8BBA;&#x5982;&#x4F55;&#x90FD;&#x8F6E;&#x4E0D;&#x5230;&#x6211;&#x4EEC;&#x8FD9;&#x4E9B;&#x4EBA;&#x6765;&#x5173;&#x5FC3;&#x7684;&#x3002;&#x4E0D;&#x8FC7;&#x8FD9;&#x4E2A;&#x4E8B;&#x4EF6;&#x7684;&#x73B0;&#x5B9E;&#x610F;&#x4E49;&#x662F;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x505A;&#x6280;&#x672F;&#x9009;&#x578B;&#x65F6;&#xFF0C;&#x4E13;&#x5229;&#x7B49;&#x53EF;&#x80FD;&#x5F15;&#x8D77;&#x6CD5;&#x5F8B;&#x7EA0;&#x7EB7;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x4E00;&#x6837;&#x662F;&#x9700;&#x8981;&#x7EB3;&#x5165;&#x8003;&#x8651;&#x8303;&#x56F4;&#x7684;&#x3002;&#x56E0;&#x4E3A;&#x5982;&#x679C;&#x662F;&#x4E2A;&#x4EBA;&#x6027;&#x8D28;&#x6216;&#x8005;&#x7EAF;&#x73A9;&#x6027;&#x8D28;&#x7684;&#x9879;&#x76EE;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x786E;&#x65E0;&#x9700;&#x5728;&#x610F;&#x592A;&#x591A;&#x3002;&#x800C;&#x5982;&#x679C;&#x4F60;&#x662F;&#x5546;&#x4E1A;&#x6027;&#x8D28;&#x9879;&#x76EE;&#x3001;&#x6216;&#x8005;&#x662F;&#x516C;&#x53F8;&#x81EA;&#x8425;&#x9879;&#x76EE;&#xFF0C;&#x6216;&#x8005;&#x662F;&#x670D;&#x52A1;&#x4E8E;&#x7532;&#x65B9;&#xFF0C;&#x90A3;&#x4E48;&#x4F60;&#x5FC5;&#x987B;&#x8003;&#x8651;&#x4F60;&#x4F7F;&#x7528;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x7684;&#x65B9;&#x5F0F;&#x662F;&#x5426;&#x7B26;&#x5408;&#x76F8;&#x5173;&#x7684;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#x3002;&#x56FD;&#x5185;&#x56E0;&#x4E3A;&#x76D7;&#x7248;&#x8F6F;&#x4EF6;&#x76DB;&#x884C;&#x7684;&#x539F;&#x56E0;&#xFF0C;&#x5927;&#x5BB6;&#x5728;&#x5FC3;&#x5E95;&#x91CC;&#x597D;&#x50CF;&#x90FD;&#x4E0D;&#x8BA4;&#x540C;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#xFF0C;&#x4F46;&#x662F;&#x50CF;&#x5916;&#x4F01;&#x6216;&#x8005;&#x662F;&#x5BF9;&#x4FE1;&#x606F;&#x5B89;&#x5168;&#x6BD4;&#x8F83;&#x91CD;&#x89C6;&#x7684;&#x4F01;&#x4E1A;&#xFF0C;&#x901A;&#x5E38;&#x8981;&#x4E48;&#x5BF9;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;&#x6BD4;&#x8F83;&#x770B;&#x91CD;&#xFF0C;&#x8981;&#x4E48;&#x5BF9;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x4E0D;&#x592A;&#x611F;&#x5192;&#xFF0C;&#x6240;&#x4EE5;&#x50CF;&#x6700;&#x8FD1;&#x7684;WePhone&#x521B;&#x59CB;&#x4EBA;&#x81EA;&#x6740;&#x8FD9;&#x79CD;&#x4E8B;&#x4EF6;&#xFF0C;&#x90FD;&#x5728;&#x544A;&#x8BC9;&#x6211;&#x4EEC;&#x4E00;&#x4E2A;&#x9053;&#x7406;&#xFF0C;&#x7A0B;&#x5E8F;&#x5458;&#x4E0D;&#x8981;&#x6574;&#x5929;&#x90FD;&#x5173;&#x6CE8;&#x6280;&#x672F;&#x5C42;&#x9762;&#x4E0A;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x867D;&#x7136;&#x6280;&#x672F;&#x4E16;&#x754C;&#x6709;&#x5F88;&#x591A;&#x7EAF;&#x7CB9;&#x800C;&#x7F8E;&#x597D;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x4F46;&#x5F53;&#x5B83;&#x548C;&#x4EBA;&#x7C7B;&#x8054;&#x7CFB;&#x5728;&#x4E00;&#x8D77;&#x3001;&#x548C;&#x653F;&#x6CBB;&#x8054;&#x7CFB;&#x5728;&#x4E00;&#x8D77;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5B83;&#x5C31;&#x5B8C;&#x5168;&#x4E0D;&#x5728;&#x6211;&#x4EEC;&#x7684;&#x63A7;&#x5236;&#x4E4B;&#x4E2D;&#x4E86;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x89C9;&#x5F97;&#x6211;&#x4EEC;&#x6709;&#x5FC5;&#x8981;&#x4E86;&#x89E3;&#x4E9B;&#x6CD5;&#x5F8B;&#x76F8;&#x5173;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x90A3;&#x4E48;&#x4ECE;&#x4F55;&#x5904;&#x5F00;&#x59CB;&#x5462;&#xFF1F;&#x6211;&#x4EEC;&#x4E0D;&#x59A8;&#x5C31;&#x6765;&#x8BF4;&#x8BF4;&#x4E3B;&#x6D41;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#x5427;&#xFF01;</p>
+<p>&#x2003;&#x2003;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x4E0A;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;&#x5927;&#x7EA6;&#x6709;<a href="http://www.gnu.org/licenses/license-list.html" target="_blank" rel="noopener">&#x4E0A;&#x767E;&#x79CD;</a>&#xFF0C;&#x6211;&#x4EEC;&#x4E0D;&#x53EF;&#x80FD;&#x4E5F;&#x6CA1;&#x6709;&#x5FC5;&#x8981;&#x4E86;&#x89E3;&#x6240;&#x6709;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;&#x3002;&#x5BF9;&#x4E8E;&#x4E3B;&#x6D41;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#xFF0C;&#x6211;&#x4EEC;&#x6709;GPL&#x3001;BSD&#x3001;MIT&#x3001;MPL&#x3001;Apache&#x548C;LGPL&#xFF0C;&#x76F8;&#x4FE1;&#x5927;&#x5BB6;&#x90FD;&#x6CA1;&#x6709;&#x5174;&#x8DA3;&#x53BB;&#x9605;&#x8BFB;&#x8FD9;&#x4E9B;&#x6666;&#x6DA9;&#x6DF1;&#x5965;&#x7684;License&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x4E0D;&#x6253;&#x7B97;&#x5728;&#x8FD9;&#x91CC;&#x9010;&#x4E00;&#x4ECB;&#x7ECD;&#x5B83;&#x4EEC;&#xFF0C;&#x4E8B;&#x5B9E;&#x4E0A;&#x641E;&#x6E05;&#x695A;&#x5B83;&#x4EEC;&#x5728;&#x5177;&#x4F53;&#x9650;&#x5236;&#x4E0A;&#x7684;&#x5DEE;&#x5F02;&#x662F;&#x4EF6;&#x975E;&#x5E38;&#x56F0;&#x96BE;&#x7684;&#x4E8B;&#x60C5;&#x3002;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x7528;&#x6700;&#x7B80;&#x6D01;&#x7684;&#x8BED;&#x8A00;&#x6765;&#x63CF;&#x8FF0;&#x8FD9;&#x4E9B;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#xFF1A;</p>
+<ul>
+<li>GPL&#xFF1A; &#x5373;GNU&#x901A;&#x7528;&#x516C;&#x5171;&#x6388;&#x6743;(<strong>GNU General Public License</strong>)&#xFF0C;&#x5176;&#x51FA;&#x53D1;&#x70B9;&#x662F;&#x4EE3;&#x7801;&#x7684;&#x5F00;&#x6E90;/&#x514D;&#x8D39;&#x4F7F;&#x7528;&#x548C;&#x5F15;&#x7528;/&#x4FEE;&#x6539;/&#x884D;&#x751F;&#x4EE3;&#x7801;&#x7684;&#x5F00;&#x6E90;/&#x514D;&#x8D39;&#x4F7F;&#x7528;&#xFF0C;&#x4F46;&#x662F;&#x4E0D;&#x5141;&#x8BB8;&#x4FEE;&#x6539;&#x540E;&#x548C;&#x884D;&#x751F;&#x7684;&#x4EE3;&#x7801;&#x505A;&#x4E3A;&#x95ED;&#x6E90;&#x7684;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x548C;&#x9500;&#x552E;&#x3002;&#x8FD9;&#x5C31;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x80FD;&#x7528;&#x514D;&#x8D39;&#x7684;&#x5404;&#x79CD;&#x5305;&#x62EC;&#x5546;&#x4E1A;&#x516C;&#x53F8;&#x5728;&#x5185;&#x7684;Linux&#x7248;&#x672C;&#xFF0C;&#x4EE5;&#x53CA;Linux&#x4E0A;&#x5404;&#x79CD;&#x5404;&#x6837;&#x7684;&#x7531;&#x4E2A;&#x4EBA;&#x3001;&#x7EC4;&#x7EC7;&#x548C;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x516C;&#x53F8;&#x5F00;&#x53D1;&#x7684;&#x514D;&#x8D39;&#x8F6F;&#x4EF6;&#x3002;</li>
+<li>BSD&#xFF1A; &#x5373;<strong>Berkly Software Distribution</strong>&#xFF0C; &#x57FA;&#x672C;&#x4E0A;&#x662F;&#x4E00;&#x4E2A;&#x7ED9;&#x4E88;&#x4F7F;&#x7528;&#x8005;&#x6781;&#x5927;&#x81EA;&#x7531;&#x7A7A;&#x95F4;&#x7684;&#x4E00;&#x79CD;&#x5F00;&#x6E90;&#x534F;&#x8BAE;&#xFF0C;&#x4F7F;&#x7528;&#x8005;&#x53EF;&#x4EE5;&#x81EA;&#x7531;&#x5730;&#x5BF9;&#x4EE3;&#x7801;&#x8FDB;&#x884C;&#x4F7F;&#x7528;&#x3001;&#x4FEE;&#x6539;&#x548C;&#x4E8C;&#x6B21;&#x53D1;&#x5E03;&#xFF0C;&#x8BE5;&#x534F;&#x8BAE;&#x9F13;&#x52B1;&#x4EE3;&#x7801;&#x5171;&#x4EAB;&#xFF0C;&#x5176;&#x51FA;&#x53D1;&#x70B9;&#x662F;&#x5C0A;&#x91CD;&#x4EE3;&#x7801;&#x4F5C;&#x8005;&#x7684;&#x8457;&#x4F5C;&#x6743;&#xFF0C;&#x8981;&#x6C42;&#x4FDD;&#x7559;&#x539F;&#x4EE3;&#x7801;&#x4E2D;&#x7684;BSD&#x534F;&#x8BAE;&#xFF0C;&#x4FDD;&#x7559;&#x521B;&#x4F5C;&#x8005;&#x7F72;&#x540D;&#x6743;&#x5229;&#xFF0C;&#x5373;&#x4E0D;&#x5F97;&#x4EE5;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x4F5C;&#x8005;/&#x673A;&#x6784;&#x7684;&#x540D;&#x4E49;&#x8FDB;&#x884C;&#x5E02;&#x573A;&#x63A8;&#x5E7F;&#x3002;</li>
+<li>MIT&#xFF1A; &#x5373;<strong>Massachusetts Institute of Technology</strong>&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x5B8C;&#x5168;&#x7ED9;&#x4E88;&#x4F7F;&#x7528;&#x8005;&#x81EA;&#x7531;&#x7A7A;&#x95F4;&#x7684; &#x7B80;&#x77ED;&#x800C;&#x5BBD;&#x6CDB;&#x7684;&#x6388;&#x6743;&#x534F;&#x8BAE;&#xFF0C;&#x4F5C;&#x8005;&#x552F;&#x4E00;&#x7684;&#x8BC9;&#x6C42;&#x662F;&#x4FDD;&#x7559;&#x7248;&#x6743;&#xFF0C;&#x4F7F;&#x7528;&#x8005;&#x53EF;&#x4EE5;&#x590D;&#x5236;&#x3001;&#x4FEE;&#x6539;&#x3001;&#x5408;&#x5E76;&#x3001;&#x53D1;&#x5E03;&#x3001;&#x5206;&#x3001;&#x6388;&#x6743;&#x548C;&#x9500;&#x552E;&#x8F6F;&#x4EF6;&#x526F;&#x672C;&#xFF0C;&#x5E76;&#x6839;&#x636E;&#x7A0B;&#x5E8F;&#x7684;&#x9700;&#x8981;&#x9002;&#x5EA6;&#x4FEE;&#x6539;&#x6388;&#x6743;&#x6761;&#x6B3E;&#xFF0C;&#x552F;&#x4E00;&#x7684;&#x8981;&#x6C42;&#x662F;&#x5FC5;&#x987B;&#x5728;&#x53D1;&#x884C;&#x7248;&#x91CC;&#x9644;&#x52A0;&#x539F;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x7684;&#x58F0;&#x660E;&#xFF0C;&#x65E0;&#x8BBA;&#x662F;&#x4EE5;&#x6E90;&#x4EE3;&#x7801;&#x8FD8;&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x5F62;&#x5F0F;&#x53D1;&#x5E03;&#x3002;</li>
+<li>MPL&#xFF1A;&#x5373;<strong>The Mozilla Public License</strong>&#xFF0C;&#x8BE5;&#x534F;&#x8BAE;&#x540C;GPL&#x548C;BSD&#x57FA;&#x672C;&#x4E00;&#x81F4;&#xFF0C;&#x5DEE;&#x5F02;&#x4E3B;&#x8981;&#x4F53;&#x73B0;&#x5728;&#xFF1A;&#x6E90;&#x4EE3;&#x7801;&#x63D0;&#x4F9B;&#x8005;&#x4E0D;&#x80FD;&#x63D0;&#x4F9B;&#x5DF2;&#x7ECF;&#x53D7;&#x5230;&#x4E13;&#x5229;&#x4FDD;&#x62A4;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x3001;&#x8981;&#x6C42;&#x518D;&#x53D1;&#x5E03;&#x8005;&#x5FC5;&#x987B;&#x63D0;&#x4F9B;&#x5BF9;&#x4EE3;&#x7801;&#x7A0B;&#x5E8F;&#x4FEE;&#x6539;&#x7684;&#x8BF4;&#x660E;&#x3001;&#x5141;&#x8BB8;&#x901A;&#x8FC7;MPL&#x8BB8;&#x53EF;&#x83B7;&#x5F97;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x540C;&#x5176;&#x4ED6;&#x7C7B;&#x578B;&#x6E90;&#x4EE3;&#x7801;&#x8FDB;&#x884C;&#x6DF7;&#x5408;(&#x7B2C;&#x4E8C;&#x6761;&#x732E;&#x7ED9;&#x90A3;&#x4E9B;&#x4E0D;&#x597D;&#x597D;&#x5728;Git&#x91CC;&#x5199;&#x6CE8;&#x91CA;&#x7684;&#x540C;&#x5B66;)&#x3002;</li>
+<li>Apache&#xFF1A;&#x5373;&#x8457;&#x540D;&#x7684;&#x975E;&#x76C8;&#x5229;&#x5F00;&#x6E90;&#x7EC4;&#x7EC7;Apache&#x91C7;&#x7528;&#x7684;&#x534F;&#x8BAE;&#xFF0C;&#x8BE5;&#x534F;&#x8BAE;&#x548C;BSD&#x7C7B;&#x4F3C;&#xFF0C;&#x540C;&#x6837;<strong>&#x9F13;&#x52B1;&#x4EE3;&#x7801;&#x5171;&#x4EAB;&#x548C;&#x5C0A;&#x91CD;&#x539F;&#x4F5C;&#x8005;&#x7684;&#x8457;&#x4F5C;&#x6743;&#xFF0C;&#x540C;&#x6837;&#x5141;&#x8BB8;&#x4EE3;&#x7801;&#x4FEE;&#x6539;&#xFF0C;&#x4F5C;&#x4E3A;&#x5F00;&#x6E90;&#x6216;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x518D;&#x53D1;&#x5E03;</strong>&#xFF0C;&#x4E3B;&#x8981;&#x5173;&#x6CE8;&#x70B9;&#x6709;&#xFF1A;&#xFF08;1&#xFF09;&#x9700;&#x8981;&#x7ED9;&#x4EE3;&#x7801;&#x7684;&#x7528;&#x6237;&#x4E00;&#x4EFD;Apache License&#xFF1B;&#xFF08;2&#xFF09;&#x5982;&#x679C;&#x6539;&#x52A8;&#x4EE3;&#x7801;&#x9700;&#x8981;&#x5728;&#x88AB;&#x4FEE;&#x6539;&#x6587;&#x4EF6;&#x4E2D;&#x505A;&#x51FA;&#x8BF4;&#x660E;&#xFF1B;&#xFF08;3&#xFF09;&#x884D;&#x751F;&#x4EE3;&#x7801;&#x5FC5;&#x987B;&#x4FDD;&#x7559;&#x539F;&#x6709;&#x534F;&#x8BAE;&#x3001;&#x5546;&#x6807;&#x3001;&#x4E13;&#x5229;&#x6216;&#x8005;&#x8BF4;&#x660E;&#x7B49;&#xFF1B;&#xFF08;4&#xFF09;&#x4E0D;&#x5F97;&#x5BF9;Apache&#x534F;&#x8BAE;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#x3002;</li>
+<li>LGPL&#xFF1A;LGPL&#xFF0C;&#x5373;GPL V2&#xFF0C;&#x662F;GPL&#x7684;&#x4E00;&#x4E2A;&#x4E3A;&#x4E3B;&#x8981;&#x4E3A;&#x7C7B;&#x5E93;&#x4F7F;&#x7528;&#x8BBE;&#x8BA1;&#x7684;&#x5F00;&#x6E90;&#x534F;&#x8BAE;&#xFF0C;&#x548C;GPL&#x8981;&#x6C42;&#x4EFB;&#x4F55;&#x4F7F;&#x7528;/&#x4FEE;&#x6539;/&#x884D;&#x751F;&#x4E4B;GPL&#x7C7B;&#x5E93;&#x7684;&#x7684;&#x8F6F;&#x4EF6;&#x5FC5;&#x987B;&#x91C7;&#x7528;GPL&#x534F;&#x8BAE;&#x4E0D;&#x540C;&#x3002;LGPL &#x5141;&#x8BB8;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x901A;&#x8FC7;&#x7C7B;&#x5E93;&#x5F15;&#x7528;(<strong>link</strong>)&#x65B9;&#x5F0F;&#x4F7F;&#x7528;LGPL&#x7C7B;&#x5E93;&#x800C;&#x4E0D;&#x9700;&#x8981;&#x5F00;&#x6E90;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x7684;&#x4EE3;&#x7801;&#x3002;&#x8FD9;&#x4F7F;&#x5F97;&#x91C7;&#x7528;LGPL&#x534F;&#x8BAE;&#x7684;&#x5F00;&#x6E90;&#x4EE3;&#x7801;&#xFF0C;&#x53EF;&#x4EE5;&#x88AB;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x4F5C;&#x4E3A;&#x7C7B;&#x5E93;&#x5F15;&#x7528;&#x5E76;&#x53D1;&#x5E03;&#x548C;&#x9500;&#x552E;&#x7684;&#x540C;&#x65F6;&#xFF0C;&#x4FDD;&#x969C;&#x4F5C;&#x8005;&#x7684;&#x77E5;&#x8BC6;&#x4EA7;&#x6743;&#xFF0C;&#x907F;&#x514D;&#x6709;&#x4EBA;&#x5229;&#x7528;&#x6E90;&#x4EE3;&#x7801;&#x590D;&#x5236;&#x5E76;&#x5F00;&#x53D1;&#x7C7B;&#x4F3C;&#x4EA7;&#x54C1;&#x3002;</li>
+</ul>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x76F8;&#x4FE1;&#x5230;&#x8FD9;&#x91CC;&#x5927;&#x5BB6;&#x5C31;&#x80FD;&#x591F;&#x660E;&#x767D;&#xFF0C;&#x4E3A;&#x4EC0;&#x4E48;&#x8FD9;&#x6B21;React&#x4E13;&#x5229;&#x4E8B;&#x4EF6;&#x80FD;&#x5728;&#x793E;&#x533A;&#x91CC;&#x5F15;&#x8D77;&#x8F70;&#x52A8;&#x3002;&#x6211;&#x8BA4;&#x4E3A;&#x4E3B;&#x8981;&#x7684;&#x539F;&#x56E0;&#x6709;&#x4E24;&#x70B9;&#xFF1A;</p>
+<p>&#x2003;&#x2003;&#x7B2C;&#x4E00;&#xFF0C;React&#x5728;BSD&#x534F;&#x8BAE;&#x8BB8;&#x53EF;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x589E;&#x52A0;&#x7684;&#x4E13;&#x5229;&#x8BB8;&#x53EF;&#xFF0C;&#x5BF9;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;&#x6388;&#x6743;&#x65B9;&#x548C;&#x88AB;&#x6388;&#x6743;&#x65B9;&#x800C;&#x8A00;&#xFF0C;&#x5B58;&#x5728;&#x5F85;&#x9047;&#x4E0A;&#x7684;&#x4E0D;&#x5BF9;&#x7B49;&#x6027;&#x3002;&#x5B9E;&#x9645;&#x4E0A;&#x5728;React&#x4E3A;&#x524D;&#x7AEF;&#x5E26;&#x6765;&#x865A;&#x62DF;DOM&#x3001;&#x5355;&#x5411;&#x6570;&#x636E;&#x6D41;&#x548C;&#x4E0D;&#x53EF;&#x53D8;&#x5BF9;&#x8C61;&#x7B49;&#x4E00;&#x7CFB;&#x5217;&#x51FD;&#x6570;&#x5F0F;&#x7F16;&#x7A0B;&#x7684;&#x6982;&#x5FF5;&#x7684;&#x540C;&#x65F6;&#xFF0C;Facebook&#x5728;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x4E2D;&#x7684;&#x8BDD;&#x8BED;&#x6743;&#x540C;&#x6837;&#x8D8A;&#x6765;&#x8D8A;&#x5927;&#xFF0C;Facebook&#x5728;&#x5F00;&#x6E90;&#x534F;&#x8BAE;&#x4E2D;&#x5939;&#x85CF;&#x79C1;&#x8D27;&#x7684;&#x786E;&#x8BA9;&#x4EBA;&#x6709;&#x79CD;&#x201D;&#x631F;&#x5929;&#x5B50;&#x4EE5;&#x4EE4;&#x8BF8;&#x4FAF;&#x201D;&#x7684;&#x611F;&#x89C9;&#xFF0C;&#x66FE;&#x51E0;&#x4F55;&#x65F6;&#xFF0C;&#x793E;&#x533A;&#x6307;&#x8D23;&#x5FAE;&#x8F6F;&#x6CA1;&#x6709;&#x5F00;&#x653E;&#x5168;&#x90E8;&#x7684;OpenXML&#x6807;&#x51C6;&#xFF0C;&#x56E0;&#x4E3A;&#x5927;&#x5BB6;&#x90FD;&#x89C9;&#x5F97;&#x6309;&#x7167;&#x8FD9;&#x4E2A;&#x6807;&#x51C6;&#x5B9E;&#x73B0;&#x7684;Office&#x6587;&#x6863;&#x548C;&#x5FAE;&#x8F6F;&#x5BB6;&#x7684;&#x5B58;&#x5728;&#x5DEE;&#x5F02;&#xFF0C;&#x53EF;&#x662F;&#x9762;&#x5BF9;&#x8FD9;&#x79CD;&#x548C;&#x81EA;&#x5BB6;&#x4EA7;&#x54C1;&#x7D27;&#x5BC6;&#x8054;&#x7CFB;&#x7684;&#x9879;&#x76EE;&#x8981;&#x5F00;&#x6E90;&#xFF0C;&#x6211;&#x89C9;&#x5F97;&#x8FD9;&#x4E0D;&#x5355;&#x662F;Facebook&#x4F1A;&#x6709;&#x6240;&#x63D0;&#x9632;&#xFF0C;&#x6050;&#x6015;&#x6240;&#x6709;&#x7684;&#x5546;&#x4E1A;&#x516C;&#x53F8;&#x90FD;&#x4F1A;&#x6709;&#x7C7B;&#x4F3C;&#x7684;&#x60F3;&#x6CD5;&#x5427;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x8FD9;&#x4E2A;&#x4E8B;&#x4EF6;&#x4E2D;&#xFF0C;&#x9690;&#x542B;&#x7684;&#x4E00;&#x4E2A;&#x70B9;&#x5C31;&#x662F;&#xFF0C;&#x4E00;&#x65E6;&#x5F53;&#x4F7F;&#x7528;React&#x7684;&#x516C;&#x53F8;&#x548C;Facebook&#x53D1;&#x751F;&#x4E1A;&#x52A1;&#x4E0A;&#x7684;&#x7ADE;&#x4E89;&#xFF0C;React&#x5C06;&#x6210;&#x4E3A;Facebook&#x83B7;&#x5F97;&#x8BC9;&#x8BBC;&#x80DC;&#x5229;&#x7684;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x7B79;&#x7801;&#xFF0C;&#x56E0;&#x4E3A;&#x6839;&#x636E;React&#x7684;&#x4E13;&#x5229;&#x534F;&#x8BAE;&#xFF0C;Facebook&#x6709;&#x6743;&#x5728;&#x5F00;&#x5C55;&#x8BC9;&#x8BBC;&#x65F6;&#x4ECE;&#x88AB;&#x6388;&#x6743;&#x65B9;&#x624B;&#x4E2D;&#x6536;&#x56DE;React&#x7684;&#x4F7F;&#x7528;&#x6743;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x4E0D;&#x96BE;&#x7406;&#x89E3;&#x4E3A;&#x4EC0;&#x4E48;&#x767E;&#x5EA6;&#x548C;Wordpress&#x90FD;&#x5BA3;&#x79F0;&#x8981;&#x505C;&#x6B62;&#x4F7F;&#x7528;React&#xFF0C;&#x9664;&#x4E86;&#x4E0D;&#x60F3;&#x53D7;&#x5236;&#x4E8E;&#x4EBA;&#x4EE5;&#x5916;&#xFF0C;&#x50CF;&#x767E;&#x5EA6;&#x8FD9;&#x79CD;&#x672A;&#x6765;&#x53EF;&#x80FD;&#x4F1A;&#x548C;Facebook&#x5728;AI&#x7B49;&#x9886;&#x57DF;&#x53D1;&#x751F;&#x7ADE;&#x4E89;&#x7684;&#x516C;&#x53F8;&#xFF0C;&#x5B81;&#x53EF;&#x81EA;&#x5DF1;&#x9020;&#x4E00;&#x5957;&#x8F6E;&#x5B50;&#x800C;&#x4E0D;&#x613F;&#x8BA9;&#x81EA;&#x5BB6;&#x4E13;&#x5229;&#x88AB;&#x5BF9;&#x65B9;&#x4F7F;&#x7528;&#x7684;&#x505A;&#x6CD5;&#xFF0C;&#x6211;&#x89C9;&#x5F97;&#x662F;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x7684;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x7B2C;&#x4E8C;&#xFF0C;React&#x5728;&#x5F00;&#x6E90;&#x534F;&#x8BAE;&#x4E2D;&#x9644;&#x52A0;&#x4E13;&#x5229;&#x8BB8;&#x53EF;&#x7684;&#x505A;&#x6CD5;&#xFF0C;&#x4ECE;&#x5546;&#x4E1A;&#x516C;&#x53F8;&#x81EA;&#x6211;&#x4FDD;&#x62A4;&#x7684;&#x89D2;&#x5EA6;&#x6765;&#x770B;&#xFF0C;&#x7684;&#x786E;&#x662F;&#x65E0;&#x53EF;&#x539A;&#x975E;&#xFF0C;&#x4E0D;&#x8FC7;&#x8FD9;&#x79CD;&#x505A;&#x6CD5;&#x672A;&#x514D;&#x4F1A;&#x7ED9;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x5E26;&#x6765;&#x4E0D;&#x597D;&#x7684;&#x98CE;&#x6C14;&#x3002;&#x6211;&#x4EEC;&#x90FD;&#x77E5;&#x9053;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x5E76;&#x4E0D;&#x7B49;&#x540C;&#x4E8E;&#x514D;&#x8D39;&#x8F6F;&#x4EF6;&#xFF0C;&#x56E0;&#x4E3A;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x901A;&#x8FC7;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;&#x6765;&#x4FDD;&#x8BC1;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x4EE3;&#x7801;&#x662F;&#x4EE5;&#x4E00;&#x79CD;&#x5408;&#x7406;&#x7684;&#x65B9;&#x5F0F;&#x88AB;&#x4F7F;&#x7528;&#x3002;&#x5728;&#x5F88;&#x4E45;&#x5F88;&#x4E45;&#x4EE5;&#x524D;&#xFF0C;MySQL&#x662F;&#x6211;&#x975E;&#x5E38;&#x559C;&#x6B22;&#x7684;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x53EF;&#x4EE5;&#x8BA9;&#x6211;&#x6446;&#x8131;SQLServer&#x81C3;&#x80BF;&#x7684;&#x4F53;&#x79EF;&#x3002;&#x4EC0;&#x4E48;&#xFF1F;&#x4F60;&#x8BF4;.NET&#x6280;&#x672F;&#x4F53;&#x7CFB;&#x4E2D;&#x600E;&#x4E48;&#x4F1A;&#x51FA;&#x73B0;MySQL&#xFF1F;&#x53EF;&#x8FD9;&#x6B63;&#x662F;.NET&#x9009;&#x62E9;&#x5F00;&#x6E90;&#x3001;&#x9009;&#x62E9;&#x4E86;&#x8DE8;&#x5E73;&#x53F0;&#xFF0C;&#x6211;&#x4EEC;&#x624D;&#x6709;&#x673A;&#x4F1A;&#x5728;&#x66F4;&#x5E7F;&#x9614;&#x7684;&#x4E16;&#x754C;&#x91CC;&#x53BB;&#x505A;&#x4E9B;&#x6709;&#x8DA3;&#x7684;&#x4E8B;&#x60C5;&#x4E0D;&#x662F;&#x5417;&#xFF0C;&#x6211;&#x4EEC;&#x5FC5;&#x987B;&#x627F;&#x8BA4;&#x5F00;&#x6E90;&#x5BF9;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x7684;&#x91CD;&#x8981;&#x610F;&#x4E49;&#xFF0C;&#x5F53;&#x4F60;&#x53D1;&#x89C9;&#x4F60;&#x8EAB;&#x8FB9;&#x7684;&#x540C;&#x4E8B;&#x90FD;&#x5728;&#x91CD;&#x590D;&#x5199;&#x4E9B;&#x5783;&#x573E;&#x7684;&#x4EE3;&#x7801;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x6216;&#x8BB8;&#x5C31;&#x4F1A;&#x610F;&#x8BC6;&#x5230;&#xFF0C;&#x5176;&#x5B9E;&#x5728;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x4E0A;&#x6709;&#x5F88;&#x591A;&#x4E1C;&#x897F;&#xFF0C;&#x6211;&#x4EEC;&#x662F;&#x53EF;&#x4EE5;&#x7AD9;&#x5728;&#x5DE8;&#x4EBA;&#x7684;&#x80A9;&#x8180;&#x4E0A;&#x770B;&#x5F97;&#x66F4;&#x8FDC;&#x7684;&#x3002;&#x5F53;&#x4F60;&#x56E0;&#x4E3A;&#x76EE;&#x5149;&#x77ED;&#x6D45;&#x800C;&#x5C0F;&#x5FC3;&#x8C28;&#x614E;&#x5730;&#x7EF4;&#x62A4;&#x7740;&#x90A3;&#x4E9B;&#x7834;&#x65E7;&#x7684;&#x4EE3;&#x7801;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x9664;&#x4E86;&#x4E00;&#x5929;&#x5929;&#x8001;&#x53BB;&#x522B;&#x65E0;&#x6240;&#x83B7;&#x3002;&#x81EA;&#x4ECE;MySQL&#x88AB;&#x7532;&#x9AA8;&#x6587;&#x6536;&#x8D2D;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x89C9;&#x5F97;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x5F00;&#x59CB;&#x7F3A;&#x5C11;&#x4E9B;&#x6709;&#x8DA3;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x7532;&#x9AA8;&#x6587;&#x548C;Google&#x5173;&#x4E8E;Java&#x7684;&#x5B98;&#x53F8;&#x8BA9;Google&#x6700;&#x7EC8;&#x9009;&#x62E9;&#x4E86;Kotlin&#xFF0C;&#x6240;&#x4EE5;&#x4F60;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x5F00;&#x6E90;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x5BF9;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x662F;&#x7EDD;&#x5BF9;&#x6709;&#x5229;&#x7684;&#xFF0C;&#x5F88;&#x591A;&#x4EBA;&#x62C5;&#x5FC3;&#x8FD9;&#x4E9B;&#x4EE3;&#x7801;&#x5F00;&#x6E90;&#x5230;&#x4E92;&#x8054;&#x7F51;&#x4E0A;&#x5BF9;&#x5546;&#x4E1A;&#x516C;&#x53F8;&#x4E0D;&#x5229;&#xFF0C;&#x5176;&#x5B9E;&#x6211;&#x4EEC;&#x90FD;&#x6E05;&#x695A;&#xFF0C;&#x6CA1;&#x6709;&#x73AF;&#x5883;&#x548C;&#x751F;&#x6001;&#x7684;&#x4EE3;&#x7801;&#x57FA;&#x672C;&#x4E0D;&#x4F1A;&#x6709;&#x4EBA;&#x5173;&#x5FC3;&#xFF0C;&#x6211;&#x4EEC;&#x662F;&#x4E0D;&#x662F;&#x8BE5;&#x91CD;&#x65B0;&#x5BA1;&#x89C6;&#x4E0B;&#x5F00;&#x6E90;&#xFF1F;</p>
+<p>&#x2003;&#x2003;OK&#xFF0C;&#x6211;&#x77E5;&#x9053;&#x73B0;&#x5728;&#x5927;&#x5BB6;&#x90FD;&#x5728;&#x601D;&#x8003;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#xFF0C;&#x65E2;&#x7136;&#x5F00;&#x6E90;&#x5BF9;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x7684;&#x8FDB;&#x6B65;&#x662F;&#x6709;&#x5229;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x662F;&#x5426;&#x5F00;&#x6E90;&#x5C31;&#x4E0D;&#x5E94;&#x8BE5;&#x6210;&#x4E3A;&#x6211;&#x4EEC;&#x601D;&#x8003;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x771F;&#x6B63;&#x5E94;&#x8BE5;&#x8003;&#x8651;&#x7684;&#x95EE;&#x9898;&#x662F;&#xFF0C;&#x5982;&#x4F55;&#x9009;&#x62E9;&#x4E00;&#x4E2A;&#x5408;&#x9002;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;&#xFF0C;&#x5728;&#x5546;&#x4E1A;&#x5316;&#x548C;&#x5F00;&#x6E90;&#x95F4;&#x627E;&#x5230;&#x4E00;&#x4E2A;&#x5E73;&#x8861;&#x70B9;&#x3002;&#x5BF9;&#x4E8E;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x60F3;&#x5927;&#x5BB6;&#x4E00;&#x5B9A;&#x4F1A;&#x72AF;&#x9009;&#x62E9;&#x56F0;&#x96BE;&#x75C7;&#xFF0C;&#x4E0D;&#x8FC7;&#x6CA1;&#x6709;&#x5173;&#x7CFB;&#x5566;&#xFF0C;&#x6211;&#x60F3;&#x4E0B;&#x9762;&#x8FD9;&#x5F20;&#x56FE;&#x53EF;&#x4EE5;&#x5E2E;&#x5230;&#x5927;&#x5BB6;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://image.beekka.com/blog/201105/free_software_licenses.png" alt="&#x5982;&#x4F55;&#x9009;&#x62E9;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;" title>
+                </div>
+                <div class="image-caption">&#x5982;&#x4F55;&#x9009;&#x62E9;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x8BB8;&#x53EF;&#x8BC1;&#x4E66;</div>
+            </figure>
+<h1 id="&#x4F55;&#x53BB;&#x4F55;&#x4ECE;"><a href="#&#x4F55;&#x53BB;&#x4F55;&#x4ECE;" class="headerlink" title="&#x4F55;&#x53BB;&#x4F55;&#x4ECE;"></a>&#x4F55;&#x53BB;&#x4F55;&#x4ECE;</h1><p>&#x2003;&#x2003;&#x6216;&#x8BB8;&#x5728;&#x6570;&#x65E5;&#x524D;&#xFF0C;&#x4F60;&#x8FD8;&#x5728;&#x4E3A;React&#x4E13;&#x5229;&#x4E8B;&#x4EF6;&#x800C;&#x82E6;&#x607C;&#xFF0C;&#x6216;&#x8005;&#x8003;&#x8651;&#x5728;Preact&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x65B0;&#x7684;React&#xFF0C;&#x6216;&#x8005;&#x8003;&#x8651;&#x8F6C;&#x5411;Angular&#x548C;Vue&#x8FD9;&#x4E24;&#x4E2A;&#x6846;&#x67B6;&#xFF0C;&#x6B64;&#x65F6;&#x6B64;&#x523B;Facebook&#x5BA3;&#x5E03;&#x5C06;React&#x7684;&#x5F00;&#x6E90;&#x534F;&#x8BAE;&#x4FEE;&#x6539;&#x4E3A;MIT&#xFF0C;&#x6216;&#x8BB8;&#x8FD9;&#x7B97;&#x662F;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x7684;&#x4E00;&#x6B21;&#x80DC;&#x5229;&#xFF0C;&#x6216;&#x8BB8;&#x8FD9;&#x7B97;&#x662F;&#x6574;&#x4E2A;&#x4E13;&#x5229;&#x4E8B;&#x4EF6;&#x7684;&#x5C18;&#x57C3;&#x843D;&#x5B9A;&#xFF0C;&#x6216;&#x8BB8;&#x6709;&#x4EBA;&#x7EE7;&#x7EED;&#x62C5;&#x5FC3;Facebook&#x641E;&#x5176;&#x4ED6;&#x4E8B;&#x60C5;&#xFF0C;&#x53EF;&#x662F;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x539F;&#x672C;&#x5C31;&#x662F;&#x5728;&#x6BCF;&#x5929;&#x90FD;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x7740;&#x7684;&#xFF0C;&#x5BF9;&#x4E8E;&#x672A;&#x6765;&#x6211;&#x4EEC;&#x5E38;&#x5E38;&#x662F;&#x65E0;&#x4ECE;&#x5F97;&#x77E5;&#x5B83;&#x7684;&#x8DB3;&#x8FF9;&#x4F1A;&#x5728;&#x54EA;&#x91CC;&#x3002;&#x4EBA;&#x751F;&#x672C;&#x6765;&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x4EBA;&#x7684;&#x9006;&#x65C5;&#xFF0C;&#x8981;&#x60F3;&#x5728;&#x8FD9;&#x5145;&#x6EE1;&#x53D8;&#x5316;&#x7684;&#x4E16;&#x754C;&#x91CC;&#x83B7;&#x5F97;&#x5B89;&#x5168;&#x611F;&#xFF0C;&#x552F;&#x6709;&#x52AA;&#x529B;&#x8BA9;&#x81EA;&#x5DF1;&#x5904;&#x4E8E;&#x4E0D;&#x8D25;&#x4E4B;&#x5730;&#xFF0C;&#x6280;&#x672F;&#x4F55;&#x5C1D;&#x4E0D;&#x662F;&#x8FD9;&#x6837;&#x5462;&#xFF0C;&#x60F3;&#x60F3;&#x8FD9;20&#x5E74;&#x95F4;&#x6211;&#x4EEC;&#x7ECF;&#x5386;&#x4E86;&#x591A;&#x5C11;&#x6280;&#x672F;&#x7684;&#x53D8;&#x9769;&#xFF0C;&#x4ECE;&#x6765;&#x6CA1;&#x6709;&#x4E00;&#x95E8;&#x6846;&#x67B6;&#x53EF;&#x4EE5;&#x8BA9;&#x6211;&#x4EEC;&#x4E00;&#x52B3;&#x6C38;&#x9038;&#xFF0C;&#x6240;&#x4EE5;&#x5BF9;&#x4E8E;&#x5C0F;&#x516C;&#x53F8;&#x800C;&#x8A00;&#xFF0C;&#x5927;&#x53EF;&#x4E0D;&#x5FC5;&#x62C5;&#x5FC3;Facebook&#x4F1A;&#x56E0;&#x4E3A;&#x4E13;&#x5229;&#x95EE;&#x9898;&#x548C;&#x4F60;&#x4EA7;&#x751F;&#x6CD5;&#x5F8B;&#x4E0A;&#x7684;&#x7EA0;&#x7EB7;&#xFF0C;&#x8BE5;&#x7528;&#x4EC0;&#x4E48;&#x5C31;&#x7528;&#x4EC0;&#x4E48;&#x6846;&#x67B6;&#xFF0C;&#x56E0;&#x4E3A;&#x6CA1;&#x6709;&#x7EDD;&#x5BF9;&#x5B8C;&#x7F8E;&#x7684;&#x6846;&#x67B6;&#xFF0C;&#x80FD;&#x7ED3;&#x5408;&#x4E1A;&#x52A1;&#x573A;&#x666F;&#x9009;&#x62E9;&#x5408;&#x9002;&#x7684;&#x6846;&#x67B6;&#xFF0C;&#x4E3A;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x5E26;&#x6765;&#x4E00;&#x70B9;&#x70B9;&#x5FAE;&#x5C0F;&#x7684;&#x53D8;&#x5316;&#xFF0C;&#x8FD9;&#x6837;&#x5B50;&#x6211;&#x4EEC;&#x5C31;&#x8DB3;&#x591F;&#x5F00;&#x5FC3;&#x5566;&#xFF01;&#x800C;&#x5BF9;&#x4E8E;BAT&#x8FD9;&#x6837;&#x7684;&#x4E92;&#x8054;&#x7F51;&#x5927;&#x5382;&#xFF0C;&#x5219;&#x5E94;&#x8BE5;&#x8003;&#x8651;&#x8D70;&#x81EA;&#x4E3B;&#x7814;&#x53D1;&#x7684;&#x5DEE;&#x5F02;&#x5316;&#x8DEF;&#x7EBF;&#xFF0C;&#x56E0;&#x4E3A;&#x5982;&#x679C;&#x4F60;&#x4E0D;&#x60F3;&#x53D7;&#x5236;&#x4E8E;&#x4EBA;&#xFF0C;&#x6700;&#x597D;&#x7684;&#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x8BA9;&#x522B;&#x4EBA;&#x4F9D;&#x8D56;&#x4F60;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x53BB;&#x52AA;&#x529B;&#x4F9D;&#x8D56;&#x522B;&#x4EBA;&#x3002;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x4F2A;&#x524D;&#x7AEF;&#x5DE5;&#x7A0B;&#x5E08;&#xFF0C;&#x6211;&#x89C9;&#x5F97;&#x4E0D;&#x7BA1;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x8981;&#x52AA;&#x529B;&#x6253;&#x597D;&#x57FA;&#x7840;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5728;&#x4E00;&#x5806;&#x6846;&#x67B6;&#x4E2D;&#x75B2;&#x4E8E;&#x5954;&#x547D;&#xFF0C;&#x5BF9;&#x70ED;&#x8877;&#x4E8E;&#x641E;&#x4E8B;&#x60C5;&#x548C;&#x9020;&#x8F6E;&#x5B50;&#x7684;&#x524D;&#x7AEF;&#x6280;&#x672F;&#x5708;&#x6765;&#x8BF4;&#xFF0C;&#x4E0B;&#x4E00;&#x6B21;&#x7684;&#x8BA8;&#x8BBA;&#x70ED;&#x70B9;&#x4F1A;&#x662F;&#x4EC0;&#x4E48;&#xFF0C;&#x4F60;&#x6211;&#x90FD;&#x672A;&#x5FC5;&#x80FD;&#x60F3;&#x5230;&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x8FD8;&#x6709;&#x4EC0;&#x4E48;&#x6BD4;&#x52AA;&#x529B;&#x66F4;&#x91CD;&#x8981;&#x7684;&#x4E8B;&#x60C5;&#x5462;&#x3002;&#x597D;&#x4E86;&#xFF0C;&#x8FD9;&#x7BC7;&#x6587;&#x7AE0;&#x5C31;&#x662F;&#x8FD9;&#x6837;&#x4E86;&#xFF0C;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x80FD;&#x591F;&#x559C;&#x6B22;&#xFF0C;&#x6211;&#x4EEC;&#x4E0B;&#x4E00;&#x7BC7;&#x89C1;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="http://www.davidfnck.com/webseo/skill_website_design_coding_bootstrap_001.html/">我要系列｜如果设计师和前端工程师都很忙，怎么办？</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/1166840790/" rel="external">从React专利事件看开源软件许可</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/1166840790/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/1166840790/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开源/">开源</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/1166840790/&title=《从React专利事件看开源软件许可》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/1166840790/&title=《从React专利事件看开源软件许可》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/1166840790/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《从React专利事件看开源软件许可》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/1166840790/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/1166840790/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/2617501472/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">秋风劲似去年时</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/4197961431/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Redis缓存技术学习系列之Lua脚本</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/1166840790/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/1166840790/&title=《从React专利事件看开源软件许可》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/1166840790/&title=《从React专利事件看开源软件许可》 — PayneQinのBlog&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/1166840790/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《从React专利事件看开源软件许可》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/1166840790/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/1166840790/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/1166840790/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

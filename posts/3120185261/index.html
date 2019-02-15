@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        EasyAR尝鲜系列教程之Hello EasyAR - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。从今天起博主将为大家带来EasyAR尝鲜系列教程，本教程适用的对象是增强现实应用开发者和Unity3D游戏开发者，在阅读本教程前请确保具备增强现实应用开发及Unity3D游戏开发的相关基础知识。在本节及后续内容中，博主将以国产增强现实引擎EasyAR为主要开发平台来">
+<meta name="keywords" content="增强现实,AR,Unity3D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EasyAR尝鲜系列教程之Hello EasyAR">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/3120185261/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。从今天起博主将为大家带来EasyAR尝鲜系列教程，本教程适用的对象是增强现实应用开发者和Unity3D游戏开发者，在阅读本教程前请确保具备增强现实应用开发及Unity3D游戏开发的相关基础知识。在本节及后续内容中，博主将以国产增强现实引擎EasyAR为主要开发平台来">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fziy7k2yssj20m80b4tad.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fziy4rryipj20b60aj3zh.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixy15c8yj20rd06tac3.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzixb6r81jj20gt0i70u6.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix80mo33j208z0ewjrt.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fzix17ov4dj20dl0c7js5.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/None.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/None.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fz68j0wjkcj20dc0m8tb0.jpg">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="EasyAR尝鲜系列教程之Hello EasyAR">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。从今天起博主将为大家带来EasyAR尝鲜系列教程，本教程适用的对象是增强现实应用开发者和Unity3D游戏开发者，在阅读本教程前请确保具备增强现实应用开发及Unity3D游戏开发的相关基础知识。在本节及后续内容中，博主将以国产增强现实引擎EasyAR为主要开发平台来">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/4c36074fly1fziy7k2yssj20m80b4tad.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">EasyAR尝鲜系列教程之Hello EasyAR</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">EasyAR尝鲜系列教程之Hello EasyAR</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-10-30T09:44:18.000Z" itemprop="datePublished" class="page-time">
+  2015-10-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-EasyAR尝鲜系列教程之Hello EasyAR" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">EasyAR尝鲜系列教程之Hello EasyAR</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-10-30 09:44:18" datetime="2015-10-30T09:44:18.000Z" itemprop="datePublished">2015-10-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Unity3D/">Unity3D</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        14 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#xFF0C;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;&#x79E6;&#x5143;&#x57F9;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x5730;&#x5740;&#x662F;<a href="http://qinyuanpei.com" target="_blank" rel="noopener">http://qinyuanpei.com</a>&#x3002;&#x4ECE;&#x4ECA;&#x5929;&#x8D77;&#x535A;&#x4E3B;&#x5C06;&#x4E3A;&#x5927;&#x5BB6;&#x5E26;&#x6765;EasyAR&#x5C1D;&#x9C9C;&#x7CFB;&#x5217;&#x6559;&#x7A0B;&#xFF0C;&#x672C;&#x6559;&#x7A0B;&#x9002;&#x7528;&#x7684;&#x5BF9;&#x8C61;&#x662F;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5E94;&#x7528;&#x5F00;&#x53D1;&#x8005;&#x548C;Unity3D&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x8005;&#xFF0C;&#x5728;&#x9605;&#x8BFB;&#x672C;&#x6559;&#x7A0B;&#x524D;&#x8BF7;&#x786E;&#x4FDD;&#x5177;&#x5907;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5E94;&#x7528;&#x5F00;&#x53D1;&#x53CA;Unity3D&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x7684;&#x76F8;&#x5173;&#x57FA;&#x7840;&#x77E5;&#x8BC6;&#x3002;&#x5728;&#x672C;&#x8282;&#x53CA;&#x540E;&#x7EED;&#x5185;&#x5BB9;&#x4E2D;&#xFF0C;&#x535A;&#x4E3B;&#x5C06;&#x4EE5;&#x56FD;&#x4EA7;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5F15;&#x64CE;EasyAR&#x4E3A;&#x4E3B;&#x8981;&#x5F00;&#x53D1;&#x5E73;&#x53F0;&#x6765;&#x5E26;&#x9886;&#x5927;&#x5BB6;&#x4E00;&#x8D77;&#x8D70;&#x8FDB;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5E94;&#x7528;&#x5F00;&#x53D1;&#x7684;&#x4E16;&#x754C;&#xFF0C;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x80FD;&#x591F;&#x559C;&#x6B22;&#xFF01;</p>
+<a id="more"></a>
+<p>#&#x4EC0;&#x4E48;&#x662F;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#xFF1F;<br>&#x2003;&#x2003;&#x4E3A;&#x4E86;&#x8BA9;&#x66F4;&#x591A;&#x7684;&#x4EBA;&#x4E86;&#x89E3;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x5F00;&#x59CB;&#x672C;&#x6587;&#x6559;&#x7A0B;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x6765;&#x4E86;&#x89E3;&#x4E0B;&#x4EC0;&#x4E48;&#x662F;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x3002;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;(Augmented Reality&#xFF0C;&#x7B80;&#x79F0; AR)&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x5C06;&#x771F;&#x5B9E;&#x4E16;&#x754C;&#x4FE1;&#x606F;&#x548C;&#x865A;&#x62DF;&#x4E16;&#x754C;&#x4FE1;&#x606F;&#x8FDB;&#x884C;&#x878D;&#x5408;&#x548C;&#x96C6;&#x6210;&#x7684;&#x65B0;&#x6280;&#x672F;&#xFF0C;&#x8FD9;&#x79CD;&#x6280;&#x672F;&#x7684;&#x76EE;&#x6807;&#x662F;&#x5728;&#x5C4F;&#x5E55;&#x4E0A;&#x628A;&#x865A;&#x62DF;&#x4E16;&#x754C;&#x548C;&#x73B0;&#x5B9E;&#x4E16;&#x754C;&#x8FDB;&#x884C;&#x53E0;&#x52A0;&#x5E76;&#x5728;&#x6B64;&#x57FA;&#x7840;&#x4E0A;&#x8FDB;&#x884C;&#x4E92;&#x52A8;&#x3002;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x662F;&#x771F;&#x5B9E;&#x4E16;&#x754C;&#x548C;&#x865A;&#x62DF;&#x4E16;&#x754C;&#x7684;&#x4FE1;&#x606F;&#x96C6;&#x6210;&#xFF0C;&#x5177;&#x6709;&#x5B9E;&#x65F6;&#x4EA4;&#x4E92;&#x6027;&#xFF0C;&#x662F;&#x5728;&#x4E09;&#x7EF4;&#x5C3A;&#x5EA6;&#x7A7A;&#x95F4;&#x4E2D;&#x589E;&#x6DFB;&#x5B9A;&#x4F4D;&#x865A;&#x62DF;&#x7269;&#x4F53;&#x3002;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x6280;&#x672F;&#x53EF;&#x5E7F;&#x6CDB;&#x5E94;&#x7528;&#x5230;&#x519B;&#x4E8B;&#x3001;&#x533B;&#x7597;&#x3001;&#x5EFA;&#x7B51;&#x3001;&#x6559;&#x80B2;&#x3001;&#x5DE5;&#x7A0B;&#x3001;&#x5F71;&#x89C6;&#x3001;&#x5A31;&#x4E50;&#x7B49;&#x9886;&#x57DF;&#x3002;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x662F;&#x65B0;&#x578B;&#x7684;&#x4EBA;&#x673A;&#x4EA4;&#x4E92;&#x548C;&#x4E09;&#x7EF4;&#x4EFF;&#x771F;&#x5DE5;&#x5177;&#xFF0C;&#x76EE;&#x524D;&#x5DF2;&#x53D1;&#x6325;&#x51FA;&#x4E86;&#x91CD;&#x8981;&#x7684;&#x4F5C;&#x7528;&#xFF0C;&#x5177;&#x6709;&#x5DE8;&#x5927;&#x7684;&#x5E94;&#x7528;&#x6F5C;&#x529B;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fziy7k2yssj20m80b4tad.jpg" alt="&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x6982;&#x5FF5;&#x56FE;" title>
+                </div>
+                <div class="image-caption">&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x6982;&#x5FF5;&#x56FE;</div>
+            </figure>
+<p>#&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5E94;&#x7528;&#x73B0;&#x72B6;<br>&#x2003;&#x2003;&#x76EE;&#x524D;&#xFF0C;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5728;&#x56FD;&#x5185;&#x5C1A;&#x5904;&#x5728;&#x8D77;&#x6B65;&#x9636;&#x6BB5;&#x3002;2012&#x5E74;4&#x6708;Google&#x53D1;&#x5E03;&#x7684;Google Class&#x662F;&#x5168;&#x7403;&#x552F;&#x4E00;&#x4E00;&#x6B3E;&#x771F;&#x6B63;&#x610F;&#x4E49;&#x4E0A;&#x5B9E;&#x73B0;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x6280;&#x672F;&#x7684;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x3002;&#x968F;&#x7740;&#x79FB;&#x52A8;&#x8BBE;&#x5907;&#x7684;&#x666E;&#x53CA;&#x548C;&#x76F8;&#x5173;&#x6280;&#x672F;&#x7684;&#x6210;&#x719F;&#xFF0C;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5F00;&#x59CB;&#x9010;&#x6E10;&#x5730;&#x8D70;&#x8FDB;&#x4EBA;&#x4EEC;&#x7684;&#x751F;&#x6D3B;&#x3002;&#x5982;&#x56FD;&#x5185;&#x9996;&#x6B3E;&#x805A;&#x5408;&#x4E86;&#x76EE;&#x524D;&#x79FB;&#x52A8;&#x4E92;&#x8054;&#x6700;&#x65B0;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x6280;&#x672F;&#x7684;&#x667A;&#x80FD;&#x624B;&#x673A;&#x5E94;&#x7528;&#x300A;&#x57CE;&#x5E02;&#x955C;&#x5934;&#x300B;&#x4EE5;&#x53CA;&#x4E2D;&#x89C6;&#x5178;&#x6570;&#x5B57;&#x79D1;&#x6280;&#x7814;&#x53D1;&#x7684;VRP&#x7CFB;&#x7EDF;&#x7B49;&#x3002;AR&#x6280;&#x672F;&#x5728;&#x4EBA;&#x5DE5;&#x667A;&#x80FD;&#x3001;CAD&#x3001;&#x56FE;&#x5F62;&#x4EFF;&#x771F;&#x3001;&#x865A;&#x62DF;&#x901A;&#x8BAF;&#x3001;&#x9065;&#x611F;&#x3001;&#x5A31;&#x4E50;&#x3001;&#x6A21;&#x62DF;&#x8BAD;&#x7EC3;&#x7B49;&#x8BB8;&#x591A;&#x9886;&#x57DF;&#x5E26;&#x6765;&#x4E86;&#x9769;&#x547D;&#x6027;&#x7684;&#x53D8;&#x5316;&#x3002;<br>&#x76EE;&#x524D;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x76F8;&#x5173;&#x6280;&#x672F;&#x4E3B;&#x8981;&#x6709;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x7684;<a href="http://www.hitl.washington.edu/artoolkit/" target="_blank" rel="noopener">ARToolkit</a>&#x3001;&#x9762;&#x5411;&#x5546;&#x4E1A;&#x5316;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x7684;<a href="http://www.metaio.com/" target="_blank" rel="noopener">Metaio</a>&#x548C;<a href="http://developer.vuforia.com/" target="_blank" rel="noopener">Vuforia</a>&#x7B49;&#x3002;</p>
+<p>#&#x56FD;&#x4EA7;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5F15;&#x64CE;EasyAR<br>&#x2003;&#x2003;EasyAR(Easy Augmented Reality)&#x662F;&#x89C6;&#x8FB0;&#x4FE1;&#x606F;&#x79D1;&#x6280;&#xFF08;&#x4E0A;&#x6D77;&#xFF09;&#x6709;&#x9650;&#x516C;&#x53F8;&#x7684;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x7CFB;&#x5217;&#x7684;&#x5B50;&#x54C1;&#x724C;&#xFF0C;&#x5176;&#x542B;&#x4E49;&#x662F;&#x5E0C;&#x671B;&#x8BA9;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x53D8;&#x5F97;&#x7B80;&#x5355;&#x6613;&#x5B9E;&#x65BD;&#x3002;EasyAR&#x63D0;&#x4F9B;&#x4E86;&#x8BF8;&#x5982;&#x624B;&#x673A;APP&#x4E92;&#x52A8;&#x8425;&#x9500;&#x3001;&#x6237;&#x5916;&#x5927;&#x5C4F;&#x5E55;&#x4E92;&#x52A8;&#x6D3B;&#x52A8;&#x3001;&#x7F51;&#x7EDC;&#x8425;&#x9500;&#x4E92;&#x52A8;&#x7B49;&#x5F62;&#x5F0F;&#x5728;&#x5185;&#x7684;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x4E92;&#x52A8;&#x8425;&#x9500;&#x6280;&#x672F;&#x548C;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x3002;&#x8457;&#x4F5C;&#x6743;&#x5F52;&#x4F5C;&#x8005;&#x6240;&#x6709;&#x3002;EasyAR&#x65E0;&#x9700;&#x6388;&#x6743;&#x3001;&#x65E0;&#x6C34;&#x5370;&#x3001;&#x65E0;&#x8BC6;&#x522B;&#x6B21;&#x6570;&#x7684;&#x9650;&#x5236;&#xFF0C;&#x5F00;&#x653E;&#x540E;&#x53EF;&#x514D;&#x8D39;&#x4E0B;&#x8F7D;&#xFF0C;&#x65E0;&#x9700;&#x4EFB;&#x4F55;&#x8D39;&#x7528;&#xFF0C;&#x662F;&#x4E00;&#x6B3E;&#x5B8C;&#x5168;&#x514D;&#x8D39;&#x7684;AR&#x5F15;&#x64CE;&#x3002;EasyAR&#x5177;&#x6709;&#x5F3A;&#x5927;&#x7684;&#x8DE8;&#x5E73;&#x53F0;&#x7279;&#x6027;&#x53EF;&#x652F;&#x6301;Windows&#x3001; Mac OS&#x3001; Android&#x548C;iOS&#x7B49;&#x4E3B;&#x6D41;&#x5E73;&#x53F0;&#x3002;&#x4ECE;&#x76EE;&#x524D;&#x7684;&#x60C5;&#x51B5;&#x6765;&#x770B;&#xFF0C;EasyAR&#x7684;SDK&#x662F;&#x76EE;&#x524D;&#x5E02;&#x573A;&#x4E0A;&#x540C;&#x7C7B;&#x4EA7;&#x54C1;&#x4E2D;&#x6700;&#x4E3A;&#x7B80;&#x5355;&#x6613;&#x7528;&#x7684;&#xFF0C;&#x552F;&#x4E00;&#x7684;&#x4E0D;&#x8DB3;&#x662F;&#x4EA7;&#x54C1;&#x521A;&#x53D1;&#x5E03;&#x4E0D;&#x4E45;&#x5C1A;&#x672A;&#x80FD;&#x63D0;&#x4F9B;&#x5B8C;&#x6574;&#x7684;&#x6280;&#x672F;&#x6587;&#x6863;&#x3002;</p>
+<p>#Hello EasyAR<br>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x4EE5;<a href="http://www.easyar.cn/view/index.html" target="_blank" rel="noopener">EasyAR</a>&#x63D0;&#x4F9B;&#x7684;Unity3D&#x7248;&#x672C;SDK&#x4E3A;&#x4F8B;&#x6765;&#x5B66;&#x4E60;EasySDK&#x7684;&#x4F7F;&#x7528;&#x3002;&#x5728;&#x5F00;&#x59CB;&#x524D;&#x8BF7;&#x786E;&#x4FDD;&#x4F60;&#x7684;&#x8BA1;&#x7B97;&#x673A;&#x4E0A;&#x6B63;&#x786E;&#x5B89;&#x88C5;&#x4E86;&#x4EE5;&#x4E0B;&#x5F00;&#x53D1;&#x5DE5;&#x5177;&#x6216;&#x8005;&#x786C;&#x4EF6;&#xFF1A;</p>
+<ul>
+<li>Unity3D(&#x5FC5;&#x9009;)&#xFF1A;&#x4E3B;&#x8981;&#x7684;&#x5F00;&#x53D1;&#x73AF;&#x5883;</li>
+<li>JDK&#x76F8;&#x5173;&#x5DE5;&#x5177;(&#x5FC5;&#x9009;)&#xFF1A;&#x7F16;&#x8BD1;Android&#x5E94;&#x7528;&#x6240;&#x9700;&#x73AF;&#x5883;</li>
+<li>Android SDK(&#x5FC5;&#x9009;)&#xFF1A;&#x7F16;&#x8BD1;Android&#x5E94;&#x7528;&#x6240;&#x9700;&#x73AF;&#x5883;</li>
+<li>&#x6444;&#x50CF;&#x5934;(&#x53EF;&#x9009;)&#xFF1A;&#x5982;&#x4F7F;&#x7528;&#x624B;&#x673A;&#x8FDB;&#x884C;&#x8C03;&#x8BD5;&#x5219;&#x4E0D;&#x9700;&#x8981;</li>
+</ul>
+<p>&#x5728;&#x5B8C;&#x6210;&#x4EE5;&#x4E0A;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;&#x540E;&#xFF1A;</p>
+<ul>
+<li>&#x6253;&#x5F00;<a href="http://www.easyar.cn/view/index.html" target="_blank" rel="noopener">EasyAR&#x5B98;&#x7F51;</a>&#x5E76;&#x767B;&#x5F55;&#x5B98;&#x7F51;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x5728;&#x767B;&#x9646;&#x540E;&#x521B;&#x5EFA;&#x5E94;&#x7528;&#x4EE5;&#x83B7;&#x5F97;&#x5F00;&#x53D1;&#x6240;&#x9700;&#x7684;&#x5BC6;&#x94A5;&#x4EE5;&#x53CA;SDK&#x3002;&#x5982;&#x679C;&#x5C1A;&#x672A;&#x6CE8;&#x518C;&#x53EF;&#x4EE5;&#x5728;&#x6CE8;&#x518C;&#x540E;&#x5B8C;&#x6210;&#x8FD9;&#x4E00;&#x6B65;&#x9AA4;&#x3002;</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fziy4rryipj20b60aj3zh.jpg" alt="&#x521B;&#x5EFA;&#x5E94;&#x7528;" title>
+                </div>
+                <div class="image-caption">&#x521B;&#x5EFA;&#x5E94;&#x7528;</div>
+            </figure>
+<ul>
+<li>&#x70B9;&#x51FB;&#x521B;&#x5EFA;&#x5E94;&#x7528;&#xFF0C;&#x5E76;&#x5728;&#x8FD9;&#x91CC;&#x586B;&#x5165;&#x5E94;&#x7528;&#x7684;&#x540D;&#x79F0;&#x548C;&#x5305;&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x6B64;&#x5904;&#x4EE5;&#x201C;EasyAR&#x6D4B;&#x8BD5;&#x201D;&#x548C;&#x201C;com.easyar.first&#x201D;&#x4E3A;&#x4F8B;&#xFF0C;&#x5728;&#x521B;&#x5EFA;&#x5B8C;&#x5E94;&#x7528;&#x540E;&#x53EF;&#x4EE5;&#x5728;&#x5E94;&#x7528;&#x5217;&#x8868;&#x4E2D;&#x627E;&#x5230;&#x5F53;&#x524D;&#x521B;&#x5EFA;&#x7684;&#x5E94;&#x7528;&#xFF0C;&#x70B9;&#x51FB;&#x663E;&#x793A;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x5F53;&#x524D;&#x5E94;&#x7528;&#x5BF9;&#x5E94;&#x7684;&#x5BC6;&#x94A5;&#x3002;</li>
+<li>&#x70B9;&#x51FB;&#x201C;&#x4E0B;&#x8F7D;EasyAR SDK v1.0.1&#x201D;&#x5B8C;&#x6210;SDK&#x7684;&#x4E0B;&#x8F7D;&#x3002;</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzixy15c8yj20rd06tac3.jpg" alt="&#x4E0B;&#x8F7D;SDK" title>
+                </div>
+                <div class="image-caption">&#x4E0B;&#x8F7D;SDK</div>
+            </figure>
+<ul>
+<li>&#x89E3;&#x538B;&#x4E0B;&#x8F7D;&#x7684;SDK&#x538B;&#x7F29;&#x5305;&#xFF0C;&#x627E;&#x5230;vc_redist&#x76EE;&#x5F55;&#x5B89;&#x88C5;&#x5BF9;&#x5E94;&#x5E73;&#x53F0;&#x7684;VC++&#x8FD0;&#x884C;&#x5E93;&#x3002;&#x8BF7;&#x6CE8;&#x610F;&#xFF0C;&#x5373;&#x4F7F;&#x5728;&#x4F60;&#x7684;&#x8BA1;&#x7B97;&#x673A;&#x4E0A;&#x5B89;&#x88C5;&#x4E86;VC++&#x8FD0;&#x884C;&#x5E93;&#xFF0C;&#x8FD9;&#x91CC;&#x4F9D;&#x7136;&#x9700;&#x8981;&#x5B89;&#x88C5;&#x3002;Win8&#x53CA;Win8.1&#x8BF7;&#x5148;&#x4F7F;&#x7528;&#x78C1;&#x76D8;&#x6E05;&#x7406;&#x5DE5;&#x5177;&#x6E05;&#x7406;&#x7CFB;&#x7EDF;&#x5783;&#x573E;&#xFF0C;&#x5426;&#x5219;&#x53EF;&#x80FD;&#x4F1A;&#x51FA;&#x73B0;&#x65E0;&#x6CD5;&#x5B89;&#x88C5;&#x7684;&#x95EE;&#x9898;&#x3002;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;64&#x4F4D;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x4E14;&#x5B89;&#x88C5;x86&#x548C;x64&#x7684;VC++&#x8FD0;&#x884C;&#x5E93;&#x3002;</li>
+<li>&#x627E;&#x5230;SDK&#x538B;&#x7F29;&#x5305;&#x5185;&#x7684;package/unity&#x76EE;&#x5F55;&#x4E0B;&#x7684;EasyAR.unitypackage&#x6587;&#x4EF6;&#x5E76;&#x5C06;&#x5176;&#x5BFC;&#x5165;&#x5230;Unity3D&#x4E2D;&#x3002;</li>
+<li>&#x5728;Unity3D&#x4E2D;&#x627E;&#x5230;Scenes&#x76EE;&#x5F55;&#x4E0B;&#x7684;easyar&#x573A;&#x666F;&#x5E76;&#x6253;&#x5F00;&#x8BE5;&#x573A;&#x666F;&#xFF0C;&#x7136;&#x540E;&#x627E;&#x5230;EasyAR&#x8282;&#x70B9;&#x540D;&#x79F0;&#xFF0C;&#x5728;&#x53F3;&#x4FA7;&#x5C5E;&#x6027;&#x7A97;&#x53E3;&#x4E2D;&#x586B;&#x5165;&#x5E94;&#x7528;&#x5BF9;&#x5E94;&#x7684;&#x5BC6;&#x94A5;&#x3002;</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzixb6r81jj20gt0i70u6.jpg" alt="&#x586B;&#x5165;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5BC6;&#x94A5;" title>
+                </div>
+                <div class="image-caption">&#x586B;&#x5165;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5BC6;&#x94A5;</div>
+            </figure>
+<ul>
+<li>&#x6253;&#x5F00;BuildSetting-&gt;PlayerSetting&#x5728;&#x53F3;&#x4FA7;&#x5C5E;&#x6027;&#x7A97;&#x53E3;&#x4E2D;&#x586B;&#x5165;&#x5E94;&#x7528;&#x5BF9;&#x5E94;&#x7684;&#x5305;&#x540D;&#x3002;</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzix80mo33j208z0ewjrt.jpg" alt="&#x586B;&#x5165;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5305;&#x540D;" title>
+                </div>
+                <div class="image-caption">&#x586B;&#x5165;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5305;&#x540D;</div>
+            </figure>
+<ul>
+<li>SDK&#x9ED8;&#x8BA4;&#x63D0;&#x4F9B;&#x4E86;&#x4E09;&#x5F20;&#x8BC6;&#x522B;&#x56FE;&#x7247;&#xFF0C;&#x6211;&#x4EEC;&#x9009;&#x62E9;&#x6BCF;&#x4E2A;&#x4EBA;&#x90FD;&#x6709;&#x7684;&#x8EAB;&#x4EFD;&#x8BC1;&#x7167;&#x7247;&#x4F5C;&#x4E3A;&#x8BC6;&#x522B;&#x76EE;&#x6807;&#xFF0C;&#x5728;&#x573A;&#x666F;&#x4E2D;&#x627E;&#x5230;ImageTargetDataSet-idback&#x8FD9;&#x4E2A;&#x7269;&#x4F53;&#xFF0C;&#x627E;&#x5230;&#x5B83;&#x7684;&#x5B50;&#x8282;&#x70B9;Cube&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x8BC6;&#x522B;&#x5230;&#x4E86;&#x8EAB;&#x4EFD;&#x8BC1;&#x7167;&#x7247;&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x4F1A;&#x5728;&#x8EAB;&#x4EFD;&#x8BC1;&#x7167;&#x7247;&#x4E0A;&#x663E;&#x793A;&#x4E00;&#x4E2A;Cube&#x3002;&#x5982;&#x679C;&#x5927;&#x5BB6;&#x624B;&#x5934;&#x4E0A;&#x6709;&#x81EA;&#x5DF1;&#x559C;&#x6B22;&#x7684;&#x6A21;&#x578B;&#xFF0C;&#x53EF;&#x4EE5;&#x5C06;Cube&#x9690;&#x85CF;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x6A21;&#x578B;&#x6DFB;&#x52A0;&#x8FDB;&#x6765;&#xFF0C;&#x5E76;&#x4E3A;&#x5176;&#x6DFB;&#x52A0;VideoPlayerBehaviour.cs&#x811A;&#x672C;&#x3002;&#x5982;&#x624B;&#x5934;&#x4E0A;&#x6CA1;&#x6709;&#x6A21;&#x578B;&#xFF0C;&#x8FD9;&#x4E00;&#x6B65;&#x53EF;&#x4EE5;&#x5FFD;&#x7565;&#x3002;&#x5982;&#x56FE;&#x662F;&#x6211;&#x73B0;&#x5728;&#x7684;&#x573A;&#x666F;&#x6548;&#x679C;&#xFF1A;</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fzix17ov4dj20dl0c7js5.jpg" alt="&#x52A0;&#x5165;&#x81EA;&#x5B9A;&#x4E49;&#x6A21;&#x578B;&#x540E;&#x7684;&#x6548;&#x679C;" title>
+                </div>
+                <div class="image-caption">&#x52A0;&#x5165;&#x81EA;&#x5B9A;&#x4E49;&#x6A21;&#x578B;&#x540E;&#x7684;&#x6548;&#x679C;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x7F16;&#x8BD1;&#x7A0B;&#x5E8F;&#xFF0C;&#x5C06;&#x5176;&#x5BFC;&#x51FA;&#x4E3A;APK&#x5B89;&#x88C5;&#x5305;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x5728;&#x624B;&#x673A;&#x4E0A;&#x6D4B;&#x8BD5;EasyAR&#x7684;&#x6548;&#x679C;&#x5566;&#x3002;&#x5047;&#x5982;&#x4E00;&#x5207;&#x987A;&#x5229;&#x7684;&#x8BDD;&#xFF0C;&#x5728;&#x624B;&#x673A;&#x4E0A;&#x5C06;&#x4F1A;&#x770B;&#x5230;&#x8FD9;&#x6837;&#x7684;&#x753B;&#x9762;&#x3002;&#x4E0B;&#x9762;&#x653E;&#x70B9;&#x8FD0;&#x884C;&#x60C5;&#x51B5;&#x622A;&#x56FE;&#x4F9B;&#x5927;&#x5BB6;&#x53C2;&#x8003;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/None.jpg" alt="&#x622A;&#x56FE;1" title>
+                </div>
+                <div class="image-caption">&#x622A;&#x56FE;1</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/None.jpg" alt="&#x622A;&#x56FE;2" title>
+                </div>
+                <div class="image-caption">&#x622A;&#x56FE;2</div>
+            </figure>
+<p>#&#x95EE;&#x9898;&#x6C47;&#x603B;<br>&#x2003;&#x2003;&#x4F5C;&#x4E3A;&#x4E00;&#x6B3E;&#x56FD;&#x4EA7;&#x7684;&#x589E;&#x5F3A;&#x73B0;&#x5B9E;&#x5F15;&#x64CE;&#xFF0C;&#x76EE;&#x524D;EasyAR&#x7684;&#x8868;&#x73B0;&#x6211;&#x8FD8;&#x662F;&#x6BD4;&#x8F83;&#x6EE1;&#x610F;&#x7684;&#xFF0C;&#x867D;&#x7136;&#x5728;&#x8BC6;&#x522B;&#x7684;&#x51C6;&#x786E;&#x5EA6;&#x4E0A;&#x65E0;&#x6CD5;&#x548C;&#x56FD;&#x5916;&#x7684;&#x540C;&#x7C7B;&#x4EA7;&#x54C1;&#x76F8;&#x6BD4;&#xFF0C;&#x4F46;&#x662F;&#x5B83;&#x7684;&#x7B80;&#x5355;&#x6613;&#x7528;&#x786E;&#x5B9E;&#x662F;&#x505A;&#x5F97;&#x4E0D;&#x9519;&#x3002;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x7A0B;&#x5E8F;&#x5458;&#x5C1D;&#x9C9C;&#x66F4;&#x50CF;&#x662F;&#x5403;&#x8783;&#x87F9;&#xFF0C;&#x76EE;&#x524D;&#x53D1;&#x73B0;&#x7684;&#x95EE;&#x9898;&#x53CA;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x6709;&#xFF1A;</p>
+<ul>
+<li>&#x7F16;&#x8F91;&#x5668;&#x63D0;&#x793A;DllNotFoundException&#x9519;&#x8BEF;&#xFF0C;&#x8BF7;&#x5B89;&#x88C5;SDK&#x4E2D;&#x5BF9;&#x5E94;&#x7684;VC++&#x8FD0;&#x884C;&#x5E93;&#x3002;</li>
+<li>&#x89C6;&#x9891;&#x5BFC;&#x5165;&#x5931;&#x8D25;&#xFF0C;Unity3D&#x5BFC;&#x5165;&#x89C6;&#x9891;&#x9700;&#x8981;&#x4F9D;&#x8D56;&#x82F9;&#x679C;&#x516C;&#x53F8;&#x7684;QuickTime&#x64AD;&#x653E;&#x5668;&#xFF0C;&#x6240;&#x4EE5;&#x8BF7;&#x5B89;&#x88C5;&#x6700;&#x65B0;&#x7248;&#x7684;QuickTime&#x540E;&#x91CD;&#x8BD5;&#x3002;</li>
+<li>&#x5728;64&#x4F4D;&#x8BA1;&#x7B97;&#x673A;&#x4E0A;&#x7F16;&#x8BD1;&#x7684;Android&#x5E94;&#x7528;&#x53EF;&#x4EE5;&#x6B63;&#x5E38;&#x8FD0;&#x884C;&#xFF0C;&#x5728;32&#x4F4D;&#x8BA1;&#x7B97;&#x673A;&#x4E0A;&#x7F16;&#x8BD1;&#x7684;Android&#x5E94;&#x7528;&#x65E0;&#x6CD5;&#x6B63;&#x5E38;&#x8FD0;&#x884C;&#x3002;&#x5177;&#x4F53;&#x8868;&#x73B0;&#x5982;&#x56FE;</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://ws1.sinaimg.cn/large/4c36074fly1fz68j0wjkcj20dc0m8tb0.jpg" alt="32&#x4F4D;&#x8BA1;&#x7B97;&#x673A;&#x4E0B;&#x7684;&#x95EE;&#x9898;" title>
+                </div>
+                <div class="image-caption">32&#x4F4D;&#x8BA1;&#x7B97;&#x673A;&#x4E0B;&#x7684;&#x95EE;&#x9898;</div>
+            </figure>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x4F5C;&#x4E3A;&#x6574;&#x4E2A;&#x7CFB;&#x5217;&#x7684;&#x7B2C;&#x4E00;&#x7BC7;&#x6587;&#x7AE0;&#xFF0C;&#x6211;&#x4EEC;&#x81F3;&#x6B64;&#x5BF9;EasyAR&#x6709;&#x4E86;&#x4E00;&#x4E2A;&#x8F83;&#x4E3A;&#x76F4;&#x89C2;&#x7684;&#x5370;&#x8C61;&#x3002;&#x5728;&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x5185;&#x5BB9;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x5BF9;SDK&#x4E2D;&#x7684;&#x5185;&#x5BB9;&#x8FDB;&#x884C;&#x66F4;&#x52A0;&#x6DF1;&#x5165;&#x7684;&#x4E86;&#x89E3;&#xFF0C;&#x56E0;&#x6B64;&#x5E0C;&#x671B;&#x5927;&#x5BB6;&#x7EE7;&#x7EED;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#xFF0C;&#x8C22;&#x8C22;&#x5927;&#x5BB6;&#xFF01;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/1156673678/">EasyAR尝鲜系列教程之自定义Marker的实现</a></li><li><a href="https://qinyuanpei.github.io/posts/3736599391/">EasyAR尝鲜系列教程之ImageTarget千呼万唤始出来</a></li><li><a href="https://qinyuanpei.github.io/posts/316230277/">EasyAR尝鲜系列教程之视频播放功能的实现</a></li><li><a href="https://blog.naaln.com/2017/08/what-augment-reality/">畅想 AR 的应用场景</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/3120185261/" rel="external">EasyAR尝鲜系列教程之Hello EasyAR</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/3120185261/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/3120185261/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AR/">AR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Unity3D/">Unity3D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/增强现实/">增强现实</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3120185261/&title=《EasyAR尝鲜系列教程之Hello EasyAR》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3120185261/&title=《EasyAR尝鲜系列教程之Hello EasyAR》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。从今天起博主将为大家..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3120185261/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《EasyAR尝鲜系列教程之Hello EasyAR》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3120185261/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3120185261/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/1156673678/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">EasyAR尝鲜系列教程之自定义Marker的实现</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/331752533/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">教你一步步实现一个虚拟摇杆</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/3120185261/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/3120185261/&title=《EasyAR尝鲜系列教程之Hello EasyAR》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/3120185261/&title=《EasyAR尝鲜系列教程之Hello EasyAR》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友，大家好，我是秦元培，欢迎大家关注我的博客，我的博客地址是http://qinyuanpei.com。从今天起博主将为大家..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/3120185261/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《EasyAR尝鲜系列教程之Hello EasyAR》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/3120185261/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/3120185261/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/3120185261/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

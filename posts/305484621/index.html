@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+<!-- Tencent Speed -->
+<script>var _speedMark = new Date()</script>
+<!-- End Tencent Speed -->
+<!-- Tencent Analysis -->
+<script async src="//tajs.qq.com/stats?sId=65355341"></script>
+<!-- End Tencent Analysis -->
+
+
+    
+
+
+
+    <meta charset="utf-8">
+    <!-- HTTP 1.1 -->  
+    <meta http-equiv="pragma" content="no-cache">  
+    <!-- HTTP 1.0 -->  
+    <meta http-equiv="cache-control" content="no-cache">
+    
+    
+    
+    <title>
+        C#中的扩展方法学习总结 - PayneQinのBlog
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="theme-color" content="#3F51B5">
+    
+    <meta name="keywords" content="undefined">
+    <meta name="description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客。最近偶然接触到了C#中的扩展方法，觉得这个语法特性是一个不错的特性，因此决定在这里系统地对C#中的扩展方法相关内容进行下总结和整理，因为博主觉得学习这件事情本身就是一个积累的过程，所以博主有时候会对现在的线上培训和视频教程这种“在线教育”感到反感。试想《射雕英雄传》中江南七怪远赴大漠传授郭靖武艺苦历十八载，何以难及全真教丹阳">
+<meta name="keywords" content="Unity3D,CSharp,扩展方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C#中的扩展方法学习总结">
+<meta property="og:url" content="https://qinyuanpei.github.io/posts/305484621/index.html">
+<meta property="og:site_name" content="PayneQinのBlog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客。最近偶然接触到了C#中的扩展方法，觉得这个语法特性是一个不错的特性，因此决定在这里系统地对C#中的扩展方法相关内容进行下总结和整理，因为博主觉得学习这件事情本身就是一个积累的过程，所以博主有时候会对现在的线上培训和视频教程这种“在线教育”感到反感。试想《射雕英雄传》中江南七怪远赴大漠传授郭靖武艺苦历十八载，何以难及全真教丹阳">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-15T11:11:38.512Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C#中的扩展方法学习总结">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客。最近偶然接触到了C#中的扩展方法，觉得这个语法特性是一个不错的特性，因此决定在这里系统地对C#中的扩展方法相关内容进行下总结和整理，因为博主觉得学习这件事情本身就是一个积累的过程，所以博主有时候会对现在的线上培训和视频教程这种“在线教育”感到反感。试想《射雕英雄传》中江南七怪远赴大漠传授郭靖武艺苦历十八载，何以难及全真教丹阳">
+    
+        <link rel="alternate" type="application/atom+xml" title="PayneQinのBlog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+        <link rel="manifest" href="/manifest.json">
+    
+    <link rel="stylesheet" href="/assets/styles/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/assets/images/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Payne</h5>
+          <a href="mailto:qinyuanpei@163.com" title="qinyuanpei@163.com" class="mail">qinyuanpei@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/books">
+                <i class="icon icon-lg icon-bookmark"></i>
+                读书
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/movies">
+                <i class="icon icon-lg icon-film"></i>
+                电影
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/works">
+                <i class="icon icon-lg icon-code"></i>
+                作品
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/albums">
+                <i class="icon icon-lg icon-link"></i>
+                相册
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">C#中的扩展方法学习总结</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">C#中的扩展方法学习总结</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-12-05T12:01:02.000Z" itemprop="datePublished" class="page-time">
+  2015-12-05
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#undefined"><span class="post-toc-number">1.</span> <span class="post-toc-text">你可能感兴趣</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-C#中的扩展方法学习总结" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">C#中的扩展方法学习总结</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-12-05 12:01:02" datetime="2015-12-05T12:01:02.000Z" itemprop="datePublished">2015-12-05</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编程语言/">编程语言</a></li></ul>
+
+
+
+            
+
+            
+    <span>
+        <i class="icon icon-clock-o"></i>
+        16 min.
+    </span>
+    
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x2003;&#x2003;&#x5404;&#x4F4D;&#x670B;&#x53CB;&#x5927;&#x5BB6;&#x597D;&#xFF0C;&#x6211;&#x662F;&#x79E6;&#x5143;&#x57F9;&#xFF0C;&#x6B22;&#x8FCE;&#x5927;&#x5BB6;&#x5173;&#x6CE8;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x3002;&#x6700;&#x8FD1;&#x5076;&#x7136;&#x63A5;&#x89E6;&#x5230;&#x4E86;C#&#x4E2D;&#x7684;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#xFF0C;&#x89C9;&#x5F97;&#x8FD9;&#x4E2A;&#x8BED;&#x6CD5;&#x7279;&#x6027;&#x662F;&#x4E00;&#x4E2A;&#x4E0D;&#x9519;&#x7684;&#x7279;&#x6027;&#xFF0C;&#x56E0;&#x6B64;&#x51B3;&#x5B9A;&#x5728;&#x8FD9;&#x91CC;&#x7CFB;&#x7EDF;&#x5730;&#x5BF9;C#&#x4E2D;&#x7684;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x76F8;&#x5173;&#x5185;&#x5BB9;&#x8FDB;&#x884C;&#x4E0B;&#x603B;&#x7ED3;&#x548C;&#x6574;&#x7406;&#xFF0C;&#x56E0;&#x4E3A;&#x535A;&#x4E3B;&#x89C9;&#x5F97;&#x5B66;&#x4E60;&#x8FD9;&#x4EF6;&#x4E8B;&#x60C5;&#x672C;&#x8EAB;&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x79EF;&#x7D2F;&#x7684;&#x8FC7;&#x7A0B;&#xFF0C;&#x6240;&#x4EE5;&#x535A;&#x4E3B;&#x6709;&#x65F6;&#x5019;&#x4F1A;&#x5BF9;&#x73B0;&#x5728;&#x7684;&#x7EBF;&#x4E0A;&#x57F9;&#x8BAD;&#x548C;&#x89C6;&#x9891;&#x6559;&#x7A0B;&#x8FD9;&#x79CD;&#x201C;&#x5728;&#x7EBF;&#x6559;&#x80B2;&#x201D;&#x611F;&#x5230;&#x53CD;&#x611F;&#x3002;&#x8BD5;&#x60F3;&#x300A;&#x5C04;&#x96D5;&#x82F1;&#x96C4;&#x4F20;&#x300B;&#x4E2D;&#x6C5F;&#x5357;&#x4E03;&#x602A;&#x8FDC;&#x8D74;&#x5927;&#x6F20;&#x4F20;&#x6388;&#x90ED;&#x9756;&#x6B66;&#x827A;&#x82E6;&#x5386;&#x5341;&#x516B;&#x8F7D;&#xFF0C;&#x4F55;&#x4EE5;&#x96BE;&#x53CA;&#x5168;&#x771F;&#x6559;&#x4E39;&#x9633;&#x5B50;&#x9A6C;&#x94B0;&#x4F20;&#x6388;&#x5185;&#x529F;&#x4E24;&#x5E74;&#x7684;&#x79EF;&#x7D2F;&#xFF1F;&#x8FD9;&#x91CC;&#x56FA;&#x7136;&#x6709;&#x90ED;&#x9756;&#x611A;&#x7B28;&#x6728;&#x8BB7;&#x7684;&#x5929;&#x6027;&#x548C;&#x6C5F;&#x5357;&#x4E03;&#x602A;&#x6B66;&#x529F;&#x4F4E;&#x5FAE;&#x7684;&#x56E0;&#x7D20;&#xFF0C;&#x53EF;&#x662F;&#x5728;&#x535A;&#x4E3B;&#x770B;&#x6765;&#x66F4;&#x91CD;&#x8981;&#x7684;&#x662F;&#x5F3A;&#x8C03;&#x4E86;&#x4E00;&#x4E2A;&#x79EF;&#x7D2F;&#x3002;&#x60F3;&#x90ED;&#x9756;&#x4E00;&#x751F;&#x53D7;&#x76CA;&#x81EA;&#x5168;&#x771F;&#x6559;&#x7684;&#x7384;&#x95E8;&#x5185;&#x529F;&#x7EC8;&#x6210;&#x4E00;&#x4EE3;&#x201C;&#x4E3A;&#x56FD;&#x4E3A;&#x6C11;&#x201D;&#x7684;&#x4FA0;&#x4E4B;&#x5927;&#x8005;&#xFF0C;&#x5219;&#x6211;&#x8F88;&#x9700;&#x66F4;&#x52A0;&#x52AA;&#x529B;&#x65B9;&#x53EF;&#x5728;&#x8FD9;&#x4E16;&#x95F4;&#x884C;&#x8D70;&#x5954;&#x6CE2;&#x3002;</p>
+<a id="more"></a>
+<p>#&#x4EC0;&#x4E48;&#x662F;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#xFF1F;<br>&#x2003;&#x2003;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x4ECE;&#x5B57;&#x9762;&#x4E0A;&#x7406;&#x89E3;&#x662F;&#x6307;&#x6269;&#x5C55;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x800C;&#x5BF9;&#x5E94;&#x5230;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7F16;&#x7A0B;&#x8FD9;&#x4E2A;&#x683C;&#x5C40;&#x4E2D;&#x5219;&#x662F;&#x6307;&#x4E3A;&#x4E00;&#x4E2A;&#x7C7B;&#x63D0;&#x4F9B;&#x7684;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x3002;&#x6309;&#x7167;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x7684;&#x7406;&#x89E3;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x9700;&#x8981;&#x83B7;&#x5F97;&#x67D0;&#x4E2A;&#x7C7B;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x8FD9;&#x4E2A;&#x7C7B;&#x4EE3;&#x7801;&#x4E2D;&#x589E;&#x52A0;&#x6210;&#x5458;&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x8FBE;&#x5230;&#x4E3A;&#x4E00;&#x4E2A;&#x7C7B;&#x63D0;&#x4F9B;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x76EE;&#x7684;&#x3002;&#x53EF;&#x662F;&#x4E0D;&#x5E78;&#x5730;&#x662F;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#x5728;&#x6CA1;&#x6709;&#x6E90;&#x4EE3;&#x7801;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x5C31;&#x65E0;&#x6CD5;&#x594F;&#x6548;&#x4E86;&#xFF0C;&#x800C;&#x4E14;&#x6211;&#x4EEC;&#x4EBA;&#x4E3A;&#x5730;&#x53BB;&#x6539;&#x53D8;&#x6E90;&#x4EE3;&#x7801;&#x6709;&#x53EF;&#x80FD;&#x4F1A;&#x7834;&#x574F;&#x6574;&#x4E2A;&#x4EE3;&#x7801;&#x7684;&#x7A33;&#x5B9A;&#x6027;&#x3002;&#x90A3;&#x4E48;&#x6709;&#x6CA1;&#x6709;&#x4E00;&#x79CD;&#x65B9;&#x6CD5;&#x80FD;&#x5728;&#x4E0D;&#x6539;&#x53D8;&#x6E90;&#x4EE3;&#x7801;&#x7684;&#x524D;&#x63D0;&#x4E0B;&#x4E3A;&#x67D0;&#x4E2A;&#x7C7B;&#x63D0;&#x4F9B;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x5462;&#xFF1F;&#x8FD9;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x4ECA;&#x5929;&#x8981;&#x8BF4;&#x7684;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5C06;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7406;&#x89E3;&#x4E3A;&#x5728;&#x4E0D;&#x6539;&#x53D8;&#x6E90;&#x4EE3;&#x7801;&#x7684;&#x524D;&#x63D0;&#x4E0B;&#x5411;&#x5916;&#x90E8;&#x63D0;&#x4F9B;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x4E00;&#x79CD;&#x65B9;&#x5F0F;&#x3002;C#&#x4E2D;&#x7684;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x5B9E;&#x73B0;&#x8D77;&#x6765;&#x662F;&#x76F8;&#x5BF9;&#x6765;&#x8BF4;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#x7684;&#xFF0C;&#x4F8B;&#x5982;&#x6211;&#x4EEC;&#x505A;&#x5728;Unity3D&#x6E38;&#x620F;&#x5F00;&#x53D1;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EF;&#x80FD;&#x4F1A;&#x7528;&#x5230;DOTween&#x8FD9;&#x4E2A;&#x63D2;&#x4EF6;&#x3002;&#x8FD9;&#x4E2A;&#x63D2;&#x4EF6;&#x662F;iTween&#x7684;&#x4F5C;&#x8005;&#x91CD;&#x65B0;&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x52A8;&#x753B;&#x63D2;&#x4EF6;&#xFF0C;&#x6548;&#x7387;&#x4E0A;&#x6BD4;iTween&#x6709;&#x8F83;&#x5927;&#x7684;&#x63D0;&#x5347;&#x3002;&#x66F4;&#x4E3A;&#x91CD;&#x8981;&#x7684;&#x4E00;&#x70B9;&#x662F;&#xFF0C;&#x5B83;&#x91C7;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x8FD9;&#x79CD;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#xFF0C;&#x4F7F;&#x5F97;&#x6211;&#x4EEC;&#x5728;&#x8C03;&#x7528;&#x8FD9;&#x4E9B;API&#x63A5;&#x53E3;&#x7684;&#x65F6;&#x5019;&#x96BE;&#x4EE5;&#x611F;&#x89C9;&#x5230;&#x6211;&#x4EEC;&#x662F;&#x5728;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;&#x63D2;&#x4EF6;&#xFF0C;&#x66F4;&#x50CF;&#x662F;&#x5728;&#x4F7F;&#x7528;Unity3D&#x7684;&#x539F;&#x751F;&#x51FD;&#x6570;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;&#x6211;&#x4EEC;&#x4F7F;&#x7528;DOTween + uGUI &#x8FD9;&#x6837;&#x7684;&#x7EC4;&#x5408;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5185;&#x5FC3;&#x4F1A;&#x611F;&#x5230;&#x65E0;&#x6BD4;&#x7684;&#x8212;&#x7545;&#xFF0C;&#x4E00;&#x5207;&#x90FD;&#x50CF;&#x662F;&#x6C34;&#x5230;&#x6E20;&#x6210;&#x4E00;&#x822C;&#x3002;</p>
+<p>#&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x6709;&#x54EA;&#x4E9B;&#x7279;&#x70B9;&#xFF1F;<br>&#x2003;&#x2003;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x5728;&#x5B9E;&#x73B0;&#x4E0A;&#x548C;&#x666E;&#x901A;&#x7684;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7F16;&#x7A0B;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#xFF0C;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x7C7B;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x91CC;&#x9762;&#x6DFB;&#x52A0;&#x5E76;&#x5B9E;&#x73B0;&#x76F8;&#x5E94;&#x7684;&#x65B9;&#x6CD5;&#x5373;&#x53EF;&#x3002;&#x4F46;&#x662F;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x5730;&#x65B9;&#x6709;&#x4E09;&#x70B9;&#xFF0C;&#x7B2C;&#x4E00;&#xFF0C;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x5FC5;&#x987B;&#x662F;&#x9759;&#x6001;&#x7C7B;&#x4E14;&#x7C7B;&#x7684;&#x540D;&#x79F0;&#x548C;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x65E0;&#x5173;&#xFF1B;&#x7B2C;&#x4E8C;&#x3001;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x65B9;&#x6CD5;&#x5FC5;&#x987B;&#x662F;&#x9759;&#x6001;&#x65B9;&#x6CD5;&#xFF1B;&#x7B2C;&#x4E09;&#x3001;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x65B9;&#x6CD5;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x5FC5;&#x987B;&#x662F;&#x4F7F;&#x7528;this&#x5173;&#x952E;&#x5B57;&#x6307;&#x660E;&#x8981;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5C06;&#x4E00;&#x4E2A;&#x5408;&#x6CD5;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;&#x8F6C;&#x6362;&#x4E3A;&#x6574;&#x578B;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;int.parse()&#x65B9;&#x6CD5;&#xFF0C;&#x5047;&#x5982;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x4E3A;string&#x7C7B;&#x578B;&#x6269;&#x5C55;&#x4E00;&#x4E2A;ToInt&#x65B9;&#x6CD5;&#x5E94;&#x8BE5;&#x600E;&#x4E48;&#x529E;&#x5462;&#xFF1F;&#x6211;&#x4EEC;&#x4E00;&#x8D77;&#x6765;&#x770B;&#x4E0B;&#x9762;&#x7684;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#xFF1A;</p>
+<figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 1&#x3001;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x9759;&#x6001;&#x7C7B;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 2&#x3001;&#x9759;&#x6001;&#x7C7B;&#x7684;&#x540D;&#x79F0;&#x548C;&#x8981;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x5177;&#x4F53;&#x7C7B;&#x65E0;&#x5173;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">SomeClass</span></span><br><span class="line">{</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 3&#x3001;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x5177;&#x4F53;&#x7684;&#x9759;&#x6001;&#x65B9;&#x6CD5;</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;str&quot;&gt;</span>4&#x3001;&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x5FC5;&#x987B;&#x4F7F;&#x7528;this&#x5173;&#x952E;&#x5B57;&#x6307;&#x5B9A;&#x8981;&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x578B;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span><span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">ToInt</span>(<span class="params"><span class="keyword">this</span> <span class="keyword">string</span> str</span>)</span></span><br><span class="line"><span class="function"></span>    {</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">int</span>.Parse(str);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;C#&#x652F;&#x6301;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x662F;&#x4ECE;.NET3.5&#x7248;&#x672C;&#x5F00;&#x59CB;&#xFF0C;&#x6240;&#x4EE5;&#x5728;&#x7F16;&#x5199;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x65F6;&#x5019;&#x8BF7;&#x786E;&#x4FDD;&#x4F60;&#x7684;.NET&#x7248;&#x672C;&#x662F;&#x5426;&#x6EE1;&#x8DB3;&#x8FD9;&#x4E00;&#x8981;&#x6C42;&#x3002;&#x63D0;&#x5230;&#x7248;&#x672C;&#x95EE;&#x9898;&#xFF0C;&#x6709;&#x5F88;&#x591A;&#x670B;&#x53CB;&#x5C24;&#x5176;&#x662F;&#x4ECE;Unity5.0&#x4EE5;&#x540E;&#x5F00;&#x59CB;&#x5B66;&#x4E60;Unity3D&#x7684;&#x670B;&#x53CB;&#xFF0C;&#x5E38;&#x5E38;&#x4F1A;&#x5728;&#x6211;&#x7684;&#x535A;&#x5BA2;&#x4E2D;&#x7559;&#x8A00;&#x63D0;&#x5230;&#x6211;&#x7684;&#x4EE3;&#x7801;&#x65E0;&#x6CD5;&#x5728;&#x65B0;&#x73AF;&#x5883;&#x4E0B;&#x8FD0;&#x884C;&#x7B49;&#x7B49;&#x7C7B;&#x4F3C;&#x5730;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x89C9;&#x5F97;&#x8FD9;&#x4E2A;&#x4E16;&#x754C;&#x4E0A;&#x66F4;&#x65B0;&#x901F;&#x5EA6;&#x6700;&#x5FEB;&#x7684;&#x5F53;&#x5C5E;IT&#x6280;&#x672F;&#x4E86;&#xFF0C;&#x5927;&#x5BB6;&#x4F7F;&#x7528;&#x65B0;&#x7248;&#x672C;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x662F;&#x6709;&#x65F6;&#x5019;&#x56E0;&#x4E3A;&#x6280;&#x672F;&#x53D1;&#x5C55;&#x4E2D;&#x7684;&#x5386;&#x53F2;&#x9057;&#x7559;&#x95EE;&#x9898;&#x4F8B;&#x5982;Python2.7&#x548C;Python3&#x3001;Unity4.X&#x548C;Unity5.X&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x53EF;&#x80FD;&#x51FA;&#x73B0;&#x7248;&#x672C;&#x4E0D;&#x517C;&#x5BB9;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x5982;&#x679C;&#x7F51;&#x7EDC;&#x4E0A;&#x7684;&#x8D44;&#x6E90;&#x6CA1;&#x6709;&#x53CA;&#x65F6;&#x66F4;&#x65B0;&#xFF0C;&#x5EFA;&#x8BAE;&#x5927;&#x5BB6;&#x8FD8;&#x662F;&#x53CA;&#x65F6;&#x67E5;&#x770B;&#x5B98;&#x65B9;&#x7684;&#x6700;&#x65B0;&#x6587;&#x6863;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x535A;&#x4E3B;&#x770B;&#x6765;&#x7F51;&#x7EDC;&#x4E0A;&#x7684;&#x4E66;&#x7C4D;&#x6216;&#x8005;&#x76F8;&#x5173;&#x6587;&#x7AE0;&#x90FD;&#x662F;&#x7528;&#x6765;&#x53C2;&#x8003;&#x7684;&#xFF0C;&#x53E4;&#x8BDD;&#x8BF4;&#xFF1A;&#x5C3D;&#x4FE1;&#x4E66;&#x4E0D;&#x5982;&#x65E0;&#x4E66;&#xFF0C;&#x53EA;&#x6709;&#x5BA2;&#x89C2;&#x3001;&#x51B7;&#x9759;&#x5730;&#x5224;&#x65AD;&#x77E5;&#x8BC6;&#x7684;&#x6B63;&#x786E;&#x4E0E;&#x5426;&#xFF0C;&#x6211;&#x4EEC;&#x65B9;&#x80FD;&#x5B66;&#x5230;&#x771F;&#x6B63;&#x6709;&#x7528;&#x7684;&#x77E5;&#x8BC6;&#x3002;</p>
+<p>&#x2003;&#x2003;&#x597D;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x5B8C;&#x8FD9;&#x4E2A;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x4EE5;&#x540E;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x50CF;&#x4E0B;&#x9762;&#x8FD9;&#x6837;&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x4E86;&#xFF1A;</p>
+<figure class="highlight ebnf"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">string str</span> = <span class="string">&quot;1234&quot;</span>;</span><br><span class="line"><span class="attribute">int val</span> = str.ToInt();</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x8FD9;&#x4E2A;&#x793A;&#x4F8B;&#x5411;&#x5927;&#x5BB6;&#x5C55;&#x793A;&#x4E86;&#x5982;&#x4F55;&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x65E0;&#x53C2;&#x6570;&#x7684;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#xFF0C;&#x90A3;&#x4E48;&#x5F53;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5728;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x4E2D;&#x4F20;&#x5165;&#x53C2;&#x6570;&#x7684;&#x65F6;&#x5019;&#x8BE5;&#x600E;&#x4E48;&#x505A;&#x5462;&#xFF1F;&#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x5728;&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x540E;&#x7EE7;&#x7EED;&#x52A0;&#x5165;&#x53C2;&#x6570;&#x7684;&#x58F0;&#x660E;&#x5C31;&#x597D;&#x4E86;&#x3002;&#x4F8B;&#x5982;&#x6211;&#x4EEC;&#x5728;Unity3D&#x4E2D;&#x5E38;&#x5E38;&#x9700;&#x8981;&#x7ED9;&#x4E00;&#x4E2A;3D&#x7269;&#x4F53;&#x8BBE;&#x7F6E;&#x5750;&#x6807;&#xFF0C;&#x901A;&#x5E38;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x6765;&#x5B9E;&#x73B0;&#xFF1A;<br></p><figure class="highlight lsl"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transform.position = new Vector3(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>);</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x8FD9;&#x4E2A;&#x4EE3;&#x7801;&#x5230;&#x76EE;&#x524D;&#x4E3A;&#x6B62;&#x662F;&#x6BD4;&#x8F83;&#x7B80;&#x6D01;&#x7684;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5728;Unity3D&#x4E2D;&#x9664;&#x4E86;position&#x5C5E;&#x6027;&#x4EE5;&#x5916;&#x8FD8;&#x6709;localPosition&#x5C5E;&#x6027;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x7684;&#x4EE3;&#x7801;&#x4E2D;&#x518D;&#x6D89;&#x53CA;&#x5750;&#x6807;&#x8BA1;&#x7B97;&#x7684;&#x8BDD;&#xFF0C;&#x6211;&#x76F8;&#x4FE1;&#x8FD9;&#x4E2A;&#x4EE3;&#x7801;&#x4E00;&#x5B9A;&#x4F1A;&#x53D8;&#x5F97;&#x975E;&#x5E38;&#x7684;&#x957F;&#x3002;&#x66F4;&#x6709;&#x751A;&#x8005;&#xFF0C;&#x6709;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x53EA;&#x60F3;&#x6539;&#x53D8;&#x4E09;&#x7EF4;&#x5750;&#x6807;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x7EF4;&#x5EA6;&#xFF0C;&#x53EF;&#x662F;&#x6211;&#x4EEC;&#x5FC5;&#x987B;&#x7ED9;transform.position&#x4E00;&#x4E2A;&#x4E09;&#x7EF4;&#x5750;&#x6807;&#xFF0C;&#x6BEB;&#x65E0;&#x610F;&#x5916;&#x5730;&#x6B64;&#x65F6;&#x7684;&#x4EE3;&#x7801;&#x4F1A;&#x53D8;&#x5F97;&#x66F4;&#x957F;&#x3002;&#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6269;&#x5C55;&#x51FA;&#x4E09;&#x4E2A;&#x65B9;&#x6CD5;SetPositionX&#x3001;SetPositionY&#x3001;SetPositionZ&#x6765;&#x5206;&#x522B;&#x4E3A;x&#x3001;y&#x3001;z&#x4E09;&#x4E2A;&#x5750;&#x6807;&#x5206;&#x91CF;&#x8FDB;&#x884C;&#x8D4B;&#x503C;&#xFF0C;&#x6211;&#x4EEC;&#x7EE7;&#x7EED;&#x5728;SomeClass&#x8FD9;&#x4E2A;&#x7C7B;&#x4E2D;&#x6DFB;&#x52A0;&#x65B9;&#x6CD5;&#xFF1A;<br></p><figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x8BBE;&#x7F6E;Tranform&#x7684;X&#x5750;&#x6807;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;tran&quot;&gt;</span>&#x5F53;&#x524D;Transform<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;x&quot;&gt;</span>X&#x5750;&#x6807;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetPositionX</span>(<span class="params"><span class="keyword">this</span> Transform tran, <span class="keyword">float</span> x</span>)</span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">    tran.position = <span class="keyword">new</span> Vector3(x, tran.position.y, tran.position.z);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x8BBE;&#x7F6E;Tranform&#x7684;Y&#x5750;&#x6807;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;tran&quot;&gt;</span>&#x5F53;&#x524D;Transform<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;x&quot;&gt;</span>Y&#x5750;&#x6807;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetPositionY</span>(<span class="params"><span class="keyword">this</span> Transform tran, <span class="keyword">float</span> y</span>)</span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">    tran.position = <span class="keyword">new</span> Vector3(tran.position.x, y, tran.position.z);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> &#x8BBE;&#x7F6E;Tranform&#x7684;Z&#x5750;&#x6807;</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;tran&quot;&gt;</span>&#x5F53;&#x524D;Transform<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;x&quot;&gt;</span>Z&#x5750;&#x6807;<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetPositionZ</span>(<span class="params"><span class="keyword">this</span> Transform tran, <span class="keyword">float</span> z</span>)</span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">    tran.position = <span class="keyword">new</span> Vector3(tran.position.x, tran.position.y, z);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x540C;&#x6837;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x73B0;&#x5728;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4E3A;&#x4E00;&#x4E2A;&#x4E09;&#x7EF4;&#x7269;&#x4F53;&#x7684;&#x5750;&#x6807;&#x8FDB;&#x884C;&#x8D4B;&#x503C;&#xFF1A;<br></p><figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">transform</span><span class="selector-class">.SetPositionX</span>(1<span class="selector-class">.0f</span>);</span><br><span class="line"><span class="selector-tag">transform</span><span class="selector-class">.SetPositionY</span>(1<span class="selector-class">.0f</span>);</span><br><span class="line"><span class="selector-tag">transform</span><span class="selector-class">.SetPositionZ</span>(1<span class="selector-class">.0f</span>);</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>#&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x5229;&#x5F0A;<br>&#x2003;&#x2003;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x4F7F;&#x7528;&#x8D77;&#x6765;&#x5F97;&#x5FC3;&#x5E94;&#x624B;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x6765;&#x8BA8;&#x8BBA;&#x4E0B;&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x5229;&#x5F0A;&#x3002;&#x597D;&#x5904;&#x5F53;&#x7136;&#x662F;&#x81EA;&#x7531;&#x800C;&#x4EFB;&#x6027;&#x5730;&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x5BF9;&#x7C7B;&#x8FDB;&#x884C;&#x6269;&#x5C55;&#xFF0C;&#x800C;&#x4E14;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x5728;Visual Studio&#x4E2D;&#x7684;&#x667A;&#x80FD;&#x63D0;&#x793A;&#x4F1A;&#x4EE5;&#x84DD;&#x8272;&#x5411;&#x4E0B;&#x7BAD;&#x5934;&#x8FDB;&#x884C;&#x6807;&#x8BC6;&#x3002;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x574F;&#x5904;&#x5219;&#x662F;&#x8981;&#x770B;&#x8BBE;&#x8BA1;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x4EBA;&#x80FD;&#x5426;&#x8F83;&#x597D;&#x7684;&#x9A7E;&#x9A6D;&#x8FD9;&#x4E2A;&#x7279;&#x6027;&#x5566;&#xFF0C;&#x5176;&#x5B9E;&#x6240;&#x6709;&#x7684;&#x6280;&#x672F;&#x90FD;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x6211;&#x5E38;&#x5E38;&#x5728;&#x6E38;&#x620F;&#x7FA4;&#x91CC;&#x542C;&#x5230;&#x4EBA;&#x9119;&#x89C6;Unity3D&#x5F15;&#x64CE;&#xFF0C;&#x4EE5;UnReal Engine4&#x4E3A;&#x6E38;&#x620F;&#x5F15;&#x64CE;&#x4E16;&#x754C;&#x91CC;&#x7684;&#x6CF0;&#x5C71;&#x5317;&#x6597;&#xFF0C;&#x6211;&#x627F;&#x8BA4;UE4&#x7684;&#x753B;&#x9762;&#x6548;&#x679C;&#x597D;&#xFF0C;&#x53EF;&#x662F;&#x80FD;&#x771F;&#x6B63;&#x7528;&#x597D;&#x8FD9;&#x4E2A;&#x5F15;&#x64CE;&#x7684;&#x4EBA;&#x6709;&#x591A;&#x5C11;&#x5462;&#xFF1F;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x5728;&#x4F7F;&#x7528;&#x7684;&#x65F6;&#x5019;&#x5E94;&#x8BE5;&#x9075;&#x5B88;&#x5C31;&#x8FD1;&#x539F;&#x5219;&#xFF0C;&#x5373;&#x662F;&#x5728;&#x6700;&#x5C0F;&#x7684;&#x8303;&#x56F4;&#x5185;&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#xFF0C;&#x5BF9;&#x5177;&#x4F53;&#x7C7B;&#x800C;&#x975E;&#x62BD;&#x8C61;&#x7C7B;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x3002;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x65E0;&#x975E;&#x662F;&#x56E0;&#x4E3A;&#x5B83;&#x5728;&#x903B;&#x8F91;&#x5C42;&#x9700;&#x8981;&#x8FD9;&#x6837;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x6CA1;&#x6709;&#x5FC5;&#x8981;&#x53BB;&#x6539;&#x53D8;&#x62BD;&#x8C61;&#x5C42;&#x7684;&#x903B;&#x8F91;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x6837;&#x4F1A;&#x201C;&#x6C61;&#x67D3;&#x201D;&#x6574;&#x4E2A;&#x4EE3;&#x7801;&#x3002;&#x4E3E;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x4F8B;&#x5B50;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;.NET&#x4E2D;&#x7684;&#x57FA;&#x7C7B;&#x662F;object&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x5BF9;&#x8FD9;&#x4E2A;&#x7C7B;&#x8FDB;&#x884C;&#x6269;&#x5C55;&#xFF0C;&#x6BEB;&#x65E0;&#x7591;&#x95EE;&#x5B83;&#x4F1A;&#x5F71;&#x54CD;&#x6240;&#x6709;&#x7EE7;&#x627F;&#x81EA;object&#x7684;&#x7C7B;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x4F1A;&#x9020;&#x6210;&#x201C;&#x6C61;&#x67D3;&#x201D;&#xFF0C;&#x663E;&#x7136;&#x662F;&#x4E0D;&#x53EF;&#x53D6;&#x7684;&#x3002;</p>
+<p>#&#x5C0F;&#x7ED3;</p>
+<ul>
+<li>&#x5728;C#&#x4E2D;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x5FC5;&#x987B;&#x662F;&#x9759;&#x6001;&#x7C7B;&#x4E14;&#x7C7B;&#x7684;&#x540D;&#x79F0;&#x548C;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x65E0;&#x5173;</li>
+<li>&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x65B9;&#x6CD5;&#x5FC5;&#x987B;&#x662F;&#x9759;&#x6001;&#x65B9;&#x6CD5;</li>
+<li>&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;&#x65B9;&#x6CD5;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x5FC5;&#x987B;&#x662F;&#x4F7F;&#x7528;this&#x5173;&#x952E;&#x5B57;&#x6307;&#x660E;&#x8981;&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x7684;&#x7C7B;</li>
+<li>&#x5B9E;&#x73B0;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x5E94;&#x9075;&#x5B88;&#x5C31;&#x8FD1;&#x539F;&#x5219;&#xFF0C;&#x5728;&#x6700;&#x5C0F;&#x7684;&#x8303;&#x56F4;&#x5185;&#x4F7F;&#x7528;&#x6269;&#x5C55;&#x65B9;&#x6CD5;&#x4EE5;&#x907F;&#x514D;&#x9020;&#x6210;&#x201C;&#x6C61;&#x67D3;&#x201D;</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script><div><h1>你可能感兴趣</h1><ul><li><a href="https://qinyuanpei.github.io/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li><li><a href="https://qinyuanpei.github.io/posts/1156673678/">EasyAR尝鲜系列教程之自定义Marker的实现</a></li><li><a href="https://qinyuanpei.github.io/posts/4088452183/">Unity3D游戏开发之MMD For Unity插件研究</a></li><li><a href="https://blog.yuanpei.me/posts/3120185261/">EasyAR尝鲜系列教程之Hello EasyAR</a></li></ul></div>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        <p><b>版权声明：</b>
+        <a href="https://qinyuanpei.github.io/posts/305484621/" rel="external">C#中的扩展方法学习总结</a>
+        ，由&nbsp;<a href="/about" target="_blank" rel="external">Payne</a>&nbsp;
+        首次发表于&nbsp;<a href="/" target="_blank" rel="external">PayneQinのBlog</a>&nbsp;
+        ，本文地址为：<a href="https://qinyuanpei.github.io/posts/305484621/" target="_blank" rel="external">https://qinyuanpei.github.io/posts/305484621/</a>
+        ，转载请注明<b>作者</b>和<b>出处</b>。</p>
+    </div>
+    <footer>
+        <a href="https://qinyuanpei.github.io">
+            <img src="/assets/images/avatar.jpg" alt="Payne">
+            Payne
+        </a>
+    </footer>
+</blockquote>
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSharp/">CSharp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Unity3D/">Unity3D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/扩展方法/">扩展方法</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/305484621/&title=《C#中的扩展方法学习总结》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/305484621/&title=《C#中的扩展方法学习总结》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客。最近偶然接触到了C#中的扩展方法，觉得这个语法特性是一个不错的特性，因此决定在这..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/305484621/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《C#中的扩展方法学习总结》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/305484621/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/305484621/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/3736599391/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">EasyAR尝鲜系列教程之ImageTarget千呼万唤始出来</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1394521917/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">青黄未接的2015</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    <div id="comment"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+new Valine({
+    el: '#comment' ,
+    notify:false, 
+    verify:false, 
+    appId: 'JbHqRp2eMrTgIwYpfERH0g79-gzGzoHsz',
+    appKey: 'VsiKvLuiBGvJL1XrAfv7siY2',
+    placeholder: '',
+    path:'https://qinyuanpei.github.io/posts/305484621/', 
+    avatar:'identicon',
+    visitor: true
+});
+</script>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        赠人玫瑰，手有余香
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/assets/images/wechat.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/assets/images/wechat.png" data-alipay="/assets/images/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>
+                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="license">
+                    BY-NC-SA
+                </a>
+            </span>
+            <span>
+                <a href="https://www.travis-ci.org/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Travis CI
+                </a>
+            </span>
+            <span>
+                <a href="https://github.com/qinyuanpei/qinyuanpei.github.io" rel="license">
+                    Github
+                </a>
+            </span>
+            <span>
+                <a href="https://coding.net/u/qinyuanpei/p/qinyuanpei.coding.me" rel="license">
+                    Coding
+                </a>
+            </span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Payne &copy; 2014 - 2019</span>
+            <span>
+                
+                    <a href="http://www.miitbeian.gov.cn/" target="_blank">宁ICP备6666666号</a><br>
+                
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a><br>
+                
+                    <p>Hosted by <a href="https://pages.github.com" style="font-weight: bold">Github Pages</a></p>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qinyuanpei.github.io/posts/305484621/&title=《C#中的扩展方法学习总结》 — PayneQinのBlog&pic=https://qinyuanpei.github.ioassets/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qinyuanpei.github.io/posts/305484621/&title=《C#中的扩展方法学习总结》 — PayneQinのBlog&source=&emsp;&emsp;各位朋友大家好，我是秦元培，欢迎大家关注我的博客。最近偶然接触到了C#中的扩展方法，觉得这个语法特性是一个不错的特性，因此决定在这..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qinyuanpei.github.io/posts/305484621/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《C#中的扩展方法学习总结》 — PayneQinのBlog&url=https://qinyuanpei.github.io/posts/305484621/&via=https://qinyuanpei.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qinyuanpei.github.io/posts/305484621/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://qinyuanpei.github.io/posts/305484621/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="/assets/scripts/main.min.js?v=1.7.1"></script>
+
+    
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+    <script src="/assets/scripts/search.min.js?v=1.7.1" async></script>
+
+
+    <script src="/assets/scripts/bixin.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
